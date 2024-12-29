@@ -1,0 +1,20 @@
+---
+    - name: Bind DNS - Install
+      become: true
+      ansible.builtin.apt:
+        pkg: bind9
+      notify: Start Bind
+    - name: Bind DNS - UFW Configuration
+      community.general.ufw:
+        rule: allow
+        port: '53'
+      become: true
+      when: ansible_facts['distribution'] == "Ubuntu"
+    - name: Bind DNS - Copy Scripts
+      copy:
+        src: ../../../../bash/bind/
+        dest: /etc/bind/scripts/
+        owner: root
+        group: users
+        mode: '0770'
+      become: true

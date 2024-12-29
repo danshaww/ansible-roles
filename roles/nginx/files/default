@@ -1,0 +1,17 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        listen 443 ssl;
+        ssl on;
+        ssl_certificate         /etc/letsencrypt/live/internal.epichouse.co.uk/fullchain.pem;
+        ssl_certificate_key     /etc/letsencrypt/live/internal.epichouse.co.uk/privkey.pem;
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+}

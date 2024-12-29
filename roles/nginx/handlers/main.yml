@@ -1,0 +1,11 @@
+---
+# handlers file for nginx
+  - name: Reload Web
+    ansible.builtin.service:
+      name: nginx
+      state: reloaded
+    become: true
+  - name: Enable Default SSL Site
+    shell: a2ensite default-ssl
+    become: true
+    when: copydefault.changeds

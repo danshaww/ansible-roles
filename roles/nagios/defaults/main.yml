@@ -1,0 +1,3 @@
+nagios_version: 4.4.6
+nagios_user: nagios
+nagios_group: nagios

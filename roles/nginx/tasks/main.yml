@@ -1,0 +1,25 @@
+---
+    - name: NGINX - Install
+      become: true
+      ansible.builtin.apt:
+        pkg: nginx
+    - name: NGINX - Copy Default Website
+      copy:
+        src: default
+        dest: /etc/nginx/sites-available/default
+      become: true
+      notify: Reload Web
+    - name: NGINX - Set Directory Permissions
+      ansible.builtin.file:
+        path: /etc/nginx
+        owner: root
+        group: users
+        mode: '0644'
+        recurse: true
+      become: true
+    - name: NGINX - UFW Allow HTTPS
+      community.general.ufw:
+        rule: allow
+        port: '443'
+      become: true
+      when: (ansible_facts['distribution'] == "Ubuntu")

@@ -1,0 +1,18 @@
+name: Terraform Installation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - roles/terraform/**
+  schedule:
+    - cron: "01 04 * * *"
+jobs:
+  terraform:
+    uses: epichouse/workflow-templates/.github/workflows/ansible-role.yaml@main
+    with:
+        rolepath: "../${{ github.event.repository.name }}/roles/terraform"
+        rolehosts: "terraform"
+        multisite: true
+    secrets:
+        sudo_password: ${{secrets.SUDO_PASSWORD}}
+        mastertoken: ${{secrets.MASTERTOKEN}}

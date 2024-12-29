@@ -1,0 +1,7 @@
+---
+# handlers file for apache
+  - name: Start Bind
+    ansible.builtin.service:
+      name: bind9
+      state: started
+    become: true

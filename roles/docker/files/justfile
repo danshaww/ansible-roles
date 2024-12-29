@@ -1,0 +1,8 @@
+#!/usr/bin/env just --justfile
+
+default:
+    just --list
+
+#Create New Compose Project
+new $project:
+    ~/git/bash/docker/new-compose-project.sh $project

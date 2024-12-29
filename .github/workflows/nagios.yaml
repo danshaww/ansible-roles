@@ -1,0 +1,17 @@
+name: Nagios Installation
+on:
+  workflow_dispatch:
+#  push:
+#    paths:
+#      - roles/nagios/**
+
+jobs:
+  terraform:
+    uses: epichouse/workflow-templates/.github/workflows/ansible-role.yaml@main
+    with:
+        rolepath: "../${{ github.event.repository.name }}/roles/nagios"
+        rolehosts: "nagios"
+        multisite: true
+    secrets:
+        sudo_password: ${{secrets.SUDO_PASSWORD}}
+        mastertoken: ${{secrets.MASTERTOKEN}}
