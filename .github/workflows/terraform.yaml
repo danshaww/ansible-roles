@@ -1,6 +1,8 @@
 name: Terraform Installation
 on:
   workflow_dispatch:
+  repository_dispatch: 
+    types: [terraform]
   push:
     paths:
       - roles/terraform/**

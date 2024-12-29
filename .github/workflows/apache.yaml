@@ -1,6 +1,8 @@
 name: Apache Installation
 on:
   workflow_dispatch:
+  repository_dispatch: 
+    types: [apache]
   push:
     paths:
       - roles/apache/**

@@ -1,6 +1,8 @@
 name: Bind Installation
 on:
   workflow_dispatch:
+  repository_dispatch: 
+    types: [bind]
   push:
     paths:
       - roles/bind/**
