@@ -1,0 +1,37 @@
+---
+    - name: Apache - Install
+      become: true
+      ansible.builtin.apt:
+        pkg: apache2
+    - name: Enable the Apache2 module ssl
+      community.general.apache2_module:
+        state: present
+        name: ssl
+      become: true
+    - name: Apache - Enable Headers Module
+      community.general.apache2_module:
+        state: present
+        name: headers
+      become: true
+    - name: Apache - Copy Default Website
+      copy:
+        src: default-ssl.conf
+        dest: /etc/apache2/sites-available/default-ssl.conf
+      become: true
+      notify:
+        - Reload Web
+        - Enable Default SSL Site
+    - name: Apache - Set Directory Permissions
+      ansible.builtin.file:
+        path: /etc/apache
+        owner: root
+        group: users
+        mode: '0644'
+        recurse: true
+      become: true
+    - name: Apache - UFW Allow HTTPS
+      community.general.ufw:
+        rule: allow
+        port: '443'
+      become: true
+      when: (ansible_facts['distribution'] == "Ubuntu")

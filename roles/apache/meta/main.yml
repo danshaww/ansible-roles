@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Dan Shaw
+  description: Ansible role to install Apache.
+  min_ansible_version: 2.1
+  galaxy_tags: []
+dependencies: [
+  software-letsencrypt
+]

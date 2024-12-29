@@ -1,0 +1,18 @@
+name: Apache Installation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - roles/apache/**
+  schedule:
+    - cron: "01 04 * * *"
+jobs:
+  apache:
+    uses: epichouse/workflow-templates/.github/workflows/ansible-role.yaml@main
+    with:
+        rolepath: "../${{ github.event.repository.name }}/roles/apache"
+        rolehosts: "apache"
+        multisite: true
+    secrets:
+        sudo_password: ${{secrets.SUDO_PASSWORD}}
+        mastertoken: ${{secrets.MASTERTOKEN}}
