@@ -17,3 +17,4 @@ jobs:
     secrets:
         sudo_password: ${{secrets.SUDO_PASSWORD}}
         mastertoken: ${{secrets.MASTERTOKEN}}
+        vault_password: ${{secrets.VAULT_PASSWORD}}
