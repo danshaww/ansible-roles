@@ -1,11 +1,9 @@
----
-# handlers file for apache
-  - name: Reload Web
-    ansible.builtin.service:
-      name: apache2
-      state: reloaded
-    become: true
-  - name: Enable Default SSL Site
-    shell: a2ensite default-ssl
-    become: true
-    when: copydefault.changeds
+- name: Reload Web
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+  become: true
+- name: Enable Default SSL Site
+  ansible.builtin.shell: a2ensite default-ssl
+  become: true
+  when: copydefault.changed
