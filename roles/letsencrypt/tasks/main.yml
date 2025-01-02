@@ -27,7 +27,7 @@
     - dns_cloudflare_api_token = "{{ cloudflare_api_token }}"
   become: true
 - name: LetsEncrypt - Generate Certificate
-  ansible.builtin.shell: certbot certonly --preferred-challenges dns --debug-challenges -d \*.internal.epichouse.co.uk --non-interactive --agree-tos -m "{{dan_email}}"  --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare
+  ansible.builtin.shell: certbot certonly --preferred-challenges dns --debug-challenges -d \*.internal.epichouse.co.uk --non-interactive --agree-tos -m "{{vault.global.email.dan}}"  --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare
   when: not certificate.stat.exists
   become: true
   notify:
