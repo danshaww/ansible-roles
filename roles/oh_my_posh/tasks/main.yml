@@ -2,8 +2,14 @@
   ansible.builtin.stat:
     path: ~/bin/oh-my-posh
   register: installed
+- name: Download oh-my-posh install script
+  ansible.builtin.get_url:
+    url: https://ohmyposh.dev/install.sh
+    dest: /tmp/install-oh-my-posh.sh
+    mode: '0755'
+  when: not installed.stat.exists
 - name: Install oh-my-posh
-  ansible.builtin.shell: curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/bin && ~/bin/oh-my-posh font install meslo
+  ansible.builtin.shell: bash -o pipefail /tmp/install-oh-my-posh.sh -d ~/bin && ~/bin/oh-my-posh font install meslo
   when: not installed.stat.exists
   register: installation
 - name: Install oh-my-posh font
