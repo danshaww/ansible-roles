@@ -1,0 +1,11 @@
+- name: Check for oh-my-posh
+  ansible.builtin.stat:
+    path: ~/bin/oh-my-posh
+  register: installed
+- name: Install oh-my-posh
+  ansible.builtin.shell: curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/bin && ~/bin/oh-my-posh font install meslo
+  when: not installed.stat.exists
+  register: installation
+- name: Install oh-my-posh font
+  ansible.builtin.shell: ~/bin/oh-my-posh font install meslo
+  when: installation.changed
