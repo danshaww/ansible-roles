@@ -1,0 +1,20 @@
+- name: Allow sudo without password
+  become: true
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ base.username }}"
+    line: "{{ base.username }} ALL=(ALL) NOPASSWD:ALL"
+    create: true
+    mode: '0644'
+- name: Utility Installation
+  become: true
+  tags: apt
+  ansible.builtin.apt:
+    pkg: "{{ item }}"
+  with_items: "{{ packages }}"
+- name: SSH - Add Trusted Hosts
+  ansible.builtin.known_hosts:
+    host: "{{ item.name }}"
+    key: "{{ item.ssh_host }}"
+  with_items: "{{ vault.ssh.trusted_hosts }}"
+  when: base.configure_known_hosts
+  no_log: true

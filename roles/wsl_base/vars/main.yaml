@@ -1,0 +1,20 @@
+packages:
+  - git
+  - just
+  - neofetch
+  - stress
+  - fio
+  - gnupg
+  - curl
+  - ca-certificates
+  - unzip
+  - htop
+  - git
+  - net-tools
+  - nfs-common
+  - cifs-utils
+  - rsync
+  - tmux
+  - ansible-lint
+  - sl
+  - tree
