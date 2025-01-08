@@ -1,0 +1,13 @@
+name: Stub Apache Workflow
+on:
+  push:
+    paths:
+      - 'roles/apache/**'
+jobs:
+  bind:
+    uses: epichouse/workflow-templates/.github/workflows/stub-workflow.yaml@main
+    with:
+        repository: "ansible-core"
+        workflow: "apache"
+    secrets:
+        mastertoken: ${{secrets.MASTERTOKEN}}

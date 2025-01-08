@@ -1,0 +1,17 @@
+name: Stub Gloobal Configuration Workflow
+on:
+  push:
+    paths:
+      - 'roles/windows_system/**'
+      - 'roles/global_system/**'
+      - 'roles/global_user/**'
+      - 'roles/just/**'
+
+jobs:
+  bind:
+    uses: epichouse/workflow-templates/.github/workflows/stub-workflow.yaml@main
+    with:
+        repository: "ansible-core"
+        workflow: "configuration"
+    secrets:
+        mastertoken: ${{secrets.MASTERTOKEN}}

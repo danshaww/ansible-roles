@@ -1,0 +1,13 @@
+name: Stub NGINX Workflow
+on:
+  push:
+    paths:
+      - 'roles/nginx/**'
+jobs:
+  bind:
+    uses: epichouse/workflow-templates/.github/workflows/stub-workflow.yaml@main
+    with:
+        repository: "ansible-core"
+        workflow: "nginx"
+    secrets:
+        mastertoken: ${{secrets.MASTERTOKEN}}

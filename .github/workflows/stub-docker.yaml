@@ -1,0 +1,13 @@
+name: Stub Docker Workflow
+on:
+  push:
+    paths:
+      - 'roles/docker/**'
+jobs:
+  bind:
+    uses: epichouse/workflow-templates/.github/workflows/stub-workflow.yaml@main
+    with:
+        repository: "ansible-core"
+        workflow: "docker"
+    secrets:
+        mastertoken: ${{secrets.MASTERTOKEN}}
