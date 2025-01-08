@@ -1,0 +1,70 @@
+- name: Get current directory
+  shell: ls -la
+  delegate_to: localhost
+  register: location
+- name: Output
+  ansible.builtin.debug:
+    msg: "{{location}}"
+- name: Get Docker Projects in Git
+  ansible.builtin.shell: ls "../servers/{{ docker.host }}/compose" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  register: applications
+  delegate_to: localhost
+  become: true
+  changed_when: false
+- name: applications
+  ansible.builtin.debug:
+    msg: "{{applications}}"
+- name: Create Data Directories
+  ansible.builtin.file:
+    path: "{{ docker.volumes }}/{{ item }}"
+    owner: root
+    group: docker
+    mode: '0770'
+    state: directory
+  become: true
+  with_items: "{{ applications.stdout_lines }}"
+- name: Create App Directories
+  ansible.builtin.file:
+    path: "{{ docker.apps }}/{{ item }}"
+    owner: root
+    group: docker
+    mode: '0770'
+    state: directory
+  become: true
+  with_items: "{{ applications.stdout_lines }}"
+- name: Render Jinja Templates into Docker apps directory
+  ansible.builtin.template:
+    src: "../servers/{{ docker.host }}/compose/{{ item }}.yml.j2"
+    dest: "{{ docker.apps }}/{{ item }}/compose.yaml"
+    owner: root
+    group: docker
+    mode: '0770'
+  with_items: "{{ applications.stdout_lines }}"
+  become: true
+- name: Start Docker Compose Project
+  community.docker.docker_compose_v2:
+    project_name: "{{ item }}"
+    project_src: "{{ docker.apps }}/{{ item }}"
+    remove_orphans: true
+    state: present
+  tags: docker
+  become: true
+  with_items: "{{ applications.stdout_lines }}"
+- name: Get Docker Projects on Server
+  ansible.builtin.shell: "docker compose ls -q"
+  register: currentapplications
+  become: true
+  changed_when: false
+- name: Output Removed Projects
+  ansible.builtin.debug:
+    msg: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"
+- name: Stop Removed Projects
+  ansible.builtin.shell: "docker compose -p {{ item }} down"
+  with_items: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"
+  become: true
+- name: Remove Stopped Projects
+  ansible.builtin.file:
+    path: "{{ docker.apps }}/{{ item }}"
+    state: absent
+  become: true
+  with_items: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"

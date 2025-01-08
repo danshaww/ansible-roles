@@ -1,0 +1,4 @@
+docker:
+  host: "{{ inventory_hostname }}"
+  volumes: /srv/docker/volumes
+  apps: /srv/docker/apps
