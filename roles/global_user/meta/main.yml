@@ -1,6 +1,6 @@
 galaxy_info:
   author: Dan Shaw
-  description: User Customisation and Configuration Role deployed on all servers.
+  description: User Customisation and Configuration Role.
   license: GPL-2.0-or-later
   min_ansible_version: "2.1"
   galaxy_tags: []
