@@ -6,8 +6,7 @@ on:
   push:
     paths:
       - roles/terraform/**
-  schedule:
-    - cron: "01 04 * * *"
+
 jobs:
   terraform:
     uses: epichouse/workflow-templates/.github/workflows/ansible-role.yaml@main

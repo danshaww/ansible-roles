@@ -6,8 +6,7 @@ on:
   push:
     paths:
       - roles/apache/**
-  schedule:
-    - cron: "01 04 * * *"
+
 jobs:
   apache:
     uses: epichouse/workflow-templates/.github/workflows/ansible-role.yaml@main
