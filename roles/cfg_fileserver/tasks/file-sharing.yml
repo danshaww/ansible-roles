@@ -1,0 +1,41 @@
+- name: File Sharing - Software Installation
+  ansible.builtin.apt:
+    pkg:
+    - samba
+    - nfs-kernel-server
+- name: File Sharing - Copy Samba Configuration file
+  copy:
+    src: config/smb.conf
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: users
+    mode: '0770'
+  register: sambachange
+  become: true
+- name: File Sharing - Reload SMBD Service
+  shell: systemctl reload smbd
+  when: sambachange.changed
+  become: true
+- name: File Sharing - Copy NFS Exports file
+  copy:
+    src: config/exports
+    dest: /etc/exports
+    owner: root
+    group: users
+    mode: '0770'
+  register: exportschange
+  become: true
+- name: File Sharing - Restart NFS Server Service
+  shell: systemctl restart nfs-server
+  when: exportschange.changed
+  become: true
+- name: File Sharing - UFW Configuration
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items:
+    - '445'
+    - '111'
+    - '2049'
+  become: true
+  when: ansible_facts['distribution'] == "Ubuntu"

@@ -1,0 +1,41 @@
+- name: Software Installation
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - ssmtp
+  
+- name: Configure ssmtp service
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/ssmtp.conf
+    create: yes
+    line: "{{ item }}"
+  with_items:
+      - root={{ server_smtp_user }}
+      - server={{ vault.smtp.host.primary }}
+      - UseSTARTTLS=YES
+      - FromLineOverride=YES
+      - AuthUser={{ server_smtp_user }}
+      - AuthPass={{ server_smtp_pass }}
+      - mailhub=mail.smtp2go.com:587
+      - rewritedomain=epichouse.co.uk
+      - hostname={{ server_smtp_user }}
+- name: Configure /etc/ssmtp/revaliases
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/revaliases
+    create: yes
+    line: "root:{{ server_smtp_user }}:mail.smtp2go.com:587"
+- name: Crontab  Config
+  become: true
+  cron:
+    env: "{{ item.env }}"
+    name: "{{ item.name }}"
+    job: "{{ item.job }}"
+  with_items:
+    - env: true
+      name: MAILTO
+      job: "{{vault.global.email.dan}}"
+    - env: true
+      name: MAILFROM
+      job: "{{ server_smtp_user }}@epichouse.co.uk"
