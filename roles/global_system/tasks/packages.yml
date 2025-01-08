@@ -1,0 +1,35 @@
+- name: Update APT Cache
+  apt:
+    update_cache: true
+  changed_when: false
+  ignore_errors: true
+- name: Global Utility Installation
+  ansible.builtin.apt:
+    pkg:
+      - cron
+      - htop
+      - neofetch
+      - git
+      - nfs-common
+      - net-tools
+      - dnsutils
+      - rsync
+      - tmux
+      - rsyslog
+      - unzip
+      - ca-certificates
+      - curl
+      - gnupg
+      - fio
+      - inxi
+      - smartmontools
+  tags: apt
+- name: Server Specific Utility Installation
+  ansible.builtin.apt:
+    pkg: "{{ packages}}"
+  when: packages is defined
+- name: Figurine Installation
+  ansible.builtin.copy:
+    src: figurine
+    dest: /usr/local/bin/figurine
+    mode: '0755'

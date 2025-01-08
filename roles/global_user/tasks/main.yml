@@ -1,0 +1,80 @@
+---
+- name: User Configuration Tasks
+  tags: user
+  block:
+    - name: BASHRC & Profile Configuration
+      block:
+        - name: Profile - dan
+          ansible.builtin.copy:
+            src: .profile
+            dest: ~/.profile
+            mode: '0644'
+        - name: Profile - root
+          ansible.builtin.copy:
+            src: .profile
+            dest: /root/.profile
+            mode: '0644'
+          become: true
+        - name: BASHRC - dan
+          ansible.builtin.copy:
+            src: .bashrc
+            dest: ~/.bashrc
+            mode: '0644'
+        - name: BASHRC - root
+          ansible.builtin.copy:
+            src: .bashrc
+            dest: /root/.bashrc
+            mode: '0644'
+          become: true
+    - name: HTOP Configuration
+      block:
+        - name: HTOPRC - Create Directory
+          ansible.builtin.file:
+            path: ~/.config/htop
+            state: directory
+            mode: '0755'
+        - name: HTOPRC - Copy Virtual Machine File
+          ansible.builtin.copy:
+            src: htoprc-virtual
+            dest: ~/.config/htop/htoprc
+            mode: '0755'
+          when: ansible_facts['virtualization_role'] == "guest"
+        - name: HTOPRC - Copy Physical Machine File
+          ansible.builtin.copy:
+            src: htoprc-physical
+            dest: ~/.config/htop/htoprc
+            force: true
+            mode: '0755'
+          when: ansible_facts['virtualization_role'] == "host"
+    - name: SSH Configuration
+      block:
+        - name: SSH - Set Public Key
+          ansible.builtin.copy:
+            content: "{{ vault.ssh.key_pairs.dan.public }}"
+            dest: ~/.ssh/id_rsa.pub
+            mode: '0644'
+        - name: SSH - Set Private Key
+          ansible.builtin.copy:
+            content: "{{ vault.ssh.key_pairs.dan.private }}"
+            dest: ~/.ssh/id_rsa
+            mode: '0600'
+        - name: SSH - Add Trusted Hosts
+          ansible.builtin.known_hosts:
+            host: "{{ item.name }}"
+            key: "{{ item.ssh_host }}"
+          with_items: "{{ vault.ssh.trusted_hosts }}"
+          no_log: true
+    - name: GIT Configuration
+      block:
+        - name: GIT - Ensure Directory Exists
+          ansible.builtin.file:
+            path: ~/git
+            mode: '0755'
+            state: directory
+        - name: GIT - Clone Bash Repo
+          ansible.builtin.git:
+            repo: 'git@github.com:epichouse/bash.git'
+            dest: ~/git/bash
+            update: true
+            force: true
+          ignore_errors: "{{ ansible_check_mode }}"

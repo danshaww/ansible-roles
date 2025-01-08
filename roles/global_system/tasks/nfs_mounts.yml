@@ -1,0 +1,22 @@
+- name: NAS - Create Top Level Mount Point
+  ansible.builtin.file:
+    path: /mnt/nas
+    state: directory
+    mode: '0770'
+  when: mounts is defined
+- name: NAS - Create Share Mount Point
+  ansible.builtin.file:
+    path: "/mnt/nas/{{ item }}"
+    state: directory
+    mode: '0770'
+  with_items: "{{ mounts }}"
+  when: mounts is defined
+- name: NAS - Create fstab NFS Entry
+  ansible.posix.mount:
+    path: "/mnt/nas/{{ item }}"
+    src: "nas:/rpool/data/fs/{{ item }}"
+    opts: rw
+    state: mounted
+    fstype: nfs
+    boot: true
+  with_items: "{{ mounts }}"

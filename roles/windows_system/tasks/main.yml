@@ -1,0 +1,10 @@
+- name: Windows System Configuration
+  block:
+    - name: Get whoami information
+      ansible.windows.win_whoami:
+    - name: Set network profiles to private
+      ansible.windows.win_powershell:
+        script: |
+          Get-NetConnectionProfile |
+          Where-Object {$_.NetworkCategory -ne "Private"} |
+          ForEach-Object {Set-NetConnectionProfile -Name $_.Name -NetworkCategory Private}

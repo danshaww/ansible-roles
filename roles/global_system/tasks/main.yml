@@ -1,0 +1,33 @@
+- name: System Configuration Tasks
+  tags: system
+  become: true
+  block:
+    - name: Packge Installation
+      ansible.builtin.include_tasks: packages.yml
+    - name: System SSH Config
+      ansible.builtin.include_tasks: ssh.yml
+    - name: UFW Firewall Configuration
+      ansible.builtin.include_tasks: firewall.yml
+      when: ansible_facts['distribution'] == "Ubuntu"
+    - name: Environment Variable Config
+      ansible.builtin.include_tasks: env.yml
+    - name: MOTD Population
+      ansible.builtin.include_tasks: motd.yml
+    - name: NAS NFS Configuration
+      ansible.builtin.include_tasks: nfs_mounts.yml
+      when: mounts is defined
+    - name: Set TimeZone
+      community.general.timezone:
+        name: Europe/London
+    - name: Syslog - Copy Config File
+      ansible.builtin.copy:
+        src: syslog.conf
+        dest: /etc/rsyslog.d/50-default.conf
+        mode: '0644'
+      notify: Restart Syslog
+    - name: Allow sudo without password
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/dan
+        line: dan ALL=(ALL) NOPASSWD:ALL
+        create: true
+        mode: '0644'

@@ -1,0 +1,10 @@
+- name: Restart SSH
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  become: true
+- name: Restart Syslog
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+  become: true
