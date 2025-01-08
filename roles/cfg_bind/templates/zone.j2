@@ -1,0 +1,32 @@
+{% if zone.records_ptr is defined %}
+$ORIGIN {{ zone.name }}.
+{% endif %}
+$TTL	{{ bind_zone_config.ttl }}
+@	IN	SOA {{ bind_zone_config.ns }} {{ bind_zone_config.root }} (
+                    {{ bind_zone_config.serial }}		; Serial
+                    {{ bind_zone_config.refresh }}      ; refresh after 6 hours
+                    {{ bind_zone_config.retry}}       ; retry after 1 hour
+                    {{ bind_zone_config.expire }}     ; expire after 1 week
+                    {{ bind_zone_config.ttl }} )    ; minimum TTL of 1 day
+; NS
+{% for ns in bind_zone_config.nameservers %}
+    IN  NS   {{ ns.address }}
+{% endfor %}
+; CNAME
+{% if zone.records_cname is defined %}
+{% for record in zone.records_cname %}
+{{ record.host }}                   IN CNAME    {{ record.address }}
+{% endfor %}
+{% endif %}
+; A
+{% if zone.records_a is defined %}
+{% for record in zone.records_a %}
+{{ record.host }}                   IN A        {{ record.address }}
+{% endfor %}
+{% endif %}
+; PTR
+{% if zone.records_ptr is defined %}
+{% for record in zone.records_ptr %}
+{{ record.host }}                   IN PTR      {{ record.address }}
+{% endfor %}
+{% endif %}
