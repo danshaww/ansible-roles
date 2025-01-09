@@ -15,7 +15,7 @@
       ansible.builtin.include_tasks: motd.yml
     - name: NAS NFS Configuration
       ansible.builtin.include_tasks: nfs_mounts.yml
-      when: mounts is defined
+      when: nfs is defined
     - name: Set TimeZone
       community.general.timezone:
         name: Europe/London
