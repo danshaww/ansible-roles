@@ -3,12 +3,16 @@
     path: /mnt/nas
     state: directory
     mode: '0770'
+    owner: root
+    group: users
   when: mounts is defined
 - name: NAS - Create Share Mount Point
   ansible.builtin.file:
     path: "/mnt/nas/{{ item }}"
     state: directory
     mode: '0770'
+    owner: root
+    group: users
   with_items: "{{ mounts }}"
   when: mounts is defined
 - name: NAS - Create fstab NFS Entry
