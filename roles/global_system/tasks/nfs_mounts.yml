@@ -1,26 +1,28 @@
-- name: NAS - Create Top Level Mount Point
+- name: Create Top Level Mount Points
   ansible.builtin.file:
-    path: /mnt/nas
+    path: "{{ item }}"
     state: directory
     mode: '0770'
     owner: root
     group: users
-  when: mounts is defined
-- name: NAS - Create Share Mount Point
+  with_items: "{{ nfs.directories }}"
+  when: nfs.directories is defined
+- name: Create NFS Mount Points
   ansible.builtin.file:
-    path: "/mnt/nas/{{ item }}"
+    path: "{{ item.directory }}"
     state: directory
     mode: '0770'
     owner: root
     group: users
-  with_items: "{{ mounts }}"
-  when: mounts is defined
-- name: NAS - Create fstab NFS Entry
+  with_items: "{{ nfs.mounts }}"
+  when: nfs.mounts is defined
+- name: Create NFS Mount fstab entries
   ansible.posix.mount:
-    path: "/mnt/nas/{{ item }}"
-    src: "nas:/rpool/data/fs/{{ item }}"
+    path: "{{ item.directory }}"
+    src: "{{ item.mount }}"
     opts: rw
     state: mounted
     fstype: nfs
     boot: true
-  with_items: "{{ mounts }}"
+  with_items: "{{ nfs.mounts }}"
+  when: nfs.mounts is defined
