@@ -1,5 +1,5 @@
 - name: Get current directory
-  shell: ls -la
+  ansible.builtin.shell: ls -la
   delegate_to: localhost
   register: location
 - name: Output
