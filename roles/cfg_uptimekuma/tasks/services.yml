@@ -1,4 +1,4 @@
-- name: Services - Servers
+- name: Servers
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -13,7 +13,7 @@
     resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.servers }}"
   when: config.services.servers is defined
-- name: Services - Web Services
+- name: Web Services
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -29,7 +29,7 @@
     expiryNotification: true
   with_items: "{{ config.services.web_services }}"
   when: config.services.web_services is defined
-- name: Services - Network
+- name: Network Services
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -40,11 +40,11 @@
     parent_name: Network Services
     notification_names: SMTP
     description: "{{ item.description }}"
-    maxretries: 2
-    resendInterval: 60
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.network }}"
   when: config.services.network is defined
-- name: Create MySQL Databases
+- name: MySQL Databases
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -56,11 +56,11 @@
     parent_name: Database Services
     notification_names: SMTP
     description: "{{ item.description }}"
-    maxretries: 2
-    resendInterval: 60
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.mysql }}"
   when: config.services.mysql is defined
-- name: Create Postgres Databases
+- name: Postgres Databases
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -72,11 +72,11 @@
     parent_name: Database Services
     notification_names: SMTP
     description: "{{ item.description }}"
-    maxretries: 2
-    resendInterval: 60
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.postgres }}"
   when: config.services.postgres is defined
-- name: Create MSSQL Databases
+- name: MSSQL Databases
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -88,7 +88,23 @@
     parent_name: Database Services
     notification_names: SMTP
     description: "{{ item.description }}"
-    maxretries: 2
-    resendInterval: 60
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.mssql }}"
   when: config.services.mssql is defined
+- name: Nameservers
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    hostname: "{{ item.hostname }}"
+    dns_resolve_server: "{{ item.ip_address }}"
+    type: dns
+    state: present
+    parent_name: Network Infrastructure
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
+  with_items: "{{ config.services.nameservers }}"
+  when: config.services.nameservers is defined
