@@ -37,6 +37,5 @@
   community.general.ansible_galaxy_install:
     type: collection
     name: "{{ item }}"
-  become: true
   with_items: "{{ ansible_collections }}"
   when: ansible_collections is defined
