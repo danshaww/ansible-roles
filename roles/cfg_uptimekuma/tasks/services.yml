@@ -1,0 +1,94 @@
+- name: Services - Servers
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    type: ping
+    state: present
+    parent_name: Servers
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
+  with_items: "{{ config.services.servers }}"
+  when: config.services.servers is defined
+- name: Services - Web Services
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    url: "https://{{ item.hostname }}"
+    type: http
+    state: present
+    parent_name: Web Services
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: "{{ config.maxretries}}"
+    resendInterval: "{{ config.resendInterval}}"
+    expiryNotification: true
+  with_items: "{{ config.services.web_services }}"
+  when: config.services.web_services is defined
+- name: Services - Network
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    type: ping
+    state: present
+    parent_name: Network Services
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: 2
+    resendInterval: 60
+  with_items: "{{ config.services.network }}"
+  when: config.services.network is defined
+- name: Create MySQL Databases
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "MySQL - {{ item.name }}"
+    databaseConnectionString: "{{ vars['mysql_' + item.database] }}"
+    databaseQuery: "{{ item.query }}"
+    type: mysql
+    state: present
+    parent_name: Database Services
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: 2
+    resendInterval: 60
+  with_items: "{{ config.services.mysql }}"
+  when: config.services.mysql is defined
+- name: Create Postgres Databases
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "Postgres - {{ item.name }}"
+    databaseConnectionString: "{{ vars['postgres_' + item.database] }}"
+    databaseQuery: "{{ item.query }}"
+    type: postgres
+    state: present
+    parent_name: Database Services
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: 2
+    resendInterval: 60
+  with_items: "{{ config.services.postgres }}"
+  when: config.services.postgres is defined
+- name: Create MSSQL Databases
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "MSSQL - {{ item.name }}"
+    databaseConnectionString: "{{ vars['mssql_' + item.database] }}"
+    databaseQuery: "{{ item.query }}"
+    type: sqlserver
+    state: present
+    parent_name: Database Services
+    notification_names: SMTP
+    description: "{{ item.description }}"
+    maxretries: 2
+    resendInterval: 60
+  with_items: "{{ config.services.mssql }}"
+  when: config.services.mssql is defined

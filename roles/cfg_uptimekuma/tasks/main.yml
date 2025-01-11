@@ -1,0 +1,41 @@
+- name: Authenticate with Uptime Kuma
+  lucasheld.uptime_kuma.login:
+    api_url: "{{ config.api_url }}"
+    api_username: "{{ config.api_username }}"
+    api_password: "{{ config.api_password }}"
+  register: result
+- name: Extract the token from the result and set it as fact
+  ansible.builtin.set_fact:
+    api_token: "{{ result.token }}"
+- name: Log Retention Configuration
+  lucasheld.uptime_kuma.settings:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    keepDataPeriodDays: "{{ config.log_retention_days }}"
+- name: SMTP Configuration
+  lucasheld.uptime_kuma.notification:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: SMTP
+    type: smtp
+    smtpHost: "{{ vault.smtp.host.primary }}"
+    smtpFrom: Uptime Kuma<uptimekuma@epichouse.co.uk>
+    smtpTo: "{{ vault.global.email.dan }}"
+    smtpUsername: "{{ vault.smtp.credentials.uptime_kuma.username }}"
+    smtpPassword: "{{ vault.smtp.credentials.uptime_kuma.password }}"
+    smtpPort: 465
+    smtpSecure: 'true'
+    state: present
+  when: config.enable_smtp
+- name: Create Groups
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: present
+    type: group
+    description: "{{ item.description }}"
+  with_items: "{{ monitor_groups }}"
+- name: Include Services Tasks
+  ansible.builtin.include_tasks: services.yml
+  when: config.services is defined
