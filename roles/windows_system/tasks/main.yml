@@ -1,10 +1,19 @@
 - name: Windows System Configuration
   block:
-    - name: Get whoami information
-      ansible.windows.win_whoami:
     - name: Set network profiles to private
       ansible.windows.win_powershell:
         script: |
           Get-NetConnectionProfile |
           Where-Object {$_.NetworkCategory -ne "Private"} |
           ForEach-Object {Set-NetConnectionProfile -Name $_.Name -NetworkCategory Private}
+    - name: Allow ICMP
+      community.windows.win_firewall_rule:
+        name: ICMP Allow incoming V4 echo request
+        enabled: true
+        state: present
+        profiles: private
+        action: allow
+        direction: in
+        protocol: icmpv4
+        icmp_type_code:
+          - '8:*'
