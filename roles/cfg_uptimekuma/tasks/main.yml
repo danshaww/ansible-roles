@@ -1,9 +1,3 @@
-- name: Install Uptime Kuma collection on Ansible host
-  community.general.ansible_galaxy_install:
-    type: collection
-    name: lucasheld.uptime_kuma
-  delegate_to: localhost
-  become: true
 - name: Install Uptime Kuma API Python Module on UPK host
   ansible.builtin.command: pip install uptime-kuma-api --break-system-packages
   become: true
