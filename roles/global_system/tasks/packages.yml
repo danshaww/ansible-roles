@@ -39,4 +39,4 @@
     name: "{{ item }}"
   become: true
   with_items: "{{ ansible_collections }}"
-  when: ansible.collections is defined
+  when: ansible_collections is defined
