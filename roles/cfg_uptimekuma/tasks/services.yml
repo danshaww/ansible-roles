@@ -34,7 +34,7 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    hostname: "{{ item.name }}"
+    hostname: "{{ item.hostname }}"
     type: ping
     state: present
     parent_name: Network Infrastructure
