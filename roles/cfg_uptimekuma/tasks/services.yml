@@ -37,7 +37,7 @@
     hostname: "{{ item.name }}"
     type: ping
     state: present
-    parent_name: Network Services
+    parent_name: Network Infrastructure
     notification_names: SMTP
     description: "{{ item.description }}"
     maxretries: "{{ config.maxretries}}"
