@@ -39,3 +39,5 @@
     name: "{{ item }}"
   with_items: "{{ ansible_collections }}"
   when: ansible_collections is defined
+  become: true
+  become_user: ci
