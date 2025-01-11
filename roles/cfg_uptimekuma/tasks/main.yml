@@ -1,3 +1,10 @@
+- name: Install Uptime Kuma collection on Ansible host
+  ansible.builtin.command: ansible-galaxy collection install lucasheld.uptime_kuma
+  delegate_to: localhost
+  become: true
+- name: Install Uptime Kuma API Python Module on UPK host
+  command: pip install uptime-kuma-api --break-system-packages
+  become: true
 - name: Authenticate with Uptime Kuma
   lucasheld.uptime_kuma.login:
     api_url: "{{ config.api_url }}"
