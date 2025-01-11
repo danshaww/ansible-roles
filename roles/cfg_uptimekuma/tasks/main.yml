@@ -1,6 +1,11 @@
-- name: Install Uptime Kuma API Python Module on UPK host
-  ansible.builtin.command: pip install uptime-kuma-api --break-system-packages
+- name: Install PIP3
+  ansible.builtin.apt:
+    pkg: python3-pip
   become: true
+- name: Install Uptime Kuma API Python Module on UPK host
+  ansible.builtin.pip:
+    name: uptime-kuma-api
+    break_system_packages: true
 - name: Authenticate with Uptime Kuma
   lucasheld.uptime_kuma.login:
     api_url: "{{ config.api_url }}"
