@@ -37,7 +37,7 @@
   when: config.enable_smtp
 - name: Create Groups
   lucasheld.uptime_kuma.monitor:
-    api_url: "{{ url }}"
+    api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
     state: present
