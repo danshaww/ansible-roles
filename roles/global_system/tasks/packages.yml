@@ -23,6 +23,7 @@
       - fio
       - inxi
       - smartmontools
+      - acl
   tags: apt
 - name: Server Specific Utility Installation
   ansible.builtin.apt:
@@ -39,4 +40,5 @@
     name: "{{ item }}"
   with_items: "{{ ansible_collections }}"
   when: ansible_collections is defined
+  become: true
   become_user: ci
