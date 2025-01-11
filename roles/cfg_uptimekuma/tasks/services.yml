@@ -97,7 +97,7 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    hostname: "{{ item.hostname }}"
+    hostname: "{{ item.lookup_address }}"
     dns_resolve_server: "{{ item.ip_address }}"
     type: dns
     state: present
