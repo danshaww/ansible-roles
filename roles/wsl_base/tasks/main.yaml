@@ -18,3 +18,13 @@
   with_items: "{{ vault.ssh.trusted_hosts }}"
   when: base.configure_known_hosts
   no_log: true
+- name: Copy home directory files
+  ansible.builtin.copy:
+    src: home/
+    dest: ~/
+    mode: '0755'
+- name: Copy Executables
+  ansible.builtin.copy:
+    src: bin/
+    dest: ~/bin/
+    mode: '0755'

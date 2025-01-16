@@ -1,0 +1,29 @@
+default:
+	just --list
+# Show Git Repo's
+lsgit:
+	tree ~/git -L 1
+# Set Power Mode to High Performance
+phigh:
+	powershell.exe 'powercfg /setactive SCHEME_MIN'
+# Set Power Mode to Balanced
+pmid:
+	powershell.exe 'powercfg /setactive SCHEME_BALANCED'
+# Set Power Mode to Power Saver
+plow:
+	powershell.exe 'powercfg /setactive SCHEME_MAX'
+# Get Power Mode
+pget:
+	powershell.exe 'powercfg /getactivescheme' && echo ""
+
+#Steam Locomotive!!!
+train:
+	sl
+
+# Run WSL personal provisioning playbook
+wsl:
+	ansible-playbook git/ansible-dev/playbooks/provision_wsl_personal.yml
+
+# Run WSL corporate provisioning playbook
+wsl:
+	ansible-playbook git/ansible-dev/playbooks/provision_wsl_corp.yml
