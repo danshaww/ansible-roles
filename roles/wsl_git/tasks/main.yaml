@@ -1,5 +1,5 @@
 - name: Check for git directory
-  ansible;.builtin.stat:
+  ansible.builtin.stat:
     path: ~/git
   register: git_path
 - name: Create Git Directory
