@@ -50,12 +50,12 @@
       block:
         - name: SSH - Set Public Key
           ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.public }}"
+            content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
             dest: ~/.ssh/id_rsa.pub
             mode: '0644'
         - name: SSH - Set Private Key
           ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.private }}"
+            content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
             dest: ~/.ssh/id_rsa
             mode: '0600'
         - name: SSH - Add Trusted Hosts
