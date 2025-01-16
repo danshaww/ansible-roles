@@ -25,5 +25,5 @@ wsl:
 	ansible-playbook git/ansible-dev/playbooks/provision_wsl_personal.yml
 
 # Run WSL corporate provisioning playbook
-wsl:
+wsl-corp:
 	ansible-playbook git/ansible-dev/playbooks/provision_wsl_corp.yml
