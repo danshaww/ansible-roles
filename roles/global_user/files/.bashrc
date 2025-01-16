@@ -109,11 +109,6 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-if [ ! -f /usr/share/bash-completion/completions/just ]; then
-    just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
-    echo "complete -F _just -o bashdefault -o default j" | sudo tee -a /usr/share/bash-completion/completions/just >> /dev/null
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
