@@ -1,9 +1,13 @@
+- name: Check for git directory
+  ansible;.builtin.stat:
+    path: ~/git
+  register: git_path
 - name: Create Git Directory
   ansible.builtin.file:
     path: "{{ repository_directory }}"
     state: directory
     mode: '0755'
-  tags: git,ansible
+  when: not git_path.stat.exists
 - name: Clone Repos
   ansible.builtin.git:
     repo: "{{ item }}"
@@ -11,14 +15,3 @@
     update: true
   ignore_errors: "{{ ansible_check_mode }}"
   with_items: "{{ git.repositories }}"
-  tags: git
-- name: Set Git user name
-  community.general.git_config:
-    name: user.name
-    scope: global
-    value: "{{ git.name }}"
-- name: Set Git user email
-  community.general.git_config:
-    name: user.email
-    scope: global
-    value: "{{ git.email }}"

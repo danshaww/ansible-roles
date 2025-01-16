@@ -28,3 +28,18 @@
     src: bin/
     dest: ~/bin/
     mode: '0755'
+- name: Set Git user name
+  community.general.git_config:
+    name: user.name
+    scope: global
+    value: "{{ base.git_name }}"
+- name: Set Git user email
+  community.general.git_config:
+    name: user.email
+    scope: global
+    value: "{{ base.git_email }}"
+- name: Create Git Directory
+  ansible.builtin.file:
+    path: "{{ repository_directory }}"
+    state: directory
+    mode: '0755'
