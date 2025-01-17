@@ -1,17 +1,7 @@
-- name: Check for git directory
-  ansible.builtin.stat:
-    path: ~/git
-  register: git_path
-- name: Create Git Directory
-  ansible.builtin.file:
-    path: "{{ repository_directory }}"
-    state: directory
-    mode: '0755'
-  when: not git_path.stat.exists
 - name: Clone Repos
   ansible.builtin.git:
     repo: "{{ item }}"
-    dest: "{{ repository_directory }}/{{ item | basename | replace('.git', '') }}"
+    dest: "{{ git.git_directory }}/{{ item | basename | replace('.git', '') }}"
     update: true
   ignore_errors: "{{ ansible_check_mode }}"
   with_items: "{{ git.repositories }}"

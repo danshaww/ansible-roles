@@ -15,7 +15,7 @@
   ansible.builtin.known_hosts:
     host: "{{ item.name }}"
     key: "{{ item.ssh_host }}"
-  with_items: "{{ vault.ssh.trusted_hosts }}"
+  with_items: "{{ base.known_hosts }}"
   when: base.configure_known_hosts
   no_log: true
 - name: Copy home directory files
@@ -40,6 +40,6 @@
     value: "{{ base.git_email }}"
 - name: Create Git Directory
   ansible.builtin.file:
-    path: "{{ repository_directory }}"
+    path: "{{ base.git_directory }}"
     state: directory
     mode: '0755'

@@ -1,0 +1,7 @@
+base:
+  configure_known_hosts: true
+  known_hosts: "{{ vault.ssh.trusted_hosts }}"
+  username: ""
+  git_name: ""
+  git_email: ""
+  git_directory: "~/git/"
