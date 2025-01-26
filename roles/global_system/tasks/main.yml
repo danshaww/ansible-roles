@@ -26,6 +26,7 @@
         dest: /etc/rsyslog.d/50-default.conf
         mode: '0644'
       notify: Restart Syslog
+      when: exclude_packages is not defined
     - name: Allow sudo without password
       ansible.builtin.lineinfile:
         path: /etc/sudoers.d/dan
