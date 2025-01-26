@@ -5,3 +5,5 @@ motd:
     line: "Server Type: {{ server_type }}"
   - regexp: "Server Location:"
     line: "Server Location: {{ site_name }}"
+  - regexp: "Server Deployment Type"
+    line: "Server Deployment Type: {{ deployment_type }}"
