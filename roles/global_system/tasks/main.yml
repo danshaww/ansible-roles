@@ -4,7 +4,7 @@
   block:
     - name: Packge Installation
       ansible.builtin.include_tasks: packages.yml
-      when: exlude_packages is not defined
+      when: exclude_packages is not defined
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
     - name: UFW Firewall Configuration
