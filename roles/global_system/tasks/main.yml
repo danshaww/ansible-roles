@@ -4,16 +4,19 @@
   block:
     - name: Packge Installation
       ansible.builtin.include_tasks: packages.yml
-      when: exclude_packages is not defined
+      when: enable_packages
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
+      when: enable_ssh_config
     - name: UFW Firewall Configuration
       ansible.builtin.include_tasks: firewall.yml
-      when: ansible_facts['distribution'] == "Ubuntu"
+      when: ansible_facts['distribution'] == "Ubuntu" and enable_ufw_config
     - name: Environment Variable Config
       ansible.builtin.include_tasks: env.yml
+      when: enable_env_config
     - name: MOTD Population
       ansible.builtin.include_tasks: motd.yml
+      when: enable_motd_config
     - name: NAS NFS Configuration
       ansible.builtin.include_tasks: nfs_mounts.yml
       when: nfs is defined
@@ -26,7 +29,7 @@
         dest: /etc/rsyslog.d/50-default.conf
         mode: '0644'
       notify: Restart Syslog
-      when: exclude_packages is not defined
+      when: enable_syslog_config
     - name: Allow sudo without password
       ansible.builtin.lineinfile:
         path: /etc/sudoers.d/dan
