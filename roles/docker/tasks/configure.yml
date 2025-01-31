@@ -1,5 +1,5 @@
 - name: Configuration | Get Required Projects
-  ansible.builtin.command: ls "../servers/{{ docker.host }}/compose" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "../servers/{{ docker.host }}/compose" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: applications
   delegate_to: localhost
   become: true
@@ -41,12 +41,12 @@
   become: true
   with_items: "{{ applications.stdout_lines }}"
 - name: Configuration | Get running Compose projects
-  ansible.builtin.command: "docker compose ls -q"
+  ansible.builtin.shell: "docker compose ls -q"
   register: currentapplications
   become: true
   changed_when: false
 - name: Configuration | Stop non-required projects
-  ansible.builtin.command: "docker compose -p {{ item }} down"
+  ansible.builtin.shell: "docker compose -p {{ item }} down"
   with_items: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"
   become: true
 - name: Configuration | Remove non-required projects
