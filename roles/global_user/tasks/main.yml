@@ -69,4 +69,3 @@
         path: ~/git
         mode: '0755'
         state: directory
-
