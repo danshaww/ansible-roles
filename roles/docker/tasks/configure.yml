@@ -4,9 +4,6 @@
   delegate_to: localhost
   become: true
   changed_when: false
-- name: applications
-  ansible.builtin.debug:
-    msg: "{{applications}}"
 - name: Configuration | Ensure data directories exist for required projects
   ansible.builtin.file:
     path: "{{ docker.paths.volumes }}/{{ item }}"
