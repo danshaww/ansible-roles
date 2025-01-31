@@ -1,27 +1,27 @@
-- name: Docker - Add APT GPG Key
+- name: Installation | Add APT GPG Key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     keyring: /etc/apt/keyrings/docker.gpg
   become: true
-- name: Docker - Add APT Repository
+- name: Installation | Add APT Repository
   ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
     state: present
     filename: docker
   become: true
-- name: Docker - Configure Group
+- name: Installation | Configure Group
   ansible.builtin.group:
     name: docker
     state: present
     gid: 121
   become: true
-- name: Docker - Add Dan to Group
+- name: Installation | Add ansible user to Group
   ansible.builtin.user:
-    name: dan
+    name: "{{ ansible_user }}"
     groups: docker
     append: true
   become: true
-- name: Docker - Install Packages
+- name: Installation | Install Packages
   become: true
   ansible.builtin.apt:
     pkg:
@@ -30,57 +30,39 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-- name: Docker - Create Directories
+- name: Installation | Create Directories
   ansible.builtin.file:
-    path: /srv/docker
+    path: "{{ item }}"
     owner: root
     group: docker
     mode: '0770'
     state: directory
   become: true
-- name: Docker - Create Apps Directory
-  ansible.builtin.file:
-    path: /srv/docker/apps
-    owner: root
-    group: docker
-    mode: '0770'
-    state: directory
-  become: true
-- name: Docker - Install ctop
+  with_items: "{{ docker.paths | dict2items }}"
+- name: Installation | Install ctop binary
   ansible.builtin.copy:
     src: ctop
     dest: /usr/local/bin/ctop
     mode: '0755'
   become: true
-- name: Docker - Create Maintenance Cron Job
+- name: Installation | Create Maintenance Cron Job
   ansible.builtin.cron:
     name: "docker maintenance"
     minute: "0"
     hour: "05"
     job: "docker image prune -f && docker volume prune -f"
   become: true
-- name: Docker - Set Login Path
-  ansible.builtin.copy:
-    content: /srv/docker
-    dest: ~/.login_directory
-    mode: '0644'
-- name: Docker - Create Volumes Directory
-  ansible.builtin.file:
-    path: /srv/docker/volumes
-    owner: root
-    group: docker
-    mode: '0770'
-    state: directory
+- name: Installation | Configure GitHub Packages Authentication
+  when: github_auth.enabled
   become: true
-- name: Docker Config Dir
-  ansible.builtin.file:
-    path: /root/.docker
-    state: directory
-    mode: '0770'
-  become: true
-- name: Docker Config
-  ansible.builtin.template:
-    src: "config.json.j2"
-    dest: /root/.docker/config.json
-    mode: '0770'
-  become: true
+  block:
+    - name: Installation | Ensure config directory exists
+      ansible.builtin.file:
+        path: /root/.docker
+        state: directory
+        mode: '0770'
+    - name: Installation | Populate docker config from Jinja template
+      ansible.builtin.template:
+        src: "config.json.j2"
+        dest: /root/.docker/config.json
+        mode: '0770'

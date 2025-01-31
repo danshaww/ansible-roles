@@ -2,3 +2,7 @@ docker:
   host: "{{ inventory_hostname }}"
   volumes: /srv/docker/volumes
   apps: /srv/docker/apps
+  paths:
+    main: /srv/docker
+    volumes: "{{ docker.paths.main }}/volumes"
+    apps: "{{ docker.paths.main }}/apps"

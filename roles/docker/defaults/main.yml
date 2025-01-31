@@ -1,2 +1,5 @@
 docker_install: true
 docker_configure: false
+github_auth:
+  enabled: true
+  pat: "{{ vault.global.api_keys.github }}"
