@@ -1,7 +1,0 @@
-- name: Clone Repos
-  ansible.builtin.git:
-    repo: "{{ item }}"
-    dest: "{{ git.git_directory }}/{{ item | basename | replace('.git', '') }}"
-    update: true
-  ignore_errors: "{{ ansible_check_mode }}"
-  with_items: "{{ git.repositories }}"
