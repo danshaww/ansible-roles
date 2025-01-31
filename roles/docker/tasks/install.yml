@@ -38,7 +38,7 @@
     mode: '0770'
     state: directory
   become: true
-  with_items: "{{ docker.paths | dict2items }}"
+  with_items: "{{ docker.paths }}"
 - name: Installation | Install ctop binary
   ansible.builtin.copy:
     src: ctop
