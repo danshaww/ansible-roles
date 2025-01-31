@@ -3,3 +3,4 @@ docker_configure: false
 github_auth:
   enabled: true
   pat: "{{ vault.global.api_keys.github }}"
+compose_path_local: "../../../servers/docker/{{ docker.host }}/compose"
