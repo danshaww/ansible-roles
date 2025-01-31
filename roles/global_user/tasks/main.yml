@@ -64,17 +64,9 @@
             key: "{{ item.ssh_host }}"
           with_items: "{{ vault.ssh.trusted_hosts }}"
           no_log: true
-    - name: GIT Configuration
-      block:
-        - name: GIT - Ensure Directory Exists
-          ansible.builtin.file:
-            path: ~/git
-            mode: '0755'
-            state: directory
-        - name: GIT - Clone Bash Repo
-          ansible.builtin.git:
-            repo: 'git@github.com:epichouse/bash.git'
-            dest: ~/git/bash
-            update: true
-            force: true
-          ignore_errors: "{{ ansible_check_mode }}"
+    - name: GIT - Ensure Directory Exists
+      ansible.builtin.file:
+        path: ~/git
+        mode: '0755'
+        state: directory
+
