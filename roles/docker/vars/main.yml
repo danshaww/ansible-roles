@@ -2,5 +2,5 @@ docker:
   host: "{{ inventory_hostname }}"
   paths:
     main: /srv/docker
-    volumes: "{{ docker.paths.main }}/volumes"
-    apps: "{{ docker.paths.main }}/apps"
+    volumes: /srv/docker/volumes
+    apps: /srv/docker/apps
