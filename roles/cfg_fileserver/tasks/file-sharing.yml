@@ -5,7 +5,7 @@
     - nfs-kernel-server
 - name: File Sharing - Copy Samba Configuration file
   copy:
-    src: "../servers/{{ inventory_hostname }}/config/smb.conf"
+    src: "../../servers/{{ inventory_hostname }}/config/smb.conf"
     dest: /etc/samba/smb.conf
     owner: root
     group: users
@@ -18,7 +18,7 @@
   become: true
 - name: File Sharing - Copy NFS Exports file
   copy:
-    src: "../servers/{{ inventory_hostname }}/config/exports"
+    src: "../../servers/{{ inventory_hostname }}/config/exports"
     dest: /etc/exports
     owner: root
     group: users
