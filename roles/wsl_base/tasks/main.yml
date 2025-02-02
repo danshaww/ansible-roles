@@ -23,6 +23,12 @@
     src: home/
     dest: ~/
     mode: '0755'
+- name: Copy home directory files (root)
+  ansible.builtin.copy:
+    src: home/
+    dest: /root/
+    mode: '0755'
+  become: true
 - name: Copy Executables
   ansible.builtin.copy:
     src: bin/
