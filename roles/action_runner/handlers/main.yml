@@ -1,0 +1,17 @@
+- name: Start Service
+  ansible.builtin.service:
+    name: actions.runner.{{ github_org | replace('/', '.') }}.{{ runner_name }}.service
+    state: started
+    enabled: true
+  become: true
+- name: Install Service
+  ansible.builtin.command: ./svc.sh install
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.service"
+  become: true
+- name: Extract Archive
+  ansible.builtin.unarchive:
+    src: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ runner_path }}"
+    remote_src: true

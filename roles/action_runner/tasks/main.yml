@@ -1,0 +1,55 @@
+- name: Reset SSH Connection
+  ansible.builtin.meta: reset_connection
+- name: Ensure necessary dependencies are installed
+  ansible.builtin.apt:
+    name:
+      - curl
+      - tar
+      - jq
+    state: present
+    update_cache: true
+  become: true
+- name: Create runner directory
+  ansible.builtin.file:
+    path: "{{ runner_path }}"
+    state: directory
+    mode: '0775'
+  changed_when: false
+- name: Check for existing archive
+  ansible.builtin.stat:
+    path: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+  register: runner_archive
+- name: Download GitHub Actions Runner
+  ansible.builtin.get_url:
+    url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    mode: '0644'
+  when: not runner_archive.stat.exists
+  notify: Extract Archive
+- name: Configure GitHub Actions Runner
+  ansible.builtin.command: >
+    ./config.sh --url https://github.com/{{ github_org }}
+    --token {{ github_token }}
+    --name {{ runner_name }}
+    --labels {{ runner_labels }}
+    --runnergroup Default
+    --work _work
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.runner"
+  notify: Start Service
+    - Install Service
+    - Start Service
+- name: Populate SSH Config
+  ansible.builtin.lineinfile:
+    path: /home/{{ username }}/.ssh/config
+    line: "{{ item }}"
+    mode: '0755'
+    create: true
+  become: true
+  with_items:
+    - "Host *"
+    - "   StrictHostKeyChecking no"
+- name: Include AZ CLI Role
+  ansible.builtin.include_role:
+    name: az_cli
