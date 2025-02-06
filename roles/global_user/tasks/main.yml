@@ -63,6 +63,7 @@
             content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
             dest: /root/.ssh/id_rsa.pub
             mode: '0644'
+          become: true
         - name: SSH - Set Private Key (root)
           ansible.builtin.copy:
             content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
