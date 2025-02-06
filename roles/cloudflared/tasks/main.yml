@@ -16,9 +16,13 @@
     update_cache: true
   become: true
 
+- name: Check for cloudflared service
+  ansible.builtin.stat:
+    path: /etc/systemd/system/cloudflared.service
+  register: cloudflared_service
 
 - name: Configure Runner
   ansible.builtin.command: "cloudflared service install {{ tunnel_token }}"
   become: true
-  changed_when: ansible_facts.services['cloudflared.service'] is not defined
-  when: ansible_facts.services['cloudflared.service'] is not defined
+  changed_when: not cloudflared.service.exists
+  when: not cloudflared.service.exists
