@@ -25,7 +25,7 @@
   register: services
 
 - name: Configure Runner
-  ansible.builtin.command: cloudflared service install {{ tunnel_token }}
+  ansible.builtin.command: "cloudflared service install {{ tunnel_token }}"
   become: true
   changed_when: not 'cloudflared' in services
   when: not 'cloudflared' in services
