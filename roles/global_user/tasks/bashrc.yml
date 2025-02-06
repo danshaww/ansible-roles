@@ -1,0 +1,22 @@
+- name: Profile - dan
+  ansible.builtin.copy:
+    src: .profile
+    dest: ~/.profile
+    mode: '0644'
+- name: Profile - root
+  ansible.builtin.copy:
+    src: .profile
+    dest: /root/.profile
+    mode: '0644'
+  become: true
+- name: BASHRC - dan
+  ansible.builtin.copy:
+    src: .bashrc
+    dest: ~/.bashrc
+    mode: '0644'
+- name: BASHRC - root
+  ansible.builtin.copy:
+    src: .bashrc
+    dest: /root/.bashrc
+    mode: '0644'
+  become: true

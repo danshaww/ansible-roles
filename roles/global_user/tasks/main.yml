@@ -2,89 +2,12 @@
 - name: User Configuration Tasks
   tags: user
   block:
-    - name: BASHRC & Profile Configuration
-      block:
-        - name: Profile - dan
-          ansible.builtin.copy:
-            src: .profile
-            dest: ~/.profile
-            mode: '0644'
-        - name: Profile - root
-          ansible.builtin.copy:
-            src: .profile
-            dest: /root/.profile
-            mode: '0644'
-          become: true
-        - name: BASHRC - dan
-          ansible.builtin.copy:
-            src: .bashrc
-            dest: ~/.bashrc
-            mode: '0644'
-        - name: BASHRC - root
-          ansible.builtin.copy:
-            src: .bashrc
-            dest: /root/.bashrc
-            mode: '0644'
-          become: true
-    - name: HTOP Configuration
-      block:
-        - name: HTOPRC - Create Directory
-          ansible.builtin.file:
-            path: ~/.config/htop
-            state: directory
-            mode: '0755'
-        - name: HTOPRC - Copy Virtual Machine File
-          ansible.builtin.copy:
-            src: htoprc-virtual
-            dest: ~/.config/htop/htoprc
-            mode: '0755'
-          when: ansible_facts['virtualization_role'] == "guest"
-        - name: HTOPRC - Copy Physical Machine File
-          ansible.builtin.copy:
-            src: htoprc-physical
-            dest: ~/.config/htop/htoprc
-            force: true
-            mode: '0755'
-          when: ansible_facts['virtualization_role'] == "host"
-    - name: SSH Configuration
-      block:
-        - name: SSH - Set Public Key (user)
-          ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
-            dest: ~/.ssh/id_rsa.pub
-            mode: '0644'
-        - name: SSH - Set Private Key (user)
-          ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
-            dest: ~/.ssh/id_rsa
-            mode: '0600'
-        - name: SSH - Set Public Key (root)
-          ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
-            dest: /root/.ssh/id_rsa.pub
-            mode: '0644'
-          become: true
-        - name: SSH - Set Private Key (root)
-          ansible.builtin.copy:
-            content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
-            dest: /root/.ssh/id_rsa
-            mode: '0600'
-          become: true
-        - name: Populate SSH Config (user)
-          ansible.builtin.lineinfile:
-            path: ~/.ssh/config
-            line: "{{ item }}"
-            mode: '0755'
-            create: true
-          with_items: "{{ ssh_config }}"
-        - name: Populate SSH Config (root)
-          ansible.builtin.lineinfile:
-            path: /root/.ssh/config
-            line: "{{ item }}"
-            mode: '0755'
-            create: true
-          with_items: "{{ ssh_config }}"
-          become: true
+    - name: Include bashrc Tasks
+      ansible.builtin.include_tasks: bashrc.yml
+    - name: Include htoprc Tasks
+      ansible.builtin.include_tasks: htoprc.yml
+    - name: Include ssh Tasks
+      ansible.builtin.include_tasks: ssh.yml
     - name: GIT - Ensure Directory Exists
       ansible.builtin.file:
         path: ~/git
