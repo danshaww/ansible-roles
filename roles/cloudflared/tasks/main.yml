@@ -20,5 +20,5 @@
 - name: Configure Runner
   ansible.builtin.command: "cloudflared service install {{ tunnel_token }}"
   become: true
-  changed_when: ansible_facts['services']['cloudflared']['state'] == 'absent'
-  when: ansible_facts['services']['cloudflared']['state'] == 'absent'
+  changed_when: not ansible_facts.services['cloudflared.service'] is defined
+  when: not ansible_facts.services['cloudflared.service'] is defined
