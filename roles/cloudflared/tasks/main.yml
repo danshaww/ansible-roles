@@ -1,0 +1,36 @@
+- name: Check for populated secret variable
+  ansible.builtin.command: /bin/true
+  changed_when: false
+  when: runner_token == 'changeme'
+
+- name: Add Cloudflare APT key
+  ansible.builtin.apt_key:
+    url: "https://pkg.cloudflare.com/gpg"
+    state: present
+  become: true
+- name: Add Cloudflare APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://pkg.cloudflare.com {{ ansible_distribution_release }} main"
+    state: present
+  become: true
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+
+- name: Install cloudflared
+  ansible.builtin.apt:
+    name: cloudflared
+    state: present
+  become: true
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+  register: services
+
+- name: Configure Runner
+  ansible.builtin.command: cloudflared service install {{ runner_token }}
+  become: true
+  changed_when: install.changed
+  when: not 'cloudflared' in services
