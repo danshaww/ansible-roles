@@ -17,3 +17,7 @@ packages:
   - ansible-lint
   - sl
   - tree
+
+ssh_config:
+  - "Host *"
+  - "   StrictHostKeyChecking no"
