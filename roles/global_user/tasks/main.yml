@@ -48,16 +48,27 @@
           when: ansible_facts['virtualization_role'] == "host"
     - name: SSH Configuration
       block:
-        - name: SSH - Set Public Key
+        - name: SSH - Set Public Key (user)
           ansible.builtin.copy:
             content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
             dest: ~/.ssh/id_rsa.pub
             mode: '0644'
-        - name: SSH - Set Private Key
+        - name: SSH - Set Private Key (user)
           ansible.builtin.copy:
             content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
             dest: ~/.ssh/id_rsa
             mode: '0600'
+        - name: SSH - Set Public Key (root)
+          ansible.builtin.copy:
+            content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
+            dest: /root/.ssh/id_rsa.pub
+            mode: '0644'
+        - name: SSH - Set Private Key (root)
+          ansible.builtin.copy:
+            content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
+            dest: /root/.ssh/id_rsa
+            mode: '0600'
+          become: true
         - name: SSH - Add Trusted Hosts
           ansible.builtin.known_hosts:
             host: "{{ item.name }}"
