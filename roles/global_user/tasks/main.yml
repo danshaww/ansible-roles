@@ -70,12 +70,21 @@
             dest: /root/.ssh/id_rsa
             mode: '0600'
           become: true
-        - name: SSH - Add Trusted Hosts
-          ansible.builtin.known_hosts:
-            host: "{{ item.name }}"
-            key: "{{ item.ssh_host }}"
-          with_items: "{{ vault.ssh.trusted_hosts }}"
-          no_log: true
+        - name: Populate SSH Config (user)
+          ansible.builtin.lineinfile:
+            path: ~/.ssh/config
+            line: "{{ item }}"
+            mode: '0755'
+            create: true
+          with_items: "{{ ssh_config }}"
+        - name: Populate SSH Config (root)
+          ansible.builtin.lineinfile:
+            path: /root/.ssh/config
+            line: "{{ item }}"
+            mode: '0755'
+            create: true
+          with_items: "{{ ssh_config }}"
+          become: true
     - name: GIT - Ensure Directory Exists
       ansible.builtin.file:
         path: ~/git
