@@ -1,6 +1,6 @@
 - name: Add Cloudflare APT key
   ansible.builtin.apt_key:
-    url: "https://pkg.cloudflare.com/gpg"
+    url: "https://pkg.cloudflare.com/cloudflare-main.gpg"
     state: present
   become: true
 - name: Add Cloudflare APT repository
