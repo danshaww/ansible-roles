@@ -1,11 +1,11 @@
 - name: Add Cloudflare APT key
   ansible.builtin.apt_key:
     url: "https://pkg.cloudflare.com/cloudflare-main.gpg"
-    state: present
+    keyring: /usr/share/keyrings/cloudflare-main.gpg
   become: true
 - name: Add Cloudflare APT repository
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://pkg.cloudflare.com {{ ansible_distribution_release }} main"
+    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main"
     state: present
   become: true
 
