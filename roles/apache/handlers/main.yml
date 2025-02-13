@@ -6,4 +6,3 @@
 - name: Enable Default SSL Site
   ansible.builtin.shell: a2ensite default-ssl
   become: true
-  when: copydefault.changed
