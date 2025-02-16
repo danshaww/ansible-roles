@@ -5,5 +5,3 @@ monitor_groups:
     description: Networking Devices
   - name: Web Services
     description: Web Based Services
-  - name: Database Services
-    description: Database Servers
