@@ -58,7 +58,7 @@
   ansible.builtin.debug:
     msg: "{{ item.name }}"
   with_items: "{{ monitors_result.monitors }}"
-  when: item.type == 'group' and item.name not in monitor_groups
+  when: item.type == 'group' and item.name not in monitor_groups| map(attribute='name')
 
 - name: Include Services Tasks
   ansible.builtin.include_tasks: services.yml
