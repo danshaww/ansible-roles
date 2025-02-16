@@ -55,7 +55,7 @@
   register: monitors_result
 - name: Display all monitors
   ansible.builtin.debug:
-    var: monitors_result.monitors
+    msg: "{{ monitors_result.monitors | json_query([?type=='group'].name) }}"
 
 - name: Include Services Tasks
   ansible.builtin.include_tasks: services.yml
