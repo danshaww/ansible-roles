@@ -22,7 +22,7 @@
     state: absent
     type: group
   with_items: "{{ monitors_result.monitors }}"
-  when: item.parent_name == 'Servers' and item.name not in config.services.servers| map(attribute='name') and config.services.servers is defined
+  when: item.parent == 'Servers' and item.name not in config.services.servers| map(attribute='name') and config.services.servers is defined
 
 
 
