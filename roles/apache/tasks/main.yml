@@ -19,7 +19,6 @@
   become: true
   notify:
     - Reload Web
-    - Enable Default SSL Site
 - name: Apache - Set Directory Permissions
   ansible.builtin.file:
     path: /etc/apache
@@ -27,6 +26,9 @@
     group: users
     mode: '0644'
     recurse: true
+  become: true
+- name: Enable Default SSL Site
+  ansible.builtin.shell: a2ensite default-ssl
   become: true
 - name: Apache - UFW Allow HTTPS
   community.general.ufw:
