@@ -1,4 +1,4 @@
-- name: Servers
+- name: Servers | Create
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
@@ -13,6 +13,20 @@
     resendInterval: "{{ config.resendInterval}}"
   with_items: "{{ config.services.servers }}"
   when: config.services.servers is defined
+
+- name: Servers | Delete
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: absent
+    type: group
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.parent_name == 'Servers' and item.name not in config.services.servers| map(attribute='name') and config.services.servers is defined
+
+
+
+
 - name: Web Services
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
