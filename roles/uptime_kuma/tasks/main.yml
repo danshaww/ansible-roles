@@ -53,9 +53,12 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
   register: monitors_result
-- name: Display all monitors
-  ansible.builtin.debug:
-    msg: "{{ monitors_result.monitors | json_query([?type=='group'].name) }}"
+
+- name: Display monitor names where type is group
+  debug:
+    msg: "{{ item.name }}"
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.type == 'group'
 
 - name: Include Services Tasks
   ansible.builtin.include_tasks: services.yml
