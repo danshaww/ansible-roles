@@ -36,6 +36,11 @@
     state: present
   when: config.enable_smtp
 
+- name: Get all monitors
+  lucasheld.uptime_kuma.monitor_info:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+  register: monitors_result
 
 - name: Create Groups
   lucasheld.uptime_kuma.monitor:
@@ -47,12 +52,15 @@
     description: "{{ item.description }}"
   with_items: "{{ monitor_groups }}"
 
-
-- name: Get all monitors
-  lucasheld.uptime_kuma.monitor_info:
+- name: Delete Groups no longer required
+  lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
-  register: monitors_result
+    name: "{{ item.name }}"
+    state: absent
+    type: group
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.type == 'group' and item.name not in monitor_groups| map(attribute='name')
 
 - name: Display monitor names where type is group
   ansible.builtin.debug:
