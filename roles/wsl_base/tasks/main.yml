@@ -11,11 +11,6 @@
   ansible.builtin.apt:
     pkg: "{{ item }}"
   with_items: "{{ packages }}"
-- name: SSH - Add Trusted Hosts
-  ansible.builtin.known_hosts:
-    host: "{{ item.name }}"
-    key: "{{ item.ssh_host }}"
-  with_items: "{{ base.known_hosts }}"
   when: base.configure_known_hosts
   no_log: true
 - name: Copy home directory files
