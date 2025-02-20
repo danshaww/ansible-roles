@@ -46,7 +46,7 @@
 - name: Build Zone Files (Initial Install Only)
   ansible.builtin.template:
     src: "zone.j2"
-    dest: "{{ bind_general.path }}/{{ item }}.zone"
+    dest: "{{ item.path }}"
     owner: root
     group: bind
     mode: '0644'
