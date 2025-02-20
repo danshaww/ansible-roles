@@ -12,21 +12,13 @@ $TTL	{{ bind_zone_config.ttl }}
 {% for ns in bind_zone_config.nameservers %}
     IN  NS   {{ ns.address }}
 {% endfor %}
-; CNAME
-{% if zone.records_cname is defined %}
-{% for record in zone.records_cname %}
-{{ record.host }}                   IN CNAME    {{ record.address }}
+
+; NS A
+{% for ns in bind_zone_config.nameservers %}
+{{ ns.ip_address }}    IN  PTR  {{ ns.address }}
 {% endfor %}
-{% endif %}
-; A
-{% if zone.records_a is defined %}
-{% for record in zone.records_a %}
-{{ record.host }}                   IN A        {{ record.address }}
+
+; NS PTR
+{% for ns in bind_zone_config.nameservers %}
+{{ ns.address }}    IN  A   {{ ns.ip_address }}
 {% endfor %}
-{% endif %}
-; PTR
-{% if zone.records_ptr is defined %}
-{% for record in zone.records_ptr %}
-{{ record.host }}                   IN PTR      {{ record.address }}
-{% endfor %}
-{% endif %}
