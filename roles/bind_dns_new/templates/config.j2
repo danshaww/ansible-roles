@@ -1,0 +1,35 @@
+include "{{ bind_general.path }}/rndc.key";
+options {
+        empty-zones-enable {{ bind_options.empty_zones }};
+	directory "{{ bind_options.cache_path}}";
+        recursion {{ bind_options.recursion }};
+        dnssec-validation {{ bind_options.dnssec_validation }};
+        allow-recursion { {{ bind_options.recursion_hosts }}; };
+        listen-on { {{ bind_options.listen_on }}; };
+        forwarders {
+{% for ns in bind_options.forwarders %}
+        {{ ns.address }};
+{% endfor %}
+        };
+};
+
+logging {
+    channel bind.log {
+        file "{{ bind_logging.path }}/{{ bind_logging.file }}" versions {{ bind_logging.versions }} size {{ bind_logging.size }};
+        severity {{ bind_logging.severity }};
+        print-category {{ bind_logging.print_category }};
+        print-severity {{ bind_logging.print_severity }};
+        print-time {{ bind_logging.print_time }};
+    };
+    category queries { bind.log; };
+    category default { bind.log; };
+    category config { bind.log; };
+};
+
+
+{% for zone in bind_zones %}
+zone "{{ zone.name }}" IN {
+    type master;
+    file "{{ bind_general.path }}/{{ zone.name }}.zone";
+};
+{% endfor %}

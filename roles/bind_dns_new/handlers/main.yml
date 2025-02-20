@@ -1,0 +1,36 @@
+- name: RNDC Reload
+  ansible.builtin.command: rndc reload
+  become: true
+  changed_when: false
+  listen:
+    - Zone Change
+- name: Restart Service
+  ansible.builtin.systemd_service:
+    name: named.service
+    state: restarted
+  become: true
+  changed_when: false
+  listen:
+    - Config Change
+- name: Clear Cache
+  ansible.builtin.command: resolvectl flush-caches
+  become: true
+  changed_when: false
+  listen:
+    - Zone Change
+    - Config Change
+- name: Check Configuration
+  ansible.builtin.command: named-checkconf
+  become: true
+  changed_when: false
+  listen:
+    - Config Change
+- name: Test Name Resolution
+  ansible.builtin.command: "nslookup {{ item.address }}"
+  delegate_to: localhost
+  changed_when: false
+  register: testresults
+  listen:
+    - Zone Change
+    - Config Change
+  with_items: "{{ bind_general.tests }}"

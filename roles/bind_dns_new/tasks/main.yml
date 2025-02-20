@@ -1,0 +1,54 @@
+- name: Bind Package Installation
+  become: true
+  ansible.builtin.apt:
+    pkg: bind9
+- name: UFW Firewall Configuration
+  community.general.ufw:
+    rule: allow
+    port: '53'
+  become: true
+  when: ansible_facts['distribution'] == "Ubuntu"
+- name: Install Prerequisits on Ansible Host
+  ansible.builtin.apt:
+    pkg: python3-dnspython
+  become: true
+  delegate_to: localhost
+- name: Create BIND log directory
+  ansible.builtin.file:
+    path: "{{ bind_logging.path }}"
+    state: directory
+    owner: bind
+    group: bind
+    mode: '0755'
+  become: true
+- name: Create Log File
+  ansible.builtin.file:
+    path: "{{ bind_logging.path }}/{{ bind_logging.file }}"
+    mode: '0644'
+    owner: bind
+    group: bind
+    state: touch
+  become: true
+- name: Build Configuration File
+  ansible.builtin.template:
+    src: "config.j2"
+    dest: "{{ bind_general.path }}/named.conf"
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  no_log: true
+  notify: Config Change
+- name: Build Zone Files
+  ansible.builtin.template:
+    src: "zone.j2"
+    dest: "{{ bind_general.path }}/{{ zone.name }}.zone"
+    owner: root
+    group: bind
+    mode: '0644'
+  with_items: "{{ bind_zones }}"
+  loop_control:
+    loop_var: zone
+  no_log: true
+  become: true
+  notify: Zone Change
