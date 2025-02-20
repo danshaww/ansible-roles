@@ -28,8 +28,8 @@ logging {
 
 
 {% for zone in bind_zones %}
-zone "{{ item }}" IN {
+zone "{{ zone }}" IN {
     type master;
-    file "{{ bind_general.path }}/{{ item }}.zone";
+    file "{{ bind_general.path }}/{{ zone }}.zone";
 };
 {% endfor %}

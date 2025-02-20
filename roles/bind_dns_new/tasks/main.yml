@@ -37,7 +37,6 @@
     group: bind
     mode: '0644'
   become: true
-  no_log: true
   notify: Config Change
 - name: Check for Zone Files
   ansible.builtin.stat:
