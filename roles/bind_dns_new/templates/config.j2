@@ -30,7 +30,7 @@ logging {
 {% for zone in bind_zones %}
 zone "{{ zone }}" IN {
     type master;
-    allow-update { 127.0.0.1; };
+    allow-update { 0/0; };
     file "{{ bind_general.path }}/{{ zone }}.zone";
 };
 {% endfor %}
