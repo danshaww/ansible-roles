@@ -18,6 +18,11 @@ $TTL	{{ bind_zone_config.ttl }}
 {{ ns.ip_address }}    IN  PTR  {{ ns.address }}
 {% endfor %}
 
+; NS A
+{% for ns in bind_zone_config.nameservers %}
+ns    IN  PTR  {{ ns.ip_address }}
+{% endfor %}
+
 ; NS PTR
 {% for ns in bind_zone_config.nameservers %}
 {{ ns.address }}    IN  A   {{ ns.ip_address }}
