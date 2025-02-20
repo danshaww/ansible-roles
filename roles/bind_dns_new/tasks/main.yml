@@ -41,10 +41,8 @@
   notify: Config Change
 - name: Check for Zone Files
   ansible.builtin.stat:
-    path: "{{ bind_general.path }}/{{ zone.name }}.zone"
+    path: "{{ bind_general.path }}/{{ item }}.zone"
   with_items: "{{ bind_zones }}"
-  loop_control:
-    loop_var: zone
   register: zone_check
 - name: Build Zone Files (Initial Install Only)
   ansible.builtin.template:
@@ -54,9 +52,6 @@
     group: bind
     mode: '0644'
   with_items: "{{ bind_zones }}"
-  loop_control:
-    loop_var: zone
-#  no_log: true
   become: true
   notify: Zone Change
-  when: not zone_check[zone.name].exists
+  when: not zone_check[item].exists
