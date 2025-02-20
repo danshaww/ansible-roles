@@ -59,4 +59,4 @@
 #  no_log: true
   become: true
   notify: Zone Change
-  when: not zone_check[zone].exists
+  when: not zone_check[zone.name].exists
