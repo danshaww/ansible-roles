@@ -50,7 +50,7 @@
     owner: root
     group: bind
     mode: '0644'
-  with_items: zone_check.results
+  with_items: "{{ zone_check.results }}"
   become: true
   notify: Zone Change
   when: not item.stat.exists
