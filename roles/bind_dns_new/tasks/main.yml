@@ -45,7 +45,7 @@
   with_items: "{{ bind_zones }}"
   loop_control:
     loop_var: zone
-  register: zone_check_{{ zone.name }}
+  register: zone_check
 - name: Build Zone Files (Initial Install Only)
   ansible.builtin.template:
     src: "zone.j2"
@@ -59,4 +59,4 @@
   no_log: true
   become: true
   notify: Zone Change
-  when: not zone_check_{{ zone.name }}.exists
+  when: not zone_check[item].exists
