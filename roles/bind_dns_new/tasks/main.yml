@@ -53,4 +53,4 @@
   with_items: zone_check.results
   become: true
   notify: Zone Change
-  when: "{{item.exists == false}}"
+  when: not item.stat.exists
