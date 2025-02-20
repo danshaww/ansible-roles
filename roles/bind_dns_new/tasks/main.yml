@@ -43,6 +43,10 @@
     path: "{{ bind_general.path }}/{{ item }}.zone"
   with_items: "{{ bind_zones }}"
   register: zone_check
+- name: debug
+  ansible.builtin.debug:
+    var: zone_check.results
+
 - name: Build Zone Files (Initial Install Only)
   ansible.builtin.template:
     src: "zone.j2"
