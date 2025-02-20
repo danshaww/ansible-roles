@@ -56,7 +56,7 @@
   with_items: "{{ bind_zones }}"
   loop_control:
     loop_var: zone
-  no_log: true
+#  no_log: true
   become: true
   notify: Zone Change
   when: not zone_check[item].exists
