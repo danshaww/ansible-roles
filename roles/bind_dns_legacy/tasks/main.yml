@@ -32,7 +32,7 @@
     mode: '0755'
   become: true
 - name: Get Zones
-  ansible.builtin.shell: ls "{{ config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "{{ config_path }}/zones" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: zones
   delegate_to: localhost
   become: true
