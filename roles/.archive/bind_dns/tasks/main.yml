@@ -1,9 +1,7 @@
 - name: Bind Package Installation
   become: true
   ansible.builtin.apt:
-    pkg:
-      - bind9
-      - python3-dnspython
+    pkg: bind9
 - name: UFW Firewall Configuration
   community.general.ufw:
     rule: allow
@@ -39,24 +37,18 @@
     group: bind
     mode: '0644'
   become: true
+  no_log: true
   notify: Config Change
-- name: Check for Zone Files
-  ansible.builtin.stat:
-    path: "{{ bind_general.path }}/{{ item }}.zone"
-  with_items: "{{ bind_zones }}"
-  register: zone_check
-#- name: debug
-#  ansible.builtin.debug:
-#    var: zone_check.results
-
-- name: Build Zone Files (Initial Install Only)
+- name: Build Zone Files
   ansible.builtin.template:
     src: "zone.j2"
-    dest: "{{ bind_general.path }}/{{ item.item }}.zone"
+    dest: "{{ bind_general.path }}/{{ zone.name }}.zone"
     owner: root
     group: bind
     mode: '0644'
-  with_items: "{{ zone_check.results }}"
+  with_items: "{{ bind_zones }}"
+  loop_control:
+    loop_var: zone
+  no_log: true
   become: true
   notify: Zone Change
-  when: not item.stat.exists
