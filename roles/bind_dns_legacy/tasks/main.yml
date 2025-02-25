@@ -1,0 +1,48 @@
+- name: Bind Package Installation
+  become: true
+  ansible.builtin.apt:
+    pkg: bind9
+- name: UFW Firewall Configuration
+  community.general.ufw:
+    rule: allow
+    port: '53'
+  become: true
+  when: ansible_facts['distribution'] == "Ubuntu"
+- name: Install Prerequisits on Ansible Host
+  ansible.builtin.apt:
+    pkg: python3-dnspython
+  become: true
+  delegate_to: localhost
+- name: Copy Bind Config File
+  ansible.builtin.copy:
+    src: "{{ config_path }}/named.conf"
+    dest: "/etc/bind/named.conf"
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  no_log: true
+  notify: Config Change
+- name: Render Zone Files
+  ansible.builtin.template:
+    src: "{{ config_path }}/zones"
+    dest: "/etc/bind"
+    owner: root
+    group: bind
+    mode: '0644'
+  no_log: true
+  become: true
+- name: RNDC Reload
+  ansible.builtin.command: rndc reload
+  become: true
+  changed_when: false
+- name: Clear Cache
+  ansible.builtin.command: resolvectl flush-caches
+  become: true
+  changed_when: false
+- name: Test Name Resolution
+  ansible.builtin.command: "nslookup {{ item.address }}"
+  delegate_to: localhost
+  changed_when: false
+  register: testresults
+  with_items: "{{ tests }}"
