@@ -40,7 +40,7 @@
 - name: Render Zone Files
   ansible.builtin.template:
     src: "{{ config_path }}/zones/{{ item }}"
-    dest: "/etc/bind"
+    dest: "/etc/bind/zones/{{ item }}"
     owner: root
     group: bind
     mode: '0644'
