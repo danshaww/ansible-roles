@@ -39,7 +39,7 @@
   changed_when: false
 - name: Render Zone Files
   ansible.builtin.template:
-    src: "{{ config_path }}/zones/{{ item }}.2"
+    src: "{{ config_path }}/zones/{{ item }}.j2"
     dest: "/etc/bind/zones/{{ item }}"
     owner: root
     group: bind
