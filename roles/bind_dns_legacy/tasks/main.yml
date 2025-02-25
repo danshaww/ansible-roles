@@ -32,14 +32,14 @@
     mode: '0755'
   become: true
 - name: Get Zones
-  ansible.builtin.shell: ls "{{ config_path }}/zones" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "{{ config_path }}/zones"
   register: zones
   delegate_to: localhost
   become: true
   changed_when: false
 - name: Render Zone Files
   ansible.builtin.template:
-    src: "{{ config_path }}/zones/{{ item }}.j2"
+    src: "{{ config_path }}/zones/{{ item }}"
     dest: "/etc/bind"
     owner: root
     group: bind
