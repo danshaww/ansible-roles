@@ -131,6 +131,7 @@ alias j=just
 
 export EDITOR='code --wait -r'
 export PATH=$PATH:$HOME/.tfenv/bin
+export ANSIBLE_VAULT_PASSWORD_FILE=~/.vault
 
 if [ -f ~/.oh_my_posh ]; then
     . ~/.oh_my_posh
