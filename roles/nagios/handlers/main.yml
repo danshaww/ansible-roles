@@ -1,5 +1,5 @@
 - name: Test SMTP
-  ansible.builtin.command: "echo -E 'This is a test email' | mail -a 'From: nagios@epichouse.co.uk' -s 'Ansible Test Email' {{ smtp_test_email }}"
+  ansible.builtin.command: "echo -E 'This is a test email' | mail -a 'From: nagios@epichouse.co.uk' -s 'Ansible Test Email' {{ nagios_smtp_test_email }}"
   changed_when: false
 
 - name: Check Nagios Config
