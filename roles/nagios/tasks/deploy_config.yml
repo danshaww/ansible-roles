@@ -8,6 +8,7 @@
 - name: Check Nagios Config
   ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
   changed_when: false
+  register: config_test
 
 - name: Output config test result
   ansible.builtin.debug:
