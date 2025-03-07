@@ -3,5 +3,14 @@
     src: "{{ nagios_config_path }}"
     dest: /usr/local/nagios/etc
     mode: '0755'
-  notify: Configuration Change
-  register: config_copy
+  notify: Restart Nagios
+
+- name: Check Nagios Config
+  ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+  changed_when: false
+
+- name: Output config test result
+  ansible.builtin.debug:
+    msg: "{{ config_test }}"
+  changed_when: false
+

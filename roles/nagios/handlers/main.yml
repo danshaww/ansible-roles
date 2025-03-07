@@ -2,18 +2,7 @@
   ansible.builtin.command: "echo -E 'This is a test email' | mail -a 'From: nagios@epichouse.co.uk' -s 'Ansible Test Email' {{ nagios_smtp_test_email }}"
   changed_when: false
 
-- name: Check Nagios Config
-  ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
-  changed_when: false
-  listen: Configuration Change
-
-- name: Output config test result
-  ansible.builtin.debug:
-    msg: "{{ config_test }}"
-  listen: Configuration Change
-
 - name: Restart Nagios
   ansible.builtin.service:
     name: nagios
     state: restarted
-  listen: Configuration Change
