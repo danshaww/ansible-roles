@@ -8,6 +8,9 @@
     path: /usr/local/nagios/libexec/check_icmp
   register: nagios_plugins_installed
 
+- name: Include Package Installation
+  ansible.builtin.include_tasks: package_installation.yml
+
 - name: Include Nagios Installation
   ansible.builtin.include_tasks: nagios_installation.yml
   when: not nagios_installed.stat.exists
