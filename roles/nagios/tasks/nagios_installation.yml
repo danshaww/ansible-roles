@@ -63,7 +63,7 @@
   community.general.htpasswd:
     path: /usr/local/nagios/etc/htpasswd.users
     name: nagiosadmin
-    password: "{{ admin_password }}"
+    password: "{{ nagios_admin_password }}"
 - name: Start Nagios Service
   ansible.builtin.service:
     name: nagios

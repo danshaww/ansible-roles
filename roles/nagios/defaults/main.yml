@@ -1,7 +1,7 @@
 nagios_version: 4.5.9
-admin_password: changeme
-smtp_username: changeme
-smtp_password: changeme
-smtp_host: changeme
-smtp_test_email: changeme
-config_path: changeme
+nagios_admin_password: changeme
+nagios_smtp_username: changeme
+nagios_smtp_password: changeme
+nagios_smtp_host: changeme
+nagios_smtp_test_email: changeme
+nagios_config_path: changeme

@@ -5,20 +5,20 @@
     line: "{{ item }}"
     mode: '0640'
   with_items:
-    - root={{ smtp_username }}
-    - server={{ smtp_host }}
+    - root={{ nagios_smtp_username }}
+    - server={{ nagios_smtp_host }}
     - UseSTARTTLS=YES
     - FromLineOverride=YES
-    - AuthUser={{ smtp_username }}
-    - AuthPass={{ smtp_password }}
-    - mailhub={{ smtp_host }}:587
+    - AuthUser={{ nagios_smtp_username }}
+    - AuthPass={{ nagios_smtp_password }}
+    - mailhub={{ nagios_smtp_host }}:587
     - rewritedomain=epichouse.co.uk
-    - hostname={{ smtp_username }}
+    - hostname={{ nagios_smtp_username }}
   notify: Test SMTP
 - name: Configure /etc/ssmtp/revaliases
   ansible.builtin.lineinfile:
     path: /etc/ssmtp/revaliases
     create: true
-    line: "root:{{ smtp_username }}:{{ smtp_host }}:587"
+    line: "root:{{ nagios_smtp_username }}:{{ nagios_smtp_host }}:587"
     mode: '0640'
   notify: Test SMTP
