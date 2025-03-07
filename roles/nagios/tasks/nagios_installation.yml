@@ -1,5 +1,5 @@
 - name: Download Nagios Source
-  ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nagioscore/releases/downloanagios-{{ nagios_version }}/nagios-{{ nagios_version }}.tar.gz
+  ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nagioscore/releases/download/nagios-{{ nagios_version }}/nagios-{{ nagios_version }}.tar.gz
   args:
     chdir: /tmp
 - name: Unarchive Source
