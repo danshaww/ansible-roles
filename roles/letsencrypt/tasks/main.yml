@@ -4,7 +4,6 @@
     pkg:
       - certbot 
       - python3-certbot-dns-cloudflare
-      - python3-certbot-nginx
 - name: LetsEncrypt - Copy ACME DNS Challenge Script
   ansible.builtin.copy:
     src: acme-dns-auth.py
