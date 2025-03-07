@@ -31,7 +31,7 @@
     recurse: true
   become: true
 - name: Enable Default SSL Site
-  ansible.builtin.shell: a2ensite default-ssl
+  ansible.builtin.shell: a2ensite default-ssl && a2dissite 000-default
   become: true
 - name: Apache - UFW Allow HTTPS
   community.general.ufw:
