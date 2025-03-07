@@ -3,7 +3,7 @@
     path: /tmp/plugins
     state: directory
 - name: Get Plugins
-  ansible.builtin.shell: wget -O nagios-plugins.tar.gz $(wget -q -O - https://api.github.com/reponagios-plugins/nagios-plugins/releases/latest  | grep '"browser_download_url":' | grep -o 'https:[^"]*')
+  ansible.builtin.shell: wget -O nagios-plugins.tar.gz $(wget -q -O - https://api.github.com/repos/nagios-plugins/nagios-plugins/releases/latest  | grep '"browser_download_url":' | grep -o 'https://[^"]*')
   args:
     chdir: /tmp/plugins
 - name: Unarchive Source
