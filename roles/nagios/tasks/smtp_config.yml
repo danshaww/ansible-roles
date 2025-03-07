@@ -1,0 +1,24 @@
+- name: Configure ssmtp service
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/ssmtp.conf
+    create: true
+    line: "{{ item }}"
+    mode: '0640'
+  with_items:
+    - root={{ smtp_username }}
+    - server={{ smtp_host }}
+    - UseSTARTTLS=YES
+    - FromLineOverride=YES
+    - AuthUser={{ smtp_username }}
+    - AuthPass={{ smtp_password }}
+    - mailhub={{ smtp_host }}:587
+    - rewritedomain=epichouse.co.uk
+    - hostname={{ smtp_username }}
+  notify: Test SMTP
+- name: Configure /etc/ssmtp/revaliases
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/revaliases
+    create: true
+    line: "root:{{ smtp_username }}:{{ smtp_host }}:587"
+    mode: '0640'
+  notify: Test SMTP

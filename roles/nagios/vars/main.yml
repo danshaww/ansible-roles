@@ -1,0 +1,24 @@
+packages:
+  - autoconf
+  - gcc
+  - libc6
+  - make
+  - wget
+  - unzip
+  - php
+  - libapache2-mod-php
+  - libgd-dev
+  - ufw
+  - openssl
+  - libssl-dev
+  - python3-passlib
+  - libmcrypt-dev
+  - bc
+  - gawk
+  - dc
+  - build-essential
+  - snmp
+  - libnet-snmp-perl
+  - gettext
+  - ssmtp
+  - mailutils

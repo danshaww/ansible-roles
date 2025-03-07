@@ -1,81 +1,23 @@
-- name: Update apt cache
-  apt:
-    update_cache: true
-  become: true
+- name: Check if Nagios is Installed
+  ansible.builtin.stat:
+    path: /usr/local/nagios/bin/nagios
+  register: nagios_installed
 
-- name: Install required packages
-  apt:
-    name:
-      - autoconf
-      - gcc
-      - libgd-dev
-      - make
-      - unzip
-    state: present
-  become: true
+- name: Check if Nagios plugins are Installed
+  ansible.builtin.stat:
+    path: /usr/local/nagios/libexec/check_icmp
+  register: nagios_plugins_installed
 
-- name: Ensure group "somegroup" exists
-  ansible.builtin.group:
-    name: "{{ nagios_group }}"
-    state: present
-    gid: 1100
-  become: true
+- name: Include Nagios Installation
+  ansible.builtin.include_tasks: nagios_installation.yml
+  when: not nagios_installed.stat.exists
 
-- name: Create Nagios user and group
-  user:
-    name: "{{ nagios_user }}"
-    group: "{{ nagios_group }}"
-    createhome: yes
-  become: true
+- name: Include Nagios Plugin Installation
+  ansible.builtin.include_tasks: nagios_plugin_installation.yml
+  when: not nagios_plugins_installed.stat.exists
 
-- name: Download Nagios Core
-  get_url:
-    url: "https://github.com/NagiosEnterprises/nagioscore/releases/download/nagios-{{ nagios_version }}/nagios-{{ nagios_version }}.tar.gz"
-    dest: "/tmp/nagios-{{ nagios_version }}.tar.gz"
-  become: true
+- name: Include SMTP Configuration
+  ansible.builtin.include_tasks: smtp_configuration.yml
 
-- name: Extract Nagios Core
-  unarchive:
-    src: "/tmp/nagios-{{ nagios_version }}.tar.gz"
-    dest: /tmp
-    remote_src: yes
-  become: true
-
-- name: Run Config Script
-  command: "./configure --with-command-group={{ nagios_group }}"
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-  become: true
-
-- name: Make & Install Nagios
-  community.general.make:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-    target: "{{item}}"
-  become: true
-  with_items:
-    - all
-    - install
-    - install-commandmode
-    - install-init
-    - install-config
-    - install-webconf
-
-- name: Run Config Script
-  command: "./configure --with-command-group={{ nagios_group }}"
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-  become: true
-
-- name: Start Nagios service
-  service:
-    name: nagios
-    state: started
-    enabled: yes
-  become: true
-
-- name: Allow Http
-  community.general.ufw:
-    rule: allow
-    port: '8080'
-  become: true
-  when: (ansible_facts['distribution'] == "Ubuntu")
+- name: Include Deploy Config
+  ansible.builtin.include_tasks: deploy_config.yml

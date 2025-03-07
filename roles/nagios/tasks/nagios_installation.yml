@@ -1,0 +1,71 @@
+- name: Download Nagios Source
+  ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nagioscore/releases/downloanagios-{{ nagios_version }}/nagios-{{ nagios_version }}.tar.gz
+  args:
+    chdir: /tmp
+- name: Unarchive Source
+  ansible.builtin.unarchive:
+    src: /tmp/nagios-{{ nagios_version }}.tar.gz
+    dest: /tmp/
+    remote_src: true
+- name: Get Directory
+  ansible.builtin.shell: ls /tmp |grep nagios-
+  register: nagios_dir
+- name: Comile Source
+  ansible.builtin.shell: ./configure --with-httpd-conf=/etc/apache2/sites-enabled && make all
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Perform user & Group creation
+  ansible.builtin.shell: sudo make install-groups-users
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Create nagcmd Group
+  ansible.builtin.group:
+    name: nagcmd
+    state: present
+    gid: 3889
+- name: Add users to nagcmd Group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagcmd
+    append: true
+  with_items:
+    - www-data
+    - nagios
+- name: Add users to nagios Group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagios
+    append: true
+  with_items:
+    - www-data
+    - nagios
+- name: Install Nagios Binaries
+  ansible.builtin.shell: make install
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Install Service
+  ansible.builtin.shell: make install-daemoninit
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Install Command Mode
+  ansible.builtin.shell: make install-commandmode
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Install Sample Config
+  ansible.builtin.shell: make install-config
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Install Apache Config
+  ansible.builtin.shell: make install-webconf
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: /usr/local/nagios/etc/htpasswd.users
+    name: nagiosadmin
+    password: "{{ admin_password }}"
+- name: Start Nagios Service
+  ansible.builtin.service:
+    name: nagios
+    state: started
+    enabled: true

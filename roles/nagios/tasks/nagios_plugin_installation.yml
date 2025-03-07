@@ -1,0 +1,20 @@
+- name: Create temp plugin Directory
+  ansible.builtin.file:
+    path: /tmp/plugins
+    state: directory
+- name: Get Plugins
+  ansible.builtin.shell: wget -O nagios-plugins.tar.gz $(wget -q -O - https://api.github.com/reponagios-plugins/nagios-plugins/releases/latest  | grep '"browser_download_url":' | grep -o 'https:[^"]*')
+  args:
+    chdir: /tmp/plugins
+- name: Unarchive Source
+  ansible.builtin.unarchive:
+    src: /tmp/plugins/nagios-plugins.tar.gz
+    dest: /tmp/plugins/
+    remote_src: true
+- name: Get Directory
+  ansible.builtin.shell: ls /tmp/plugins |grep nagios-plugins-
+  register: nagios_plugin_dir
+- name: Install Plugins
+  ansible.builtin.shell: ./configure && make && make install
+  args:
+    chdir: "/tmp/plugins/{{ nagios_plugin_dir.stdout }}"
