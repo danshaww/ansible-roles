@@ -10,7 +10,11 @@
 - name: Apache - Enable Headers Module
   community.general.apache2_module:
     state: present
-    name: headers
+    name: "{{ item }}"
+  with_item:
+    - headers
+    - rewrite
+    - cgi
   become: true
 - name: Apache - Copy Default Website
   ansible.builtin.copy:
