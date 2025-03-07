@@ -11,7 +11,7 @@
   community.general.apache2_module:
     state: present
     name: "{{ item }}"
-  with_item:
+  with_items:
     - headers
     - rewrite
     - cgi
