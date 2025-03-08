@@ -14,11 +14,11 @@
 - name: Include Apache Configuration
   ansible.builtin.include_tasks: apache_configuration.yml
 
-- name: Include Nagios Installation
+- name: Include Nagios Installation # TODO: Make Nagios installation tasks idempotent
   ansible.builtin.include_tasks: nagios_installation.yml
   when: not nagios_installed.stat.exists
 
-- name: Include Nagios Plugin Installation
+- name: Include Nagios Plugin Installation # TODO: Make Nagios plugin installation tasks idempotent
   ansible.builtin.include_tasks: nagios_plugin_installation.yml
   when: not nagios_plugins_installed.stat.exists
 

@@ -15,7 +15,7 @@
     create: true
     mode: '0600'
   no_log: true
-- name: LetsEncrypt - Generate Certificate
+- name: LetsEncrypt - Generate Certificate # TODO: Fix the length of this command
   ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ nagios_hostname }} --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
   when: not certificate.stat.exists
 
