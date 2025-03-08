@@ -7,7 +7,7 @@
     state: present
     name: ssl
   become: true
-- name: Apache - Enable Headers Module
+- name: Apache - Enable Modules
   community.general.apache2_module:
     state: present
     name: "{{ item }}"
@@ -15,6 +15,12 @@
     - headers
     - rewrite
   become: true
+- name: Apache - Enable cgi Module
+  community.general.apache2_module:
+    state: present
+    name: cgi
+  notify:
+    - Restart Web
 - name: Apache - Copy Default Website
   ansible.builtin.copy:
     src: default-ssl.conf
