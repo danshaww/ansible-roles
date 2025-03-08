@@ -10,12 +10,10 @@
 - name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
   ansible.builtin.lineinfile:
     path: /etc/letsencrypt/auth.ini
-    line: "{{ item }}"
-    regexp: "{{ item }}"
+    line: "dns_cloudflare_api_token = {{ nagios_cloudflare_api_token }}"
+    regexp: "dns_cloudflare_api_token = "
     create: true
     mode: '0600'
-  with_items:
-    - dns_cloudflare_api_token = "{{ nagios_cloudflare_api_token }}"
   no_log: true
 - name: LetsEncrypt - Generate Certificate
   ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ inventory_hostname }}.internal.epichouse.co.uk --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare"
