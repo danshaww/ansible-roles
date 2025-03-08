@@ -4,5 +4,4 @@ galaxy_info:
   license: GPL-2.0-or-later
   min_ansible_version: "2.1"
   galaxy_tags: []
-dependencies:
-  - role: global_system
+dependencies: []
