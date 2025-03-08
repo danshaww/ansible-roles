@@ -30,7 +30,7 @@ wsl-corp:
 
 [no-cd]
 gc:
-	git add . && git commit -a -m "$MSG"
+	git add . && git commit -a -m $MSG
 
 [no-cd]
 gp:
