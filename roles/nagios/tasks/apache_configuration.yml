@@ -5,7 +5,7 @@
     mode: '0755'
 - name: LetsEncrypt - Check if Cert Exists
   ansible.builtin.stat:
-    path: /etc/letsencrypt/live/internal.epichouse.co.uk/fullchain.pem
+    path: "/etc/letsencrypt/live/{{ nagios_hostname }}/fullchain.pem"
   register: certificate
 - name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
   ansible.builtin.lineinfile:
@@ -16,7 +16,7 @@
     mode: '0600'
   no_log: true
 - name: LetsEncrypt - Generate Certificate
-  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ inventory_hostname }}.internal.epichouse.co.uk --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare"
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ nagios_hostname }} --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare"
   when: not certificate.stat.exists
 
 
