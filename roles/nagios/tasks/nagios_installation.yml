@@ -69,3 +69,8 @@
     name: nagios
     state: started
     enabled: true
+- name: Reload Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+    enabled: true
