@@ -27,3 +27,11 @@ wsl:
 # Run WSL corporate provisioning playbook
 wsl-corp:
 	ansible-playbook git/ansible-dev/playbooks/provision_wsl_corp.yml
+
+[no-cd]
+gc:
+	git add . && git commit -a -m "$MSG"
+
+[no-cd]
+gp:
+	git push
