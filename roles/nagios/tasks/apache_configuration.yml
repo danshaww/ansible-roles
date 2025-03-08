@@ -15,10 +15,10 @@
     create: true
     mode: '0600'
   with_items:
-    - dns_cloudflare_api_token = "{{ vault.global.api_keys.cloudflare }}"
+    - dns_cloudflare_api_token = "{{ nagios_cloudflare_api_token }}"
   no_log: true
 - name: LetsEncrypt - Generate Certificate
-  ansible.builtin.shell: certbot certonly --preferred-challenges dns --debug-challenges -d \"{{ inventory_hostname }}".internal.epichouse.co.uk --non-interactive --agree-tos -m "{{vault.global.email.dan}}"  --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ inventory_hostname }}.internal.epichouse.co.uk --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare"
   when: not certificate.stat.exists
 
 
