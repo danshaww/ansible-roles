@@ -31,9 +31,9 @@
   with_items:
     - headers
     - rewrite
-- name: Apache - Copy Default Website
-  ansible.builtin.copy:
-    src: default-ssl.conf
+- name: Apache - Render Config
+  ansible.builtin.template:
+    src: default-ssl.conf.j2
     dest: /etc/apache2/sites-available/default-ssl.conf
 - name: Apache - Set Directory Permissions
   ansible.builtin.file:
