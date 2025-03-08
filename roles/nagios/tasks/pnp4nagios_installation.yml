@@ -1,0 +1,35 @@
+- name: Create temp plugin Directory
+  ansible.builtin.file:
+    path: /tmp/pnp4nagios
+    state: directory
+- name: Get Plugins
+  ansible.builtin.shell: wget https://sourceforge.net/projects/pnp4nagios/files/PNP-0.6/pnp4nagios-0.6.25.tar.gz
+  args:
+    chdir: /tmp/pnp4nagios
+- name: Unarchive Source
+  ansible.builtin.unarchive:
+    src: /tmp/pnp4nagios/pnp4nagios-0.6.25.tar.gz
+    dest: /tmp/pnp4nagios
+    remote_src: true
+- name: Install pnp4nagios
+  ansible.builtin.shell: |
+    ./configure --with-rrdtool=/usr/bin/rrdtool --with-nagios-user=nagios --with-nagios-group=nagcmd /
+    make all /
+    make install-webconf /
+    make install-config /
+    make install-init /
+    make fullinstall /
+  args:
+    chdir: "/tmp/pnp4nagios/pnp4nagios-0.6.25"
+- name: Enable Service
+  ansible.builtin.service:
+    name: npcd
+    state: started
+    enabled: true
+- name: Restart Services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - nagios
+    - apache2

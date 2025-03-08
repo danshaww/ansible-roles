@@ -8,6 +8,11 @@
     path: /usr/local/nagios/libexec/check_icmp
   register: nagios_plugins_installed
 
+- name: Check if Nagios PNP Plugin is Installed
+  ansible.builtin.stat:
+    path: /usr/local/pnp4nagios/etc
+  register: nagios_pnp_installed
+
 - name: Include Package Installation
   ansible.builtin.include_tasks: package_installation.yml
 
@@ -21,6 +26,10 @@
 - name: Include Nagios Plugin Installation # TODO: Make Nagios plugin installation tasks idempotent
   ansible.builtin.include_tasks: nagios_plugin_installation.yml
   when: not nagios_plugins_installed.stat.exists
+
+- name: Include Nagios PNP Plugin Installation # TODO: Make Nagios plugin installation tasks idempotent
+  ansible.builtin.include_tasks: pnp4nagios_installation.yml
+  when: not nagios_pnp_installed.stat.exists
 
 - name: Include SMTP Configuration
   ansible.builtin.include_tasks: smtp_configuration.yml
