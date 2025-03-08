@@ -37,8 +37,6 @@
   ansible.builtin.copy:
     src: default-ssl.conf
     dest: /etc/apache2/sites-available/default-ssl.conf
-  notify:
-    - Reload Web
 - name: Apache - Set Directory Permissions
   ansible.builtin.file:
     path: /etc/apache
