@@ -15,12 +15,6 @@
     - headers
     - rewrite
   become: true
-- name: Apache - Enable cgi Module
-  community.general.apache2_module:
-    state: present
-    name: cgi
-  notify:
-    - Restart Web
 - name: Apache - Copy Default Website
   ansible.builtin.copy:
     src: default-ssl.conf
