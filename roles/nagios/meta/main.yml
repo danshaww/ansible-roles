@@ -1,8 +1,7 @@
 galaxy_info:
   author: Dan Shaw
-  description: Ansible role to install Nagios Core.
-  min_ansible_version: 2.1
+  description: Ansible role to install Nagios Core. This role has no dependancies on other roles.
+  min_ansible_version: "2.1"
+  license: GPL
   galaxy_tags: []
-dependencies: [
-  apache
-]
+dependencies: []

@@ -11,6 +11,9 @@
 - name: Include Package Installation
   ansible.builtin.include_tasks: package_installation.yml
 
+- name: Include Apache Configuration
+  ansible.builtin.include_tasks: apache_configuration.yml
+
 - name: Include Nagios Installation
   ansible.builtin.include_tasks: nagios_installation.yml
   when: not nagios_installed.stat.exists

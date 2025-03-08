@@ -64,18 +64,6 @@
     path: /usr/local/nagios/etc/htpasswd.users
     name: nagiosadmin
     password: "{{ nagios_admin_password }}"
-- name: Enable Apache Modules
-  community.general.apache2_module:
-    state: present
-    name: "{{ item }}"
-  with_items:
-    - cgi
-    - rewrite
-- name: Restart Apache Service
-  ansible.builtin.service:
-    name: apache2
-    state: restarted
-    enabled: true
 - name: Start Nagios Service
   ansible.builtin.service:
     name: nagios

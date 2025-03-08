@@ -22,3 +22,6 @@ packages:
   - gettext
   - ssmtp
   - mailutils
+  - certbot
+  - python3-certbot-dns-cloudflare
+  - apache2
