@@ -13,11 +13,11 @@
     remote_src: true
 - name: Install pnp4nagios
   ansible.builtin.shell: |
-    ./configure --with-rrdtool=/usr/bin/rrdtool --with-nagios-user=nagios --with-nagios-group=nagcmd \
-    make all \
-    make install-webconf \
-    make install-config \
-    make install-init \
+    ./configure --with-rrdtool=/usr/bin/rrdtool --with-nagios-user=nagios --with-nagios-group=nagcmd && \
+    make all && \
+    make install-webconf && \
+    make install-config && \
+    make install-init && \
     make fullinstall \
   args:
     chdir: "/tmp/pnp4nagios/pnp4nagios-0.6.25"
