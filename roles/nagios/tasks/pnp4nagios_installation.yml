@@ -18,7 +18,7 @@
     make install-webconf && \
     make install-config && \
     make install-init && \
-    make fullinstall \
+    make fullinstall
   args:
     chdir: "/tmp/pnp4nagios/pnp4nagios-0.6.25"
 - name: Enable Service
