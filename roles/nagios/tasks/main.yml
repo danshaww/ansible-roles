@@ -27,9 +27,9 @@
   ansible.builtin.include_tasks: nagios_plugin_installation.yml
   when: not nagios_plugins_installed.stat.exists
 
-- name: Include Nagios PNP Plugin Installation # TODO: Make Nagios plugin installation tasks idempotent
-  ansible.builtin.include_tasks: pnp4nagios_installation.yml
-  when: not nagios_pnp_installed.stat.exists
+#- name: Include Nagios PNP Plugin Installation # TODO: Make Nagios plugin installation tasks idempotent
+#  ansible.builtin.include_tasks: pnp4nagios_installation.yml
+#  when: not nagios_pnp_installed.stat.exists
 
 - name: Include SMTP Configuration
   ansible.builtin.include_tasks: smtp_configuration.yml
