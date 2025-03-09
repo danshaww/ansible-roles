@@ -37,7 +37,7 @@
   args:
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.agent"
-  notify: Start Service
+  notify:
     - Install Service
     - Start Service
 - name: Populate SSH Config
