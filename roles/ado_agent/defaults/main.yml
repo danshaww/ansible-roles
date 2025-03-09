@@ -4,3 +4,7 @@ runner_version: "4.251.0"
 runner_name: "{{ inventory_hostname }}"
 runner_labels: "self-hosted,linux,{{ site }}"
 runner_path: "/home/{{ username }}/ado_agent"
+ado_agent_pat: changeme
+ado_agent_name: changeme
+ado_agent_pool: changeme
+ado_agent_url: changeme

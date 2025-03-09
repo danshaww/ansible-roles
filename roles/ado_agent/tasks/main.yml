@@ -23,20 +23,23 @@
     dest: "{{ runner_path }}"
     remote_src: true
   when: download.changed
-#- name: Configure GitHub Actions Runner
-#  ansible.builtin.command: >
-#    ./config.sh --url https://github.com/{{ github_org }}
-#    --token {{ github_token }}
-#    --name {{ runner_name }}
-#    --labels {{ runner_labels }}
-#    --runnergroup Default
-#    --work _work
-#  args:
-#    chdir: "{{ runner_path }}"
-#    creates: "{{ runner_path }}/.runner"
-#  notify: Start Service
-#    - Install Service
-#    - Start Service
+
+- name: Configure Azure DevOps Agent
+  ansible.builtin.command: >
+    ./config.sh --url "{{ ado_agent_url }}"
+    --agent "{{ ado_agent_name }}"
+    --pool "{{ ado_agent_pool }}"
+    --auth PAT
+    --token "{{ ado_agent_pat }}"
+    --nostart
+    --acceptTeeEula
+    --unattended
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.agent"
+  notify: Start Service
+    - Install Service
+    - Start Service
 - name: Populate SSH Config
   ansible.builtin.lineinfile:
     path: /home/{{ username }}/.ssh/config

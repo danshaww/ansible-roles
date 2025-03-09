@@ -1,13 +1,11 @@
-- name: Start Service
-  ansible.builtin.service:
-    name: actions.runner.{{ github_org | replace('/', '.') }}.{{ runner_name }}.service
-    state: started
-    enabled: true
-  become: true
 - name: Install Service
   ansible.builtin.command: ./svc.sh install
   args:
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.service"
   become: true
-
+- name: Start Service
+  ansible.builtin.command: ./svc.sh start
+  args:
+    chdir: "{{ runner_path }}"
+  become: true
