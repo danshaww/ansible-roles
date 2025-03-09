@@ -1,25 +1,27 @@
 - name: SSH - Set Public Key (user)
   ansible.builtin.copy:
-    content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
+    content: "{{ global_user_public_ssh_key }}"
     dest: ~/.ssh/id_rsa.pub
     mode: '0644'
 - name: SSH - Set Private Key (user)
   ansible.builtin.copy:
-    content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
+    content: "{{ global_user_private_ssh_key }}"
     dest: ~/.ssh/id_rsa
     mode: '0600'
 - name: SSH - Set Public Key (root)
   ansible.builtin.copy:
-    content: "{{ vault.ssh.key_pairs.dan.public_base64 | b64decode }}"
+    content: "{{ global_user_public_ssh_key }}"
     dest: /root/.ssh/id_rsa.pub
     mode: '0644'
   become: true
+  when: global_user_configure_root_user
 - name: SSH - Set Private Key (root)
   ansible.builtin.copy:
-    content: "{{ vault.ssh.key_pairs.dan.private_base64 | b64decode }}"
+    content: "{{ global_user_private_ssh_key }}"
     dest: /root/.ssh/id_rsa
     mode: '0600'
   become: true
+  when: global_user_configure_root_user
 - name: Populate SSH Config (user)
   ansible.builtin.lineinfile:
     path: ~/.ssh/config
@@ -35,3 +37,4 @@
     create: true
   with_items: "{{ ssh_config }}"
   become: true
+  when: global_user_configure_root_user

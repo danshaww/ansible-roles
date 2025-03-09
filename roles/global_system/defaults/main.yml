@@ -8,5 +8,5 @@ global_system_server_function: changeme
 global_system_server_type: changeme
 global_system_server_location: changeme
 global_system_server_deployment_type: changeme
-global_system_server_packages: changeme
+global_system_server_packages: []
 global_system_nfs: null

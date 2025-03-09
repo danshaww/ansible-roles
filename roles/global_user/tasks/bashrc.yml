@@ -20,3 +20,4 @@
     dest: /root/.bashrc
     mode: '0644'
   become: true
+  when: global_user_configure_root_user
