@@ -1,0 +1,6 @@
+username: changeme
+site: changeme
+runner_version: "4.251.0"
+runner_name: "{{ inventory_hostname }}"
+runner_labels: "self-hosted,linux,{{ site }}"
+runner_path: "/home/{{ username }}/ado_agent"
