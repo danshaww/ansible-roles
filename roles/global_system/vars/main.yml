@@ -1,9 +1,29 @@
 motd:
   - regexp: "Server Function:"
-    line: "Server Function: {{ function }}"
+    line: "Server Function: {{ global_system_server_function }}"
   - regexp: "Server Type:"
-    line: "Server Type: {{ server_type }}"
+    line: "Server Type: {{ global_system_server_type }}"
   - regexp: "Server Location:"
-    line: "Server Location: {{ site_name }}"
+    line: "Server Location: {{ global_system_server_location }}"
   - regexp: "Server Deployment Type"
-    line: "Server Deployment Type: {{ deployment_type }}"
+    line: "Server Deployment Type: {{ global_system_server_deployment_type }}"
+
+system_packages:
+  - cron
+  - htop
+  - neofetch
+  - git
+  - nfs-common
+  - net-tools
+  - dnsutils
+  - rsync
+  - tmux
+  - rsyslog
+  - unzip
+  - ca-certificates
+  - curl
+  - gnupg
+  - fio
+  - inxi
+  - smartmontools
+  - acl

@@ -2,32 +2,14 @@
   apt:
     update_cache: true
   changed_when: false
-  ignore_errors: true
+  ignore_errors: true # This is because of issues with the MPR package repo
 - name: Global Utility Installation
   ansible.builtin.apt:
-    pkg:
-      - cron
-      - htop
-      - neofetch
-      - git
-      - nfs-common
-      - net-tools
-      - dnsutils
-      - rsync
-      - tmux
-      - rsyslog
-      - unzip
-      - ca-certificates
-      - curl
-      - gnupg
-      - fio
-      - inxi
-      - smartmontools
-      - acl
+    pkg: "{{ system_packages }}"
   tags: apt
 - name: Server Specific Utility Installation
   ansible.builtin.apt:
-    pkg: "{{ packages}}"
+    pkg: "{{ global_system_server_packages | default('[]')}}"
   when: packages is defined
 - name: Figurine Installation
   ansible.builtin.copy:
