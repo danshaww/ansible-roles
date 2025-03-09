@@ -10,8 +10,4 @@
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.service"
   become: true
-- name: Extract Archive
-  ansible.builtin.unarchive:
-    src: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
-    dest: "{{ runner_path }}"
-    remote_src: true
+

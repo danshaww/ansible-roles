@@ -16,7 +16,13 @@
     dest: "{{ runner_path }}/vsts-agent-linux-x64-{{ runner_version }}.tar.gz"
     mode: '0644'
   when: not runner_archive.stat.exists
-  notify: Extract Archive
+  register: download
+- name: Extract Archive
+  ansible.builtin.unarchive:
+    src: "{{ runner_path }}/vsts-agent-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ runner_path }}"
+    remote_src: true
+  when: download.changed
 #- name: Configure GitHub Actions Runner
 #  ansible.builtin.command: >
 #    ./config.sh --url https://github.com/{{ github_org }}
