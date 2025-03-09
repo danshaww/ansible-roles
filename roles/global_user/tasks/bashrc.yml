@@ -9,6 +9,7 @@
     dest: /root/.profile
     mode: '0644'
   become: true
+  when: global_user_configure_root_user
 - name: BASHRC - dan
   ansible.builtin.copy:
     src: .bashrc
