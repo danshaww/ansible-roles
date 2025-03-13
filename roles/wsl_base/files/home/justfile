@@ -22,18 +22,12 @@ pget:
 train:
 	sl
 
-# Run WSL provisioning script
-wsl:
-	/home/$(whoami)/git/epichouse/client-config/scripts/setup-wsl.sh
-
-# Run Git provisioning script
-git:
-	/home/$(whoami)/git/epichouse/client-config/scripts/setup-git.sh
-
+# Git Commit
 [no-cd]
 gc:
 	git add . && git commit -a -m $MSG
 
+# Git Push
 [no-cd]
 gp:
 	git push
