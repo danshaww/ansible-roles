@@ -24,11 +24,11 @@ train:
 
 # Run WSL provisioning script
 wsl:
-	/home/$(whoami)/git/epichouse/client-config/setup-wsl.sh
+	/home/$(whoami)/git/epichouse/client-config/scripts/setup-wsl.sh
 
 # Run Git provisioning script
 git:
-	/home/$(whoami)/git/epichouse/client-config/setup-git.sh
+	/home/$(whoami)/git/epichouse/client-config/scripts/setup-git.sh
 
 [no-cd]
 gc:
