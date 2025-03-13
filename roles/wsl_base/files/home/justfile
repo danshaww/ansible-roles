@@ -22,10 +22,12 @@ train:
 	sl
 
 # Run WSL provisioning script
+[no-cd]
 wsl:
 	/home/$(whoami)/git/epichouse/client-config/setup-wsl.sh
 
 # Run Git provisioning script
+[no-cd]
 git:
 	/home/$(whoami)/git/epichouse/client-config/setup-git.sh
 
