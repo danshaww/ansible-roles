@@ -1,8 +1,9 @@
 default:
 	just --list
-# Show Git Repo's
-lsgit:
-	tree ~/git -L 1
+
+# List current dir using tree
+ls:
+	tree . -L 1
 # Set Power Mode to High Performance
 phigh:
 	powershell.exe 'powercfg /setactive SCHEME_MIN'
@@ -20,13 +21,13 @@ pget:
 train:
 	sl
 
-# Run WSL personal provisioning playbook
+# Run WSL provisioning script
 wsl:
-	ansible-playbook git/ansible-dev/playbooks/provision_wsl_personal.yml
+	/home/$(whoami)/git/epichouse/client-config/setup-wsl.sh
 
-# Run WSL corporate provisioning playbook
-wsl-corp:
-	ansible-playbook git/ansible-dev/playbooks/provision_wsl_corp.yml
+# Run Git provisioning script
+git:
+	/home/$(whoami)/git/epichouse/client-config/setup-git.sh
 
 [no-cd]
 gc:
