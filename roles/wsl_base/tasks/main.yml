@@ -10,6 +10,9 @@
   ansible.builtin.apt:
     pkg: "{{ packages }}"
     update_cache: true
+- name: Package Updates
+  become: true
+  ansible.builtin.apt:
     upgrade: true
 - name: Copy home directory files
   ansible.builtin.copy:
