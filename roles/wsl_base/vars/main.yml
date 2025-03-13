@@ -17,6 +17,7 @@ packages:
   - ansible-lint
   - sl
   - tree
+  - gh
 
 ssh_config:
   - "Host *"

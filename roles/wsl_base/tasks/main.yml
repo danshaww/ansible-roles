@@ -44,14 +44,6 @@
     path: "{{ base.git_directory }}"
     state: directory
     mode: '0755'
-- name: Clone Repos
-  ansible.builtin.git:
-    repo: "{{ item }}"
-    dest: "{{ base.git_directory }}/{{ item | basename | replace('.git', '') }}"
-    update: true
-  ignore_errors: "{{ ansible_check_mode }}"
-  with_items: "{{ base.git_repositories }}"
-  when: base.git_repositories is defined
 - name: Populate SSH Config (user)
   ansible.builtin.lineinfile:
     path: ~/.ssh/config
