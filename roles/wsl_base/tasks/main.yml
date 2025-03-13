@@ -7,13 +7,10 @@
     mode: '0644'
 - name: Utility Installation
   become: true
-  tags: apt
   ansible.builtin.apt:
-    pkg: "{{ item }}"
+    pkg: "{{ packages }}"
     update_cache: true
     upgrade: true
-  with_items: "{{ packages }}"
-  no_log: true
 - name: Copy home directory files
   ansible.builtin.copy:
     src: home/
