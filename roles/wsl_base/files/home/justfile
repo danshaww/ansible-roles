@@ -2,6 +2,7 @@ default:
 	just --list
 
 # List current dir using tree
+[no-cd]
 ls:
 	tree . -L 1
 # Set Power Mode to High Performance
