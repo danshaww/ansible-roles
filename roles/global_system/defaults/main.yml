@@ -5,7 +5,6 @@ enable_env_config: true
 enable_motd_config: true
 enable_syslog_config: true
 global_system_server_function: changeme
-global_system_server_type: changeme
 global_system_server_location: changeme
 global_system_server_deployment_type: changeme
 global_system_server_packages: []

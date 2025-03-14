@@ -2,7 +2,7 @@ motd:
   - regexp: "Server Function:"
     line: "Server Function: {{ global_system_server_function }}"
   - regexp: "Server Type:"
-    line: "Server Type: {{ global_system_server_type }}"
+    line: "Server Type: {{ server_type }}"
   - regexp: "Server Location:"
     line: "Server Location: {{ global_system_server_location }}"
   - regexp: "Server Deployment Type"
