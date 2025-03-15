@@ -35,7 +35,7 @@
   with_items:
     - env: true
       name: MAILTO
-      job: "{{ lookup('azure.azcollection.azure_keyvault_secret', 'email-dan', vault_url=vaults.main, use_msi=false) }}"
+      job: "{{ lookup('azure.azcollection.azure_keyvault_secret', 'email-dan', vault_url=vaults.main, use_msi=false) }}" # TODO: Make this dynamic
     - env: true
       name: MAILFROM
       job: "{{ server_smtp_user }}@epichouse.co.uk"
