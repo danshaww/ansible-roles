@@ -12,7 +12,7 @@
     line: "{{ item }}"
   with_items:
       - root={{ server_smtp_user }}
-      - server={{ vault.smtp.host.primary }}
+      - server=mail.smtp2go.com # TODO: Make this dynamic
       - UseSTARTTLS=YES
       - FromLineOverride=YES
       - AuthUser={{ server_smtp_user }}
