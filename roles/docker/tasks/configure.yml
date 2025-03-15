@@ -1,5 +1,5 @@
 - name: Configuration | Get Required Projects
-  ansible.builtin.shell: ls "{{ compose_path_local }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "{{ docker_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: applications
   delegate_to: localhost
   become: true
@@ -24,7 +24,7 @@
   with_items: "{{ applications.stdout_lines }}"
 - name: Configuration | Generate compose files from Jinja templates
   ansible.builtin.template:
-    src: "{{ compose_path_local }}/{{ item }}.yml.j2"
+    src: "{{ docker_config_path }}/{{ item }}.yml.j2"
     dest: "{{ docker.paths.apps }}/{{ item }}/compose.yaml"
     owner: root
     group: docker

@@ -53,7 +53,7 @@
     job: "docker image prune -f && docker volume prune -f"
   become: true
 - name: Installation | Configure GitHub Packages Authentication
-  when: github_auth.enabled
+  when: docker_github_auth.enabled
   become: true
   block:
     - name: Installation | Ensure config directory exists
