@@ -6,8 +6,8 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ remote_user }}"
-      dir: "/home/{{ remote_user }}"
+    - user: "{{ ansible_ssh_user  }}"
+      dir: "/home/{{ ansible_ssh_user  }}"
     - user: "root"
       dir: "/root"
   become: true
@@ -20,8 +20,8 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ remote_user }}"
-      dir: "/home/{{ remote_user }}"
+    - user: "{{ ansible_ssh_user  }}"
+      dir: "/home/{{ ansible_ssh_user  }}"
     - user: "root"
       dir: "/root"
   become: true
