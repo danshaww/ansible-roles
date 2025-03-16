@@ -1,3 +1,2 @@
 global_user_public_ssh_key: changeme
 global_user_private_ssh_key: changeme
-global_user_configure_root_user: false
