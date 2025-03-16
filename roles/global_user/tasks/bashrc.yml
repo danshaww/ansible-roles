@@ -1,24 +1,27 @@
-- name: Profile - dan
+- name: Profile Copy
   ansible.builtin.copy:
     src: .profile
-    dest: ~/.profile
+    dest: "{{ item.dir }}/.profile"
     mode: '0644'
-- name: Profile - root
-  ansible.builtin.copy:
-    src: .profile
-    dest: /root/.profile
-    mode: '0644'
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+  with_items:
+    - user: "{{ ansible_env.USER }}"
+      dir: "/home/{{ ansible_env.USER }}"
+    - user: "root"
+      dir: "/root"
   become: true
-  when: global_user_configure_root_user
-- name: BASHRC - dan
+
+- name: BASHRC Copy
   ansible.builtin.copy:
     src: .bashrc
-    dest: ~/.bashrc
+    dest: "{{ item.dir }}/.bashrc"
     mode: '0644'
-- name: BASHRC - root
-  ansible.builtin.copy:
-    src: .bashrc
-    dest: /root/.bashrc
-    mode: '0644'
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+  with_items:
+    - user: "{{ ansible_env.USER }}"
+      dir: "/home/{{ ansible_env.USER }}"
+    - user: "root"
+      dir: "/root"
   become: true
-  when: global_user_configure_root_user
