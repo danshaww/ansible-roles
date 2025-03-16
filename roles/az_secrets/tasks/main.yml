@@ -1,6 +1,7 @@
 - name: az_secrets | Define secrets dictionary
   ansible.builtin.set_fact:
     secrets: []
+  delegate_to: localhost
 
 - name: az_secrets | Retrieve Secrets from Azure Key Vault
   ansible.builtin.set_fact:
@@ -8,3 +9,4 @@
   with_subelements:
     - "{{ key_vaults }}"
     - secrets
+  delegate_to: localhost
