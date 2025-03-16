@@ -1,10 +1,10 @@
-- name: Set SSH Public Key Fact
+- name: SSH | Cache Public SSH Key
   ansible.builtin.set_fact:
     global_user_public_ssh_key: "{{ global_user_public_ssh_key }}"
   delegate_to: localhost
   run_once: true
 
-- name: Set SSH Private Key Fact
+- name: SSH | Cache Private SSH Key
   ansible.builtin.set_fact:
     global_user_private_ssh_key: "{{ global_user_private_ssh_key }}"
   delegate_to: localhost
@@ -41,17 +41,13 @@
 
 - name: SSH | Populate Config (user)
   ansible.builtin.lineinfile:
-    path: ~/.ssh/config
-    line: "{{ item }}"
+    path: "{{ item.dir }}/.ssh/config"
+    line: "Host * StrictHostKeyChecking no"
     mode: '0755'
     create: true
-  with_items: "{{ ssh_config }}"
-- name: SSH | Populate Config (root)
-  ansible.builtin.lineinfile:
-    path: /root/.ssh/config
-    line: "{{ item }}"
-    mode: '0755'
-    create: true
-  with_items: "{{ ssh_config }}"
+  with_items:
+    - user: "{{ ansible_env.USER }}"
+      dir: "/home/{{ ansible_env.USER }}"
+    - user: "root"
+      dir: "/root"
   become: true
-  when: global_user_configure_root_user

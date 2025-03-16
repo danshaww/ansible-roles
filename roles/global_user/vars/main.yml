@@ -1,5 +1,0 @@
----
-# vars file for roles/custom/general
-ssh_config:
-  - "Host *"
-  - "   StrictHostKeyChecking no"
