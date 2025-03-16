@@ -1,0 +1,10 @@
+- name: az_secrets | Define secrets dictionary
+  ansible.builtin.set_fact:
+    secrets: []
+
+- name: az_secrets | Retrieve Secrets from Azure Key Vault
+  ansible.builtin.set_fact:
+    secrets: "{{ secrets | combine({(item.0.name):{(item.1): lookup('azure.azcollection.azure_keyvault_secret', (item.1|replace('_', '-')), vault_url=('https://' + (item.0.name|replace('_', '-')) + '.vault.azure.net'), use_msi=false)}}, recursive=true) }}"
+  with_subelements:
+    - "{{ key_vaults }}"
+    - secrets

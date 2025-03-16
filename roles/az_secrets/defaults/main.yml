@@ -1,0 +1,5 @@
+key_vaults:
+  - name: key_vault_name
+    secrets:
+      - secret1
+      - secret2
