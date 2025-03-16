@@ -1,13 +1,3 @@
-motd:
-  - regexp: "Server Function:"
-    line: "Server Function: {{ global_system_server_function }}"
-  - regexp: "Server Type:"
-    line: "Server Type: {{ server_type }}"
-  - regexp: "Server Location:"
-    line: "Server Location: {{ global_system_server_location }}"
-  - regexp: "Server Deployment Type"
-    line: "Server Deployment Type: {{ global_system_server_deployment_type }}"
-
 system_packages:
   - cron
   - htop

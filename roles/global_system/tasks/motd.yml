@@ -10,11 +10,8 @@
   ansible.builtin.set_fact:
     server_type: "LXC Container"
   when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_tech_guest'] is search ("lxc")
-- name: MOTD - Populate File
-  ansible.builtin.lineinfile:
+- name: MOTD - Render Template
+  ansible.builtin.template:
     path: /etc/motd
-    line: "{{ item.line }}"
-    regexp: "{{ item.regexp }}"
-    create: true
+    src: motd.j2
     mode: '0644'
-  with_items: "{{ motd }}"
