@@ -17,3 +17,4 @@ system_packages:
   - inxi
   - smartmontools
   - acl
+  - xclip

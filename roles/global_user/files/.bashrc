@@ -139,6 +139,7 @@ alias nf='neofetch'
 alias getsmart='/mnt/backups/scripts/monitoring-smart.sh'
 alias q=exit
 alias j=just
+alias pbcopy="xclip -sel clip"
 if [ "$(whoami)" != root ]; then
     echo "" && figurine -f "amc3line.flf" epichouse && echo ""
     [[ -n $(pgrep tmux) ]] && echo -e "tmux sessions:\n" && tmux ls || echo "no tmux sessions running"

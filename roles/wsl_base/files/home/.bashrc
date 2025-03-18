@@ -128,6 +128,7 @@ alias c=clear
 alias q=exit
 alias of=onefetch
 alias j=just
+alias pbcopy="xclip -sel clip"
 
 export EDITOR='code --wait -r'
 export PATH=$PATH:$HOME/.tfenv/bin
