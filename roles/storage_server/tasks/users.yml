@@ -11,7 +11,7 @@
   loop: "{{ users }}"
   become: true
   changed_when: False
-#  no_log: true
+  no_log: true
 - name: Users - Add Unix Users
   ansible.builtin.user:
     name: "{{ item.username }}"
