@@ -1,16 +1,3 @@
-- name: SSH | Cache Public SSH Key
-  ansible.builtin.set_fact:
-    global_user_public_ssh_key: "{{ global_user_public_ssh_key }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: SSH | Cache Private SSH Key
-  ansible.builtin.set_fact:
-    global_user_private_ssh_key: "{{ global_user_private_ssh_key }}"
-  delegate_to: localhost
-  run_once: true
-
-
 - name: SSH | Set Public Key
   ansible.builtin.copy:
     content: "{{ global_user_public_ssh_key }}"
