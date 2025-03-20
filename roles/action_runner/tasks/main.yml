@@ -6,6 +6,7 @@
       - curl
       - tar
       - jq
+      - nodejs
     state: present
     update_cache: true
   become: true
