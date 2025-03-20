@@ -2,3 +2,5 @@ username: none
 password: none
 uid: changeme
 gid: changeme
+ssh_private_key: changeme
+ssh_public_key: changeme

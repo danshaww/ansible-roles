@@ -53,7 +53,7 @@
   become: true
 - name: SSH - Set Private Key
   ansible.builtin.copy: # TODO: Make this dynamic
-    content: "{{ lookup('azure.azcollection.azure_keyvault_secret', 'keys-dan-private-base64', vault_url=vaults.ssh, use_msi=false) | b64decode }}"
+    content: "{{ ssh_private_key }}"
     dest: "/home/{{ username }}/.ssh/id_rsa"
     mode: '0600'
     owner: "{{ username }}"
@@ -61,7 +61,7 @@
   become: true
 - name: SSH - Set Public Key
   ansible.builtin.copy: # TODO: Make this dynamic
-    content: "{{ lookup('azure.azcollection.azure_keyvault_secret', 'keys-dan-public-base64', vault_url=vaults.ssh, use_msi=false) | b64decode }}"
+    content: "{{ ssh_public_key }}"
     dest: "/home/{{ username }}/.ssh/{{ item }}"
     mode: '0644'
     owner: "{{ username }}"
