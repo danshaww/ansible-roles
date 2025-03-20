@@ -4,6 +4,7 @@ galaxy_info:
     - Ansible Role to pull a list of secrets from a list of Azure Key Vaults.
     - Secrets are listed via a key_vaults dictionary
     - Once retrieved, secrets are available via the 'secrets' dictionary, with the layout matching that of the key_vaults dictionary
+    - Please note, it both Key Vault & Secret names, all dashes must be replaced with unerscores, this also applies to referring to the secrets in a playbook.
   license: GPL
   min_ansible_version: "2.1"
   galaxy_tags: []
