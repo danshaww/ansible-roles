@@ -125,9 +125,9 @@ export EDITOR="/bin/nano"
 export SELECTED_EDITOR="/bin/nano"
 
 # Custom Login Directory
-if [ -f ~/.login_directory ]; then
-    login_directory=$(cat ~/.login_directory) && cd $login_directory
-fi
+#if [ -f ~/.login_directory ]; then
+#    login_directory=$(cat ~/.login_directory) && cd $login_directory
+#fi
 
 
 ### Custom Aliases
