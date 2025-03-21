@@ -133,7 +133,7 @@ export SELECTED_EDITOR="/bin/nano"
 ### Custom Aliases
 alias c='clear'
 alias pve='~/git/bash/pve/pve.sh'
-alias getsysspace='sudo df -h| sort -rh'                                
+alias getsysspace='sudo df -h| sort -rh'
 alias getdirspace='sudo du -cha --max-depth=1 ./| sort -rh'
 alias nf='neofetch'
 alias getsmart='/mnt/backups/scripts/monitoring-smart.sh'
