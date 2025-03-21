@@ -28,7 +28,7 @@
   with_items:
     - env: true
       name: MAILTO
-      job: "{{ mail_to }}"
+      job: "{{ cron_alerting.mail_to }}"
     - env: true
       name: MAILFROM
       job: "{{ inventory_hostname }}@epichouse.co.uk"
