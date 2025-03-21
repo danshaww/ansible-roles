@@ -1,6 +1,6 @@
-- name: Include Directory Tasks
+- name: Include Filesystem Tasks
   ansible.builtin.include_tasks: directories.yml
-  when: directories is defined
+  when: filesystem is defined
 
 - name: Include Software Tasks
   ansible.builtin.include_tasks: software.yml

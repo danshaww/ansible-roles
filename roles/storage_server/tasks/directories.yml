@@ -1,9 +1,0 @@
-- name: Create Required Directories
-  ansible.builtin.file:
-    path: "{{ item.name }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('users') }}"
-    mode: "{{ item.mode }}"
-    state: directory
-  loop: "{{ directories }}"
-  become: true

@@ -26,8 +26,15 @@ file_sharing:
 packages:
   - example_package
 
-directories:
-  - name: /etc/directory
-    mode: '0770'
-    user: root # This option is default
-    group: users # This option is default
+filesystem:
+  directories:
+    - name: /etc/directory
+      mode: '0770' # This option is default
+      owner: root # This option is default
+      group: users # This option is default
+  copy_files:
+    - src: ../example_path # Local git path
+      dest: ../example_path # Remote destination
+      mode: '0770' # This option is default
+      owner: root # This option is default
+      group: users # This option is default
