@@ -1,17 +1,13 @@
-- name: Users - Install Required Packages on Ansible host
-  apt:
-    pkg: python3-passlib
-  delegate_to: localhost
-  become: true
 - name: Users - Add Unix Groups
   ansible.builtin.group:
     name: "{{ item.username }}"
     state: present
     gid: "{{ item.uid }}"
-  loop: "{{ users }}"
+  with_items: "{{ user_configuration.users }}"
   become: true
-  changed_when: False
+  changed_when: false
   no_log: true
+
 - name: Users - Add Unix Users
   ansible.builtin.user:
     name: "{{ item.username }}"
@@ -22,10 +18,21 @@
     password: "{{ item.password | password_hash('sha512') }}"
     append: true
     groups: users
-  loop: "{{ users }}"
-  changed_when: False
+  with_items: "{{ user_configuration.users }}"
+  changed_when: false
   become: true
   no_log: true
+
+- name: Users - Add Users to Users group
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    groups: users
+    append: true
+  with_items: "{{ user_configuration.users }}"
+  become: true
+  no_log: true
+
+
 - name: Users - shell - create samba users
   ansible.builtin.shell: >
     set -e -o pipefail
@@ -34,10 +41,12 @@
     | smbpasswd -s -a {{ item.username }}
   args:
     executable: /bin/bash
-  loop: "{{ users }}"
+  with_items: "{{ user_configuration.users }}"
   become: true
   no_log: true
-  changed_when: False
+  changed_when: false
+  when: user_configuration.configure_samba
+
 - name: Users - shell - set samba passwords correctly
   ansible.builtin.shell: >
     set -e -o pipefail
@@ -46,15 +55,8 @@
     | smbpasswd {{ item.username }}
   args:
     executable: /bin/bash
-  loop: "{{ users }}"
+  with_items: "{{ user_configuration.users }}"
   become: true
   no_log: true
-  changed_when: False
-- name: Users - Add Users to Users group
-  ansible.builtin.user:
-    name: "{{ item.username }}"
-    groups: users
-    append: yes
-  loop: "{{ users }}"
-  become: true
-  no_log: true
+  changed_when: false
+  when: user_configuration.configure_samba

@@ -1,4 +1,4 @@
-- name: Create Cron Job
+- name: Create required cron jobs
   ansible.builtin.cron:
     name: "{{ item.name }}"
     day: "{{ item.day }}"
@@ -6,4 +6,4 @@
     minute: "{{ item.minute }}"
     job: "{{ item.job }}"
   become: true
-  loop: "{{ jobs }}"
+  with_items: "{{ cron_jobs }}"

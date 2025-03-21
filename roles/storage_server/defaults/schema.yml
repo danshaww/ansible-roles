@@ -1,0 +1,33 @@
+cron_alerting:
+  smtp_server:
+  smtp_user:
+  smtp_password:
+  smtp_domain:
+  mail_to:
+
+cron_jobs:
+  - name: example job
+    day: '*'
+    hour: '23'
+    minute: '30'
+    job: "/bin/bash /srv/scripts/script.sh"
+
+user_configuration:
+  configure_samba: true
+  users:
+    - username: example
+      password: password
+      uid: 1055
+
+file_sharing:
+  smb_config_path: ../example_path
+  nfs_config_path: ../example_path
+
+packages:
+  - example_package
+
+directories:
+  - name: /etc/directory
+    mode: '0770'
+    user: root # This option is default
+    group: users # This option is default

@@ -1,23 +1,23 @@
 - name: Include Directory Tasks
   ansible.builtin.include_tasks: directories.yml
-  when: features.enable_directory
+  when: directories is defined
 
 - name: Include Software Tasks
   ansible.builtin.include_tasks: software.yml
-  when: features.enable_software
+  when: packages is defined
 
 - name: Include File Sharing Tasks
   ansible.builtin.include_tasks: file-sharing.yml
-  when: features.enable_filesharing
+  when: file_sharing is defined
 
 - name: Include User Config Tasks
-  ansible.builtin.include_tasks: users.yml
-  when: features.enable_users
+  ansible.builtin.include_tasks: user_configuration.yml
+  when: user_configuration is defined
 
 - name: Include Cron Tasks
-  ansible.builtin.include_tasks: cron.yml
-  when: features.enable_cron
+  ansible.builtin.include_tasks: cron_jobs.yml
+  when: cron_jobs is defined
 
 - name: Include Cron Alerting Tasks
-  ansible.builtin.include_tasks: cron-alerting.yml
+  ansible.builtin.include_tasks: cron_alerting.yml
   when: cron_alerting is defined

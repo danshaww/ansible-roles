@@ -13,4 +13,5 @@
         pkg:
           - software-properties-common
           - ansible
+          - python3-passlib
         state: present

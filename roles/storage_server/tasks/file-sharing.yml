@@ -1,34 +1,10 @@
 - name: File Sharing - Software Installation
+  become: true
   ansible.builtin.apt:
     pkg:
-    - samba
-    - nfs-kernel-server
-- name: File Sharing - Copy Samba Configuration file
-  copy:
-    src: "../files/{{ inventory_hostname }}/config/smb.conf" # TODO: Make Dynamic
-    dest: /etc/samba/smb.conf
-    owner: root
-    group: users
-    mode: '0770'
-  register: sambachange
-  become: true
-- name: File Sharing - Reload SMBD Service
-  shell: systemctl reload smbd
-  when: sambachange.changed
-  become: true
-- name: File Sharing - Copy NFS Exports file
-  copy:
-    src: "../files/{{ inventory_hostname }}/config/exports" # TODO: Make Dynamic
-    dest: /etc/exports
-    owner: root
-    group: users
-    mode: '0770'
-  register: exportschange
-  become: true
-- name: File Sharing - Restart NFS Server Service
-  shell: systemctl restart nfs-server
-  when: exportschange.changed
-  become: true
+      - samba
+      - nfs-kernel-server
+
 - name: File Sharing - UFW Configuration
   community.general.ufw:
     rule: allow
@@ -39,3 +15,25 @@
     - '2049'
   become: true
   when: ansible_facts['distribution'] == "Ubuntu"
+
+- name: File Sharing - Copy Samba Configuration file
+  copy:
+    src: "{{ file_sharing.smb_config_path }}"
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: users
+    mode: '0770'
+  notify: Restart SMBD
+  become: true
+  when: file_sharing.smb_config_path is defined
+
+- name: File Sharing - Copy NFS Exports file
+  copy:
+    src: "{{ file_sharing.nfs_config_path }}"
+    dest: /etc/exports
+    owner: root
+    group: users
+    mode: '0770'
+  notify: Restart NFS
+  become: true
+  when: file_sharing.nfs_config_path is defined
