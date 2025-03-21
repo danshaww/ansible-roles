@@ -9,7 +9,7 @@
   become: true
   when: filesystem.directories is defined
 
-- name: Copy Required Files & Directories
+- name: Copy Required Files & Directories # TODO: Add funtionality to delete files that are no longer required
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
