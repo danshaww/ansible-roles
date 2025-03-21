@@ -7,7 +7,7 @@
 - name: Configure ssmtp service
   become: true
   ansible.builtin.template:
-    path: /etc/ssmtp/ssmtp.conf
+    dest: /etc/ssmtp/ssmtp.conf
     src: ssmtp.conf.j2
     mode: '0644'
 
