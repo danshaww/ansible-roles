@@ -3,39 +3,32 @@
   ansible.builtin.apt:
     pkg:
     - ssmtp
-  
+
 - name: Configure ssmtp service
   become: true
-  ansible.builtin.lineinfile:
+  ansible.builtin.template:
     path: /etc/ssmtp/ssmtp.conf
-    create: yes
-    line: "{{ item }}"
-  with_items:
-      - root={{ server_smtp_user }}
-      - server=mail.smtp2go.com # TODO: Make this dynamic
-      - UseSTARTTLS=YES
-      - FromLineOverride=YES
-      - AuthUser={{ server_smtp_user }}
-      - AuthPass={{ server_smtp_pass }}
-      - mailhub=mail.smtp2go.com:587
-      - rewritedomain=epichouse.co.uk
-      - hostname={{ server_smtp_user }}
+    src: ssmtp.conf.j2
+    mode: '0644'
+
 - name: Configure /etc/ssmtp/revaliases
   become: true
   ansible.builtin.lineinfile:
     path: /etc/ssmtp/revaliases
     create: yes
-    line: "root:{{ server_smtp_user }}:mail.smtp2go.com:587"
+    line: "root:{{ inventory_hostname }}:mail.smtp2go.com:587"
+
 - name: Crontab  Config
   become: true
-  cron:
+  ansible.builtin.cron:
     env: "{{ item.env }}"
     name: "{{ item.name }}"
     job: "{{ item.job }}"
+
   with_items:
     - env: true
       name: MAILTO
-      job: "{{ email_to }}" # TODO: Make this dynamic
+      job: "{{ mail_to }}"
     - env: true
       name: MAILFROM
-      job: "{{ server_smtp_user }}@epichouse.co.uk"
+      job: "{{ inventory_hostname }}@epichouse.co.uk"

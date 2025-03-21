@@ -1,0 +1,6 @@
+cron_alerting:
+  smtp_server:
+  smtp_user:
+  smtp_password:
+  smtp_domain:
+  mail_to:
