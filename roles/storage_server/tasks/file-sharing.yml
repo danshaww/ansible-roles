@@ -23,7 +23,7 @@
     owner: root
     group: users
     mode: '0770'
-  notify: Restart SMBD
+  notify: Reload SMBD
   become: true
   when: file_sharing.smb_config_path is defined
 
