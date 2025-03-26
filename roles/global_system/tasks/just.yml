@@ -1,0 +1,38 @@
+- name: Just - Prerequisits Installation
+  become: true
+  ansible.builtin.apt:
+    cache_valid_time: 86400
+    pkg:
+      - gpg
+  tags: apt
+- name: Just - MPR Config & Installation (Non Ubuntu 24.04 Only)
+  become: true
+  when: ansible_facts['distribution_version'] != "24.04"
+  ignore_errors: true
+  block:
+    - name: MPR - Add APT GPG Key
+      ansible.builtin.apt_key:
+        url: https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub
+        keyring: /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg
+    - name: Just - Add MPR APT Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=all,amd64 signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr bookworm"
+        state: present
+        filename: prebuilt-mpr
+- name: Just - Installation
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - just
+  tags: apt
+- name: Check for bash completions
+  ansible.builtin.stat:
+    path: /usr/share/bash-completion/completions/just
+  register: completions
+- name: Install Bash completions
+  ansible.builtin.shell: |
+    just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
+    echo "complete -F _just -o bashdefault -o default j" | sudo tee -a /usr/share/bash-completion/completions/just >> /dev/null
+  become: true
+  when: not completions.stat.exists
+  changed_when: not completions.stat.exists

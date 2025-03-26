@@ -19,6 +19,7 @@ packages:
   - tree
   - gh
   - xclip
+  - just
 
 ssh_config:
   - "Host *"

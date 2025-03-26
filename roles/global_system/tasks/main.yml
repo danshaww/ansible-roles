@@ -5,6 +5,9 @@
     - name: Packge Installation
       ansible.builtin.include_tasks: packages.yml
       when: enable_packages
+    - name: Just Installation
+      ansible.builtin.include_tasks: just.yml
+      when: enable_packages
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
       when: enable_ssh_config
