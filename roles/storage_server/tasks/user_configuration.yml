@@ -2,7 +2,7 @@
   ansible.builtin.group:
     name: "{{ item.username }}"
     state: present
-    gid: "{{ item.uid }}"
+    gid: "{{ item.gid | default(item.uid) }}"
   with_items: "{{ user_configuration.users }}"
   become: true
   changed_when: false
@@ -60,3 +60,28 @@
   no_log: true
   changed_when: false
   when: user_configuration.configure_samba
+
+
+
+
+- name: SSH - Set Private Key
+  ansible.builtin.copy:
+    content: "{{ item.ssh_private_key }}"
+    dest: "/home/{{ item.username }}/.ssh/id_rsa"
+    mode: '0600'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  become: true
+  with_items: "{{ user_configuration.users }}"
+  when: each.ssh_private_key is defined
+
+- name: SSH - Set Public Key
+  ansible.builtin.copy:
+    content: "{{ item.ssh_public_key }}"
+    dest: "/home/{{ item.username }}/.ssh/{{ item }}"
+    mode: '0644'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ user_configuration.users }}"
+  when: each.ssh_public_key is defined
+  become: true
