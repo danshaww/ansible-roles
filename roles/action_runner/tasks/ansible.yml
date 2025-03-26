@@ -1,0 +1,14 @@
+- name: Ensure system is up-to-date
+  ansible.builtin.apt:
+    update_cache: true
+- name: Add Ansible PPA repository
+  ansible.builtin.apt_repository:
+    repo: 'ppa:ansible/ansible'
+    state: present
+- name: Install Ansible
+  ansible.builtin.apt:
+    pkg:
+      - software-properties-common
+      - ansible
+      - python3-passlib
+    state: present

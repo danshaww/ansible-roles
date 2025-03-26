@@ -70,3 +70,5 @@
     - id_rsa.pub
     - authorized_keys
   become: true
+- name: Reset SSH Connection
+  ansible.builtin.meta: reset_connection

@@ -1,5 +1,3 @@
-- name: Reset SSH Connection
-  ansible.builtin.meta: reset_connection
 - name: Ensure necessary dependencies are installed
   ansible.builtin.apt:
     name:
@@ -51,6 +49,8 @@
   with_items:
     - "Host *"
     - "   StrictHostKeyChecking no"
-- name: Include AZ CLI Role
-  ansible.builtin.include_role:
-    name: az_cli
+
+- name: Install AZ CLI
+  ansible.builtin.include_tasks: az_cli.yml
+- name: Install Ansible
+  ansible.builtin.include_tasks: ansible.yml
