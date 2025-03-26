@@ -72,9 +72,9 @@
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
   become: true
-  no_log: true
+ # no_log: true
   with_items: "{{ user_configuration.users }}"
-  when: each.ssh_private_key is defined
+  when: item.ssh_private_key is defined
 
 - name: SSH - Set Public Key
   ansible.builtin.copy:
@@ -84,6 +84,6 @@
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
   with_items: "{{ user_configuration.users }}"
-  no_log: true
-  when: each.ssh_public_key is defined
+ # no_log: true
+  when: item.ssh_public_key is defined
   become: true
