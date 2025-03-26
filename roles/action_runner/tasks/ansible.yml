@@ -1,4 +1,5 @@
 - name: Ansible Installation
+  become: true
   block:
     - name: Ensure system is up-to-date
       ansible.builtin.apt:
