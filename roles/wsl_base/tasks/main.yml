@@ -54,3 +54,11 @@
     mode: '0755'
     create: true
   with_items: "{{ ssh_config }}"
+
+- name: Install oh-my-posh
+  ansible.builtin.include_tasks: oh_my_posh.yml
+  when: base.enable_oh_my_posh
+
+- name: Install Azure CLI
+  ansible.builtin.include_tasks: az_cli.yml
+  when: base.enable_az_cli

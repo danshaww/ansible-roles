@@ -5,3 +5,5 @@ base:
   git_name: ""
   git_email: ""
   git_directory: "~/git/"
+  enable_oh_my_posh: false
+  enable_az_cli: false
