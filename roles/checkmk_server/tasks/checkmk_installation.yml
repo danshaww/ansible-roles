@@ -1,0 +1,35 @@
+- name: CheckMK Server | Copy Installer
+  ansible.builtin.copy:
+    src: check-mk-raw-2.3.0p30_0.noble_amd64.deb
+    dest: /tmp
+
+- name: CheckMK Server | Install CheckMK
+  ansible.builtin.apt:
+    deb: /tmp/check-mk-raw-2.3.0p30_0.noble_amd64.deb
+    state: present
+
+- name: CheckMK Server | Check for existing site
+  ansible.builtin.stat:
+    path: /opt/omd/sites/{{ checkmk_server_site_name }}
+  register: checkmk_site
+
+- name: CheckMK Server | Create site
+  ansible.builtin.command:
+    cmd: "omd create {{ checkmk_server_site_name }} --admin-password {{ checkmk_server_admin_password }} && omd start {{ checkmk_server_site_name }}"
+  changed_when: not checkmk_site.stat.exists
+  when: not checkmk_site.stat.exists
+
+- name: CheckMK Server | Configure Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items: "{{ firewall_ports }}"
+  when: ansible_facts['distribution'] == "Ubuntu"
+
+- name: CheckMK Server | Create Local Backup Directory
+  ansible.builtin.file:
+    path: /srv/backups
+    state: directory
+    mode: '0775'
+    owner: root
+    group: omd

@@ -1,0 +1,6 @@
+- name: CheckMK | Package Installation
+  ansible.builtin.include_tasks: package_installation.yml
+- name: CheckMK | Install
+  ansible.builtin.include_tasks: checkmk_installation.yml
+- name: CheckMK | Web Server Configuration
+  ansible.builtin.include_tasks: apache_configuration.yml

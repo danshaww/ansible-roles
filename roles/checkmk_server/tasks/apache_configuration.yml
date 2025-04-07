@@ -1,0 +1,69 @@
+- name: LetsEncrypt - Copy ACME DNS Challenge Script
+  ansible.builtin.copy:
+    src: acme-dns-auth.py
+    dest: /etc/letsencrypt/acme-dns-auth.py
+    mode: '0755'
+- name: LetsEncrypt - Check if Cert Exists
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ nagios_hostname }}/fullchain.pem"
+  register: certificate
+- name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
+  ansible.builtin.lineinfile:
+    path: /etc/letsencrypt/auth.ini
+    line: "dns_cloudflare_api_token = {{ nagios_cloudflare_api_token }}"
+    regexp: "dns_cloudflare_api_token = "
+    create: true
+    mode: '0600'
+  no_log: true
+- name: LetsEncrypt - Generate Certificate # TODO: Fix the length of this command
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ nagios_hostname }} --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
+  when: not certificate.stat.exists
+
+
+- name: Enable the Apache2 module ssl
+  community.general.apache2_module:
+    state: present
+    name: ssl
+- name: Apache - Enable Modules
+  community.general.apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - headers
+    - rewrite
+- name: Apache - Render Config
+  ansible.builtin.template:
+    src: default-ssl.conf.j2
+    dest: /etc/apache2/sites-available/default-ssl.conf
+- name: Apache - Set Directory Permissions
+  ansible.builtin.file:
+    path: /etc/apache
+    owner: root
+    group: users
+    mode: '0644'
+    recurse: true
+  become: true
+- name: Enable Default SSL Site
+  ansible.builtin.shell: a2ensite default-ssl && a2dissite 000-default
+- name: Apache - UFW Allow HTTPS
+  community.general.ufw:
+    rule: allow
+    port: '443'
+  when: (ansible_facts['distribution'] == "Ubuntu")
+- name: Restart Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+    enabled: true
+- name: Enable Apache Modules
+  community.general.apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - cgi
+    - rewrite
+- name: Restart Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+    enabled: true
