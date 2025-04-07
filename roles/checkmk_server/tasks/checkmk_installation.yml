@@ -18,9 +18,15 @@
 
 - name: CheckMK Server | Create site
   ansible.builtin.command:
-    cmd: "omd create {{ checkmk_server_site_name }} --admin-password {{ checkmk_server_admin_password }} && omd start {{ checkmk_server_site_name }}"
+    cmd: "omd create {{ checkmk_server_site_name }} && omd start {{ checkmk_server_site_name }}"
   changed_when: not checkmk_site.stat.exists
   when: not checkmk_site.stat.exists
+
+- name: CheckMK Server | Set Admin Password
+  community.general.htpasswd:
+    path: "/opt/omd/sites/{{ checkmk_server_site_name }}/etc/htpasswd"
+    name: cmkadmin
+    password: "{{ checkmk_server_admin_password }}"
 
 - name: CheckMK Server | Configure Firewall
   community.general.ufw:
