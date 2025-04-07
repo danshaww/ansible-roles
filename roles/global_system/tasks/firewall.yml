@@ -6,3 +6,10 @@
   community.general.ufw:
     rule: allow
     port: '22'
+- name: UFW - Allow CheckMK
+  community.general.ufw:
+    rule: allow
+    port: '6556'
+    src: "{{ item }}"
+  with_items: "{{ global_system_checkmk_hosts }}"
+  when: global_system_checkmk_hosts is defined
