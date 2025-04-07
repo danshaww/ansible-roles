@@ -5,7 +5,7 @@
     mode: '0755'
 - name: LetsEncrypt - Check if Cert Exists
   ansible.builtin.stat:
-    path: "/etc/letsencrypt/live/{{ checkmk_serverhostname }}/fullchain.pem"
+    path: "/etc/letsencrypt/live/{{ checkmk_server_hostname }}/fullchain.pem"
   register: certificate
 - name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
   ansible.builtin.lineinfile:
@@ -16,7 +16,7 @@
     mode: '0600'
   no_log: true
 - name: LetsEncrypt - Generate Certificate # TODO: Fix the length of this command
-  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ checkmk_serverhostname }} --non-interactive --agree-tos -m {{ checkmk_server_letsencrypt_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ checkmk_server_hostname }} --non-interactive --agree-tos -m {{ checkmk_server_letsencrypt_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
   when: not certificate.stat.exists
 
 
