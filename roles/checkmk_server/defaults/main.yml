@@ -1,2 +1,5 @@
 checkmk_server_site_name: null
 checkmk_server_admin_password: null
+checkmk_server_cloudflare_api_token: null
+checkmk_server_hostname: null
+checkmk_server_letsencrypt_email: null
