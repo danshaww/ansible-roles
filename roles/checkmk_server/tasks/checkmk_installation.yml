@@ -13,6 +13,8 @@
   ansible.builtin.apt:
     deb: /tmp/checkmk.deb
     state: present
+  when: not checkmk_site.stat.exists
+
 
 - name: CheckMK Server | Create site
   ansible.builtin.command:
