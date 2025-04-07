@@ -5,4 +5,5 @@ firewall_ports:
 packages:
   - certbot
   - python3-certbot-dns-cloudflare
+  - python3-passlib
 checkmk_url: https://download.checkmk.com/checkmk/2.3.0p30/check-mk-raw-2.3.0p30_0.noble_amd64.deb
