@@ -61,6 +61,15 @@
   changed_when: false
   when: user_configuration.configure_samba
 
+- name: Allow sudo without password
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ item.username }}"
+    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
+    create: true
+    mode: '0644'
+  with_items: "{{ user_configuration.users }}"
+  become: true
+  no_log: true
 
 - name: SSH - Create Dir
   ansible.builtin.file:
