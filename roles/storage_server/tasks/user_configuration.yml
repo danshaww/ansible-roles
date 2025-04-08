@@ -71,6 +71,7 @@
     group: "{{ item.username }}"
   with_items: "{{ user_configuration.users }}"
   become: true
+  no_log: true
 
 - name: SSH - Set Private Key
   ansible.builtin.copy:
@@ -88,6 +89,18 @@
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"
     dest: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    mode: '0644'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ user_configuration.users }}"
+  no_log: true
+  when: item.ssh_public_key is defined
+  become: true
+
+- name: SSH - Set Trusted Keys
+  ansible.builtin.copy:
+    content: "{{ item.ssh_public_key }}"
+    dest: "/home/{{ item.username }}/.ssh/authorized_keys"
     mode: '0644'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
