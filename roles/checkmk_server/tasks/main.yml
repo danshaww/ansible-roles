@@ -4,3 +4,5 @@
   ansible.builtin.include_tasks: checkmk_installation.yml
 - name: CheckMK | Web Server Configuration
   ansible.builtin.include_tasks: apache_configuration.yml
+- name: CheckMK | SMTP Configuration
+  ansible.builtin.include_tasks: smtp_configuration.yml

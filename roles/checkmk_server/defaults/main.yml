@@ -3,3 +3,6 @@ checkmk_server_admin_password: null
 checkmk_server_cloudflare_api_token: null
 checkmk_server_hostname: null
 checkmk_server_letsencrypt_email: null
+checkmk_server_smtp_username: null
+checkmk_server_smtp_password: null
+checkmk_server_smtp_host: null
