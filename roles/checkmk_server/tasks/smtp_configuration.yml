@@ -14,7 +14,6 @@
     - mailhub={{ checkmk_server_smtp_host }}:587
     - rewritedomain=epichouse.co.uk
     - hostname={{ checkmk_server_smtp_username }}
-  notify: Test SMTP
 - name: Configure /etc/ssmtp/revaliases
   ansible.builtin.lineinfile:
     path: /etc/ssmtp/revaliases
