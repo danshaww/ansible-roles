@@ -11,7 +11,7 @@
     - FromLineOverride=YES
     - AuthUser={{ checkmk_server_smtp_username }}
     - AuthPass={{ checkmk_server_smtp_password }}
-    - mailhub={{ checkmk_server_smtp_host }}:465
+    - mailhub={{ checkmk_server_smtp_host }}:587
     - rewritedomain=epichouse.co.uk
     - hostname={{ checkmk_server_smtp_username }}
 - name: Configure /etc/ssmtp/revaliases
