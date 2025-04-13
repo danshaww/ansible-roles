@@ -7,3 +7,5 @@ base:
   git_directory: "~/git/"
   enable_oh_my_posh: false
   enable_az_cli: false
+  enable_docker: true
+  enable_terraform: true

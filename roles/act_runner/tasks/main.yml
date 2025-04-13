@@ -54,3 +54,7 @@
   ansible.builtin.include_tasks: az_cli.yml
 - name: Install Ansible
   ansible.builtin.include_tasks: ansible.yml
+- name: Install Terraform
+  ansible.builtin.include_tasks: terraform.yml
+- name: Install Docker
+  ansible.builtin.include_tasks: docker.yml

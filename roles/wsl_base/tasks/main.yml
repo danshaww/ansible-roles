@@ -62,3 +62,11 @@
 - name: Install Azure CLI
   ansible.builtin.include_tasks: az_cli.yml
   when: base.enable_az_cli
+
+- name: Install Terraform
+  ansible.builtin.include_tasks: terraform.yml
+  when: base.enable_terraform
+
+- name: Install Docker
+  ansible.builtin.include_tasks: docker.yml
+  when: base.enable_docker
