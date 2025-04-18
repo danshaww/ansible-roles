@@ -1,4 +1,4 @@
-# Ansible Roles
+# Ansible Roles <img src="https://raw.githubusercontent.com/benc-uk/icon-collection/refs/heads/master/azure-docs/ansible.svg" alt="drawing" width="40" align="right"/>
 
 This repository is my centralised Ansible Role collection.  
 All of my Ansible project repositories (i.e core,dev,docker etc) make use of the roles stored here.  
