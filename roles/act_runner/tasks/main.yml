@@ -38,6 +38,15 @@
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.runner"
 
+- name: Create Gitea Actions Runner service
+  ansible.builtin.template:
+    src: act_runner.service.j2
+    dest: /etc/systemd/system/act_runner.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Start Service
 
 - name: Populate SSH Config
   ansible.builtin.lineinfile:

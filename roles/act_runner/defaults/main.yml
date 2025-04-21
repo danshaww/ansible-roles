@@ -1,6 +1,4 @@
 username: changeme
-github_token: changeme
-github_org: changeme
 site: changeme
 runner_version: "2.321.0"
 runner_name: "{{ inventory_hostname }}"
