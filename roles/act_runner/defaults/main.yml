@@ -6,3 +6,6 @@ runner_version: "2.321.0"
 runner_name: "{{ inventory_hostname }}"
 runner_labels: "{{ site }}"
 runner_path: "/etc/act_runner"
+runner_url: https://gitea.com/gitea/act_runner/releases/download/v0.2.11/act_runner-0.2.11-linux-amd64
+gitea_instance: null
+gitea_token: null

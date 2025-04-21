@@ -17,29 +17,28 @@
     group: "{{ username }}"
   changed_when: false
   become: true
-- name: Download GitHub Actions Runner
+- name: Download Gitea Actions Runner
   ansible.builtin.get_url:
-    url: "https://gitea.com/gitea/act_runner/releases/download/v0.2.11/act_runner-0.2.11-linux-amd64"
+    url: "{{ runner_url }}"
     dest: "{{ runner_path }}/act_runner"
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: '0755'
   become: true
 
-#- name: Configure GitHub Actions Runner
-#  ansible.builtin.command: >
-#    ./config.sh --url https://github.com/{{ github_org }}
-#    --token {{ github_token }}
-#    --name {{ runner_name }}
-#    --labels {{ runner_labels }}
-#    --runnergroup Default
-#    --work _work
-#  args:
-#    chdir: "{{ runner_path }}"
-#    creates: "{{ runner_path }}/.runner"
-#  notify: Start Service
-#    - Install Service
-#    - Start Service
+- name: Configure Gitea Actions Runner
+  ansible.builtin.command: >
+    ./act_runner register
+    --no-interactive
+    --instance {{ gitea_instance }}
+    --token {{ gitea_token }}
+    --name {{ runner_name }}
+    --labels {{ runner_labels }}
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.runner"
+
+
 - name: Populate SSH Config
   ansible.builtin.lineinfile:
     path: /home/{{ username }}/.ssh/config
