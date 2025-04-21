@@ -4,5 +4,5 @@ github_org: changeme
 site: changeme
 runner_version: "2.321.0"
 runner_name: "{{ inventory_hostname }}"
-runner_labels: "self-hosted,linux,{{ site }}"
-runner_path: "/home/{{ username }}/actions-runner"
+runner_labels: "{{ site }}"
+runner_path: "/etc/act_runner"

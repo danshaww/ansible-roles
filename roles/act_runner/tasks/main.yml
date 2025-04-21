@@ -13,18 +13,19 @@
     path: "{{ runner_path }}"
     state: directory
     mode: '0775'
+    owner: "{{ username }}"
+    group: "{{ username }}"
   changed_when: false
-#- name: Check for existing archive
-#  ansible.builtin.stat:
-#    path: "{{ runner_path }}/actions-runner-linux-x64-{{ #runner_version }}.tar.gz"
-#  register: runner_archive
-#- name: Download GitHub Actions Runner
-#  ansible.builtin.get_url:
-#    url: "https://github.com/actions/runner/releases/download/v{{ #runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.#gz"
-#    dest: "{{ runner_path }}/actions-runner-linux-x64-{{ #runner_version }}.tar.gz"
-#    mode: '0644'
-#  when: not runner_archive.stat.exists
-#  notify: Extract Archive
+  become: true
+- name: Download GitHub Actions Runner
+  ansible.builtin.get_url:
+    url: "https://gitea.com/gitea/act_runner/releases/download/v0.2.11/act_runner-0.2.11-linux-amd64"
+    dest: "{{ runner_path }}/act_runner"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: '0755'
+  become: true
+
 #- name: Configure GitHub Actions Runner
 #  ansible.builtin.command: >
 #    ./config.sh --url https://github.com/{{ github_org }}
