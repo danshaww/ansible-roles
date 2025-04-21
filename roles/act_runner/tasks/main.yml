@@ -37,6 +37,7 @@
   args:
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.runner"
+  become: true
 
 - name: Create Gitea Actions Runner service
   ansible.builtin.template:
