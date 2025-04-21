@@ -39,6 +39,15 @@
     creates: "{{ runner_path }}/.runner"
   become: true
 
+- name: Configure .runner permissions
+  ansible.builtin.file:
+    path: "{{ runner_path }}/.runner"
+    state: file
+    mode: '0755'
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  become: true
+
 - name: Create Gitea Actions Runner service
   ansible.builtin.template:
     src: act_runner.service.j2
