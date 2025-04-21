@@ -4,3 +4,6 @@ docker_config_path: changeme
 docker_github_auth:
   enabled: false
   pat: changeme
+docker_gitea_auth:
+  enabled: false
+  pat: changeme
