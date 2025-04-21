@@ -46,7 +46,13 @@
     group: root
     mode: '0644'
   become: true
-  notify: Start Service
+
+- name: Ensure Service is started and enabled
+  ansible.builtin.service:
+    name: act_runner
+    state: started
+    enabled: true
+  become: true
 
 - name: Populate SSH Config
   ansible.builtin.lineinfile:

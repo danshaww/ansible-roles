@@ -1,6 +1,1 @@
-- name: Start Service
-  ansible.builtin.service:
-    name: act_runner
-    state: started
-    enabled: true
-  become: true
+---
