@@ -7,14 +7,9 @@
     description: EPEL YUM repo
     baseurl: https://download.fedoraproject.org
 
-- name: DNF Packages | Global Utility Installation
+- name: DNF Packages | Installation
   ansible.builtin.dnf:
-    pkg: "{{ system_packages.global + system_packages.dnf }}"
-
-- name: DNF Packages | Server Specific Utility Installation
-  ansible.builtin.dnf:
-    pkg: "{{ global_system_server_packages | default('[]') }}"
-  when: global_system_server_packages != []
+    pkg: "{{ system_packages.global + system_packages.dnf + global_system_server_packages}}"
 
 - name: DNF Packages | CheckMK Agent Installation
   when: global_system_checkmk_install
@@ -29,4 +24,5 @@
     - name: CheckMK Agent | Install Agent
       ansible.builtin.dnf:
         pkg: /tmp/check-mk-agent-2.3.0p30-1.noarch.rpm
+        disable_gpg_check: true
         state: present

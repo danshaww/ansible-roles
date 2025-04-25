@@ -4,14 +4,9 @@
   changed_when: false
   ignore_errors: true # This is because of issues with the MPR package repo
 
-- name: APT Packages | Global Utility Installation
+- name: APT Packages | Installation
   ansible.builtin.apt:
-    pkg: "{{ system_packages.global + system_packages.apt }}"
-
-- name: APT Packages | Server Specific Utility Installation
-  ansible.builtin.apt:
-    pkg: "{{ global_system_server_packages | default('[]') }}"
-  when: global_system_server_packages != []
+    pkg: "{{ system_packages.global + system_packages.apt + global_system_server_packages}}"
 
 - name: APT Packages | CheckMK Agent Installation
   when: global_system_checkmk_install
@@ -26,5 +21,4 @@
     - name: CheckMK Agent | Install Agent
       ansible.builtin.apt:
         deb: /tmp/check-mk-agent_2.3.0p30-1_all.deb
-        disable_gpg_check: true
         state: present
