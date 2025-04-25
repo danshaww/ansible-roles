@@ -16,3 +16,15 @@
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
+
+- name: CheckMK Agent Installation
+  when: global_system_checkmk_install
+  block:
+    - name: CheckMK Agent | Copy Installation Media
+      ansible.builtin.copy:
+        src: check-mk-agent_2.3.0p30-1_all.deb
+        dest: /tmp
+    - name: CheckMK Agent | Install Agent
+      ansible.builtin.apt:
+        deb: /tmp/check-mk-agent_2.3.0p30-1_all.deb
+        state: present

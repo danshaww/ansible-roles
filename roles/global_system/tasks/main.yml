@@ -30,10 +30,6 @@
       ansible.builtin.include_tasks: nfs_mounts.yml
       when: nfs is defined
 
-    - name: CheckMK Agent Installation
-      ansible.builtin.include_tasks: checkmk_agent.yml
-      when: global_system_checkmk_install
-
     - name: Misc Tasks
       ansible.builtin.include_tasks: misc.yml
       when: enable_misc_config
