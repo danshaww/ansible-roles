@@ -1,15 +1,34 @@
-- name: UFW - Enable and set Deny rule
-  community.general.ufw:
-    state: enabled
-    policy: deny
-- name: UFW - Allow SSH
-  community.general.ufw:
-    rule: allow
-    port: '22'
-- name: UFW - Allow CheckMK
-  community.general.ufw:
-    rule: allow
-    port: '6556'
-    src: "{{ item }}"
-  with_items: "{{ global_system_checkmk_hosts }}"
-  when: global_system_checkmk_hosts is defined
+- name: UFW Configuration
+  when: ansible_facts['distribution'] == "Ubuntu"
+  block:
+    - name: UFW | Enable and set default deny rule
+      community.general.ufw:
+        state: enabled
+        policy: deny
+    - name: UFW | Allow SSH
+      community.general.ufw:
+        rule: allow
+        port: '22'
+    - name: UFW | Allow CheckMK
+      community.general.ufw:
+        rule: allow
+        port: '6556'
+        src: "{{ item }}"
+      with_items: "{{ global_system_checkmk_hosts }}"
+      when: global_system_checkmk_hosts is defined
+
+- name: Firewalld Configuration
+  when: ansible_facts['os_family'] == "RedHat"
+  block:
+    - name: Firewalld | Allow SSH
+      ansible.posix.firewalld:
+        port: 22/any
+        permanent: true
+        state: enabled
+    - name: Firewalld | Allow CheckMK
+      ansible.posix.firewalld:
+        source: "{{ item }}"
+        port: 6556/any
+        permanent: true
+        state: enabled
+      with_items: "{{ global_system_checkmk_hosts }}"

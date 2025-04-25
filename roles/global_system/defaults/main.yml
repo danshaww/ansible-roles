@@ -1,6 +1,6 @@
 enable_packages: true
 enable_ssh_config: true
-enable_ufw_config: true
+enable_firewall_config: true
 enable_env_config: true
 enable_motd_config: true
 enable_syslog_config: true

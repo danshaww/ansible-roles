@@ -18,9 +18,9 @@
       ansible.builtin.include_tasks: ssh.yml
       when: enable_ssh_config
 
-    - name: UFW Firewall Configuration
+    - name: Firewall Configuration
       ansible.builtin.include_tasks: firewall.yml
-      when: enable_ufw_config and ansible_facts['distribution'] == "Ubuntu"
+      when: enable_firewall_config
 
     - name: Environment Variable Config
       ansible.builtin.include_tasks: env.yml
