@@ -1,5 +1,5 @@
 - name: SSH - Copy Config File
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: sshd_config
     dest: /etc/ssh/sshd_config
     mode: '0644'

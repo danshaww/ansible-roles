@@ -6,4 +6,9 @@ UsePAM yes
 X11Forwarding yes
 PrintMotd no
 AcceptEnv LANG LC_*
+{% if ansible_facts['distribution'] == "Ubuntu" %}
 Subsystem       sftp    /usr/lib/openssh/sftp-server
+{% endif %}
+{% if ansible_facts['distribution'] == "Fedora" %}
+Subsystem       sftp    /usr/libexec/openssh/sftp-server
+{% endif %}
