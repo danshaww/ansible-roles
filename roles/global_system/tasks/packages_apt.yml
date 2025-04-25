@@ -1,25 +1,25 @@
-- name: Update APT Cache
+- name: APT Packages | Update Cache
   ansible.builtin.apt:
     update_cache: true
   changed_when: false
   ignore_errors: true # This is because of issues with the MPR package repo
 
-- name: Global Utility Installation
+- name: APT Packages | Global Utility Installation
   ansible.builtin.apt:
     pkg: "{{ system_packages.global + system_packages.apt }}"
 
-- name: Server Specific Utility Installation
+- name: APT Packages | Server Specific Utility Installation
   ansible.builtin.apt:
     pkg: "{{ global_system_server_packages | default('[]') }}"
   when: global_system_server_packages != []
 
-- name: Figurine Installation
+- name: APT Packages | Figurine Installation
   ansible.builtin.copy:
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
 
-- name: CheckMK Agent Installation
+- name: APT Packages | CheckMK Agent Installation
   when: global_system_checkmk_install
   block:
     - name: CheckMK Agent | Copy Installation Media
