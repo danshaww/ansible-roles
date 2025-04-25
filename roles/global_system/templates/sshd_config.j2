@@ -9,6 +9,6 @@ AcceptEnv LANG LC_*
 {% if ansible_facts['os_family'] == "Debian" %}
 Subsystem       sftp    /usr/lib/openssh/sftp-server
 {% endif %}
-{% if ansible_facts['distribution'] == "Fedora" %}
+{% if ansible_facts['distribution'] == "RedHat" %}
 Subsystem       sftp    /usr/libexec/openssh/sftp-server
 {% endif %}
