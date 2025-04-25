@@ -1,5 +1,4 @@
 system_packages:
-  - python3-libdnf5 # needed for fedora
   - nano
   - cron
   - htop

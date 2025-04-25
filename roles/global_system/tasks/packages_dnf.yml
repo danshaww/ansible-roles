@@ -1,3 +1,8 @@
+- name: DNF Prerequsits
+  ansible.builtin.dnf:
+    pkg:
+      - python3-libdnf5
+
 - name: Global Utility Installation
   ansible.builtin.dnf:
     pkg: "{{ system_packages }}"
