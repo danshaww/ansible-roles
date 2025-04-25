@@ -27,7 +27,7 @@
   block:
     - name: CheckMK Agent | Copy Installation Media
       ansible.builtin.copy:
-        src: check-mk-agent_2.3.0p30-1.noarch.rpm
+        src: check-mk-agent-2.3.0p30-1.noarch.rpm
         dest: /tmp
     - name: CheckMK Agent | Install Agent
       ansible.builtin.dnf:
