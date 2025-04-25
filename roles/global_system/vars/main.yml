@@ -18,7 +18,7 @@ system_packages:
     - acl
     - xclip
   apt:
-    - netfetch # Need to determine if this can be retained now EOL
+    - neofetch # Need to determine if this can be retained now EOL
     - cron
     - nfs-common
   dnf:
