@@ -5,7 +5,7 @@
   ansible.builtin.yum_repository:
     name: epel
     description: EPEL YUM repo
-    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    baseurl: https://download.fedoraproject.org
 
 - name: Global Utility Installation
   ansible.builtin.dnf:

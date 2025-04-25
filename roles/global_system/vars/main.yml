@@ -24,3 +24,4 @@ system_packages:
   dnf:
     - python3-libdnf5
     - fastfetch
+    - just
