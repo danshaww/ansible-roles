@@ -2,7 +2,7 @@ system_packages:
   - nano
   - cron
   - htop
-  - neofetch
+#  - neofetch <- Need to determine if this can be retained now EOL
   - git
   - nfs-common
   - net-tools
