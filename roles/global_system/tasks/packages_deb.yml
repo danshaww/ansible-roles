@@ -1,5 +1,5 @@
 - name: Update APT Cache
-  apt:
+  ansible.builtin.apt:
     update_cache: true
   changed_when: false
   ignore_errors: true # This is because of issues with the MPR package repo
@@ -9,7 +9,7 @@
   tags: apt
 - name: Server Specific Utility Installation
   ansible.builtin.apt:
-    pkg: "{{ global_system_server_packages | default('[]')}}"
+    pkg: "{{ global_system_server_packages | default('[]') }}"
   when: global_system_server_packages != []
 - name: Figurine Installation
   ansible.builtin.copy:
