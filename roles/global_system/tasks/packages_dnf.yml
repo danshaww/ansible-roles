@@ -1,7 +1,5 @@
 - name: DNF Prerequsits
-  ansible.builtin.dnf:
-    pkg:
-      - python3-libdnf5
+  ansible.builtin.shell: dnf install python3-libdnf5 -y
 
 - name: Global Utility Installation
   ansible.builtin.dnf:
