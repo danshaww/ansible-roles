@@ -1,13 +1,21 @@
 - name: DNF Prerequsits
   ansible.builtin.shell: dnf install python3-libdnf5 -y
 
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+
 - name: Global Utility Installation
   ansible.builtin.dnf:
     pkg: "{{ system_packages }}"
+
 - name: Server Specific Utility Installation
   ansible.builtin.dnf:
     pkg: "{{ global_system_server_packages | default('[]') }}"
   when: global_system_server_packages != []
+
 - name: Figurine Installation
   ansible.builtin.copy:
     src: figurine
