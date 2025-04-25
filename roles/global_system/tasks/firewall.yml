@@ -30,17 +30,13 @@
         port: 22/udp
         permanent: true
         state: enabled
-    - name: Firewalld | Allow CheckMK (tcp)
+    - name: Firewalld | Allow CheckMK (tcp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
-        source: "{{ item }}"
         port: 6556/tcp
         permanent: true
         state: enabled
-      with_items: "{{ global_system_checkmk_hosts }}"
-    - name: Firewalld | Allow CheckMK (udp)
+    - name: Firewalld | Allow CheckMK (udp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
-        source: "{{ item }}"
         port: 6556/udp
         permanent: true
         state: enabled
-      with_items: "{{ global_system_checkmk_hosts }}"
