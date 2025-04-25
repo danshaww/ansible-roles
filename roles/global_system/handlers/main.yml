@@ -1,4 +1,4 @@
-- name: Restart SSH Service
+- name: Restart SSH
   ansible.builtin.service:
     name: "{{ item }}"
     state: restarted
@@ -7,7 +7,7 @@
   with_items:
     - ssh
     - sshd
-- name: Restart Syslog Service
+- name: Restart Syslog
   ansible.builtin.service:
     name: rsyslog
     state: restarted
