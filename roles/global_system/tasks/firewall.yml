@@ -20,15 +20,27 @@
 - name: Firewalld Configuration
   when: ansible_facts['os_family'] == "RedHat"
   block:
-    - name: Firewalld | Allow SSH
+    - name: Firewalld | Allow SSH (tcp)
       ansible.posix.firewalld:
-        port: 22/any
+        port: 22/tcp
         permanent: true
         state: enabled
-    - name: Firewalld | Allow CheckMK
+    - name: Firewalld | Allow SSH (udp)
+      ansible.posix.firewalld:
+        port: 22/udp
+        permanent: true
+        state: enabled
+    - name: Firewalld | Allow CheckMK (tcp)
       ansible.posix.firewalld:
         source: "{{ item }}"
-        port: 6556/any
+        port: 6556/tcp
+        permanent: true
+        state: enabled
+      with_items: "{{ global_system_checkmk_hosts }}"
+    - name: Firewalld | Allow CheckMK (udp)
+      ansible.posix.firewalld:
+        source: "{{ item }}"
+        port: 6556/udp
         permanent: true
         state: enabled
       with_items: "{{ global_system_checkmk_hosts }}"
