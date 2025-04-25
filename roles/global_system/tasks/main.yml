@@ -2,13 +2,13 @@
   tags: system
   become: true
   block:
-    - name: Packge Installation
-      ansible.builtin.include_tasks: packages.yml
-      when: enable_packages
+    - name: Debian_Package Installation
+      ansible.builtin.include_tasks: packages_deb.yml
+      when: enable_packages and ansible_facts['os_family'] == "Debian"
 
     - name: Just Installation
       ansible.builtin.include_tasks: just.yml
-      when: enable_packages
+      when: enable_packages and ansible_facts['os_family'] == "Debian"
 
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
@@ -16,7 +16,7 @@
 
     - name: UFW Firewall Configuration
       ansible.builtin.include_tasks: firewall.yml
-      when: ansible_facts['distribution'] == "Ubuntu" and enable_ufw_config
+      when: enable_ufw_config and ansible_facts['distribution'] == "Ubuntu"
 
     - name: Environment Variable Config
       ansible.builtin.include_tasks: env.yml
