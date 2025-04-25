@@ -1,0 +1,16 @@
+- name: Set TimeZone
+  community.general.timezone:
+    name: Europe/London
+- name: Syslog - Copy Config File
+  ansible.builtin.copy:
+    src: syslog.conf
+    dest: /etc/rsyslog.d/50-default.conf
+    mode: '0644'
+  notify: Restart Syslog
+  when: enable_syslog_config
+- name: Allow sudo without password
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/dan
+    line: dan ALL=(ALL) NOPASSWD:ALL
+    create: true
+    mode: '0644'
