@@ -2,13 +2,17 @@
   tags: system
   become: true
   block:
-    - name: Debian_Package Installation
-      ansible.builtin.include_tasks: packages_deb.yml
-      when: enable_packages and ansible_facts['os_family'] == "Debian"
+    - name: APT Package Installation
+      ansible.builtin.include_tasks: packages_apt.yml
+      when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
+
+    - name: DNF Package Installation
+      ansible.builtin.include_tasks: packages_dnf.yml
+      when: enable_packages and ansible_facts['pkg_mgr'] == "dnf5"
 
     - name: Just Installation
       ansible.builtin.include_tasks: just.yml
-      when: enable_packages and ansible_facts['os_family'] == "Debian"
+      when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
 
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
