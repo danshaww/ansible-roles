@@ -9,7 +9,7 @@
 
 - name: Global Utility Installation
   ansible.builtin.dnf:
-    pkg: "{{ system_packages }}"
+    pkg: "{{ system_packages.global + system_packages.dnf }}"
 
 - name: Server Specific Utility Installation
   ansible.builtin.dnf:

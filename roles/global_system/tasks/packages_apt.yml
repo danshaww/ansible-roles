@@ -3,14 +3,16 @@
     update_cache: true
   changed_when: false
   ignore_errors: true # This is because of issues with the MPR package repo
+
 - name: Global Utility Installation
   ansible.builtin.apt:
-    pkg: "{{ system_packages }}"
-  tags: apt
+    pkg: "{{ system_packages.global + system_packages.apt }}"
+
 - name: Server Specific Utility Installation
   ansible.builtin.apt:
     pkg: "{{ global_system_server_packages | default('[]') }}"
   when: global_system_server_packages != []
+
 - name: Figurine Installation
   ansible.builtin.copy:
     src: figurine
