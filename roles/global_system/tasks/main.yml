@@ -2,16 +2,20 @@
   tags: system
   become: true
   block:
+    - name: Global Packages Installation
+      ansible.builtin.include_tasks: package_installation/packages_global.yml
+      when: enable_packages
+
     - name: APT Package Installation
-      ansible.builtin.include_tasks: packages_apt.yml
+      ansible.builtin.include_tasks: package_installation/packages_apt.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
 
     - name: DNF Package Installation
-      ansible.builtin.include_tasks: packages_dnf.yml
+      ansible.builtin.include_tasks: package_installation/packages_dnf.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "dnf5"
 
     - name: Just Installation
-      ansible.builtin.include_tasks: just.yml
+      ansible.builtin.include_tasks: package_installation/just_deb.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
 
     - name: System SSH Config
