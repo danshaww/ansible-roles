@@ -34,6 +34,7 @@
   block:
     - name: Install | DNF | Add Repository
       ansible.builtin.command: dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+      changed_when: false
     - name: Install | DNF | Add GPG Key
       ansible.builtin.rpm_key:
         state: present
