@@ -44,10 +44,6 @@
         name: "{{ docker.packages }}"
         state: present
 
-- name: Installation | Install Packages
-  become: true
-  ansible.builtin.apt:
-    pkg: "{{ docker.packages }}"
 - name: Installation | Create Directories
   ansible.builtin.file:
     path: "{{ item }}"
