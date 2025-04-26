@@ -44,6 +44,13 @@
         name: "{{ docker.packages }}"
         state: present
 
+- name : Installation | Enable and Start Docker
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
 - name: Installation | Create Directories
   ansible.builtin.file:
     path: "{{ item }}"
