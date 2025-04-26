@@ -24,19 +24,23 @@
       ansible.posix.firewalld:
         port: 22/tcp
         permanent: true
+        immediate: true
         state: enabled
     - name: Firewalld | Allow SSH (udp)
       ansible.posix.firewalld:
         port: 22/udp
         permanent: true
+        immediate: true
         state: enabled
     - name: Firewalld | Allow CheckMK (tcp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
         port: 6556/tcp
         permanent: true
+        immediate: true
         state: enabled
     - name: Firewalld | Allow CheckMK (udp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
         port: 6556/udp
         permanent: true
+        immediate: true
         state: enabled
