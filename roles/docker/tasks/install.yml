@@ -13,25 +13,24 @@
 
 - name: Installation | APT Package Manager
   when: ansible_os_family == "Debian"
+  become: true
   block:
     - name: Installation | APT | Add APT GPG Key
       ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         keyring: /etc/apt/keyrings/docker.gpg
-      become: true
     - name: Installation | APT |  Add Repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
         state: present
         filename: docker
-      become: true
     - name: Installation | APT |  Install Packages
-      become: true
       ansible.builtin.apt:
         pkg: "{{ docker.packages }}"
 
 - name: Installation | DNF Package Manager
   when: ansible_os_family == "RedHat"
+  become: true
   block:
     - name: Install | DNF | Add Repository
       ansible.builtin.yum_repository:
