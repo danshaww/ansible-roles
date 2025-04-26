@@ -36,7 +36,7 @@
       ansible.builtin.yum_repository:
         name: docker-ce
         description: Docker Resporitory
-        baseurl: https://download.docker.com/linux/fedora/docker-ce.repo
+        baseurl: https://download.docker.com
     - name: Install | DNF | Add GPG Key
       ansible.builtin.rpm_key:
         state: present
