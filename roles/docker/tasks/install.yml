@@ -33,10 +33,7 @@
   become: true
   block:
     - name: Install | DNF | Add Repository
-      ansible.builtin.yum_repository:
-        name: docker-ce
-        description: Docker Resporitory
-        baseurl: https://download.docker.com
+      ansible.builtin.command: dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
     - name: Install | DNF | Add GPG Key
       ansible.builtin.rpm_key:
         state: present
