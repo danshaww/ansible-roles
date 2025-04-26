@@ -1,14 +1,3 @@
-- name: Installation | Add APT GPG Key
-  ansible.builtin.apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    keyring: /etc/apt/keyrings/docker.gpg
-  become: true
-- name: Installation | Add APT Repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
-    state: present
-    filename: docker
-  become: true
 - name: Installation | Configure Group
   ansible.builtin.group:
     name: docker
@@ -21,15 +10,47 @@
     groups: docker
     append: true
   become: true
+
+- name: Installation | APT Package Manager
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Installation | APT | Add APT GPG Key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        keyring: /etc/apt/keyrings/docker.gpg
+      become: true
+    - name: Installation | APT |  Add Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
+        state: present
+        filename: docker
+      become: true
+    - name: Installation | APT |  Install Packages
+      become: true
+      ansible.builtin.apt:
+        pkg: "{{ docker.packages }}"
+
+- name: Installation | DNF Package Manager
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: Install | DNF | Add Repository
+      ansible.builtin.yum_repository:
+        name: docker-ce
+        description: Docker Resporitory
+        baseurl: https://download.docker.com/linux/fedora/docker-ce.repo
+    - name: Install | DNF | Add GPG Key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://download.docker.com/linux/fedora/gpg
+    - name: Install | DNF | Install Packages
+      ansible.builtin.dnf:
+        name: "{{ docker.packages }}"
+        state: present
+
 - name: Installation | Install Packages
   become: true
   ansible.builtin.apt:
-    pkg:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+    pkg: "{{ docker.packages }}"
 - name: Installation | Create Directories
   ansible.builtin.file:
     path: "{{ item }}"

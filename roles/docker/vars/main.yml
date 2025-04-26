@@ -3,3 +3,9 @@ docker:
     main: /srv/docker
     volumes: /srv/docker/volumes
     apps: /srv/docker/apps
+  packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
