@@ -1,10 +1,10 @@
-- name: Ensure necessary dependencies are installed
+- name: Main | Ensure necessary dependencies are installed
   ansible.builtin.apt:
     pkg: "{{ packages }}"
     state: present
     update_cache: true
   become: true
-- name: Create runner directory
+- name: Main | Create runner directory
   ansible.builtin.file:
     path: "{{ runner_path }}"
     state: directory
@@ -13,7 +13,7 @@
     group: "{{ username }}"
   changed_when: false
   become: true
-- name: Download Gitea Actions Runner
+- name: Main | Download Gitea Actions Runner
   ansible.builtin.get_url:
     url: "{{ runner_url }}"
     dest: "{{ runner_path }}/act_runner"
@@ -22,7 +22,7 @@
     mode: '0755'
   become: true
 
-- name: Configure Gitea Actions Runner
+- name: Main | Configure Gitea Actions Runner
   ansible.builtin.command: >
     ./act_runner register
     --no-interactive
@@ -35,7 +35,7 @@
     creates: "{{ runner_path }}/.runner"
   become: true
 
-- name: Configure .runner permissions
+- name: Main | Configure .runner permissions
   ansible.builtin.file:
     path: "{{ runner_path }}/.runner"
     state: file
@@ -44,7 +44,7 @@
     group: "{{ username }}"
   become: true
 
-- name: Create Gitea Actions Runner service
+- name: Main | Create Gitea Actions Runner service
   ansible.builtin.template:
     src: act_runner.service.j2
     dest: /etc/systemd/system/act_runner.service
@@ -53,14 +53,14 @@
     mode: '0644'
   become: true
 
-- name: Ensure Service is started and enabled
+- name: Main | Ensure Service is started and enabled
   ansible.builtin.service:
     name: act_runner
     state: started
     enabled: true
   become: true
 
-- name: Populate SSH Config
+- name: Main | Populate SSH Config
   ansible.builtin.lineinfile:
     path: /home/{{ username }}/.ssh/config
     line: "{{ item }}"
@@ -71,11 +71,11 @@
     - "Host *"
     - "   StrictHostKeyChecking no"
 
-- name: Install AZ CLI
+- name: Main | Install AZ CLI
   ansible.builtin.include_tasks: az_cli.yml
-- name: Install Ansible
+- name: Main | Install Ansible
   ansible.builtin.include_tasks: ansible.yml
-- name: Install Terraform
+- name: Main | Install Terraform
   ansible.builtin.include_tasks: terraform.yml
-- name: Install Docker
+- name: Main | Install Docker
   ansible.builtin.include_tasks: docker.yml
