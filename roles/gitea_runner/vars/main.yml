@@ -1,0 +1,8 @@
+packages:
+  - curl
+  - tar
+  - jq
+  - nodejs
+  - golang-go
+  - software-properties-common
+  - gnupg

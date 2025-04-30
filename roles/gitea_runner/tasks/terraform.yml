@@ -1,9 +1,3 @@
-- name: Terraform - Install Dependancies
-  become: true
-  ansible.builtin.apt:
-    pkg:
-      - software-properties-common
-      - gnupg
 - name: Terraform - Add APT GPG Key
   ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
@@ -20,3 +14,12 @@
   become: true
   ansible.builtin.apt:
     pkg: terraform
+- name: Check for tf-summarize binary
+  ansible.builtin.stat:
+    path: ~/go/bin/tf-summarize
+  register: tf_summarize
+- name: Install tf-summarize
+  ansible.builtin.command:
+    cmd: go install github.com/dineshba/tf-summarize@latest
+  when: not tf_summarize.stat.exists
+  changed_when: not tf_summarize.stat.exists

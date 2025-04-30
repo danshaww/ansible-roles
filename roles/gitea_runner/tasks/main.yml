@@ -1,10 +1,6 @@
 - name: Ensure necessary dependencies are installed
   ansible.builtin.apt:
-    name:
-      - curl
-      - tar
-      - jq
-      - nodejs
+    pkg: "{{ packages }}"
     state: present
     update_cache: true
   become: true
