@@ -28,7 +28,7 @@
       changed_when: not tf_summarize.stat.exists
     - name: Terraform | Copy tf-summarize binary
       ansible.builtin.copy:
-        src: ~/go/bin/tf-summarize
+        src: /root/go/bin/tf-summarize
         dest: /usr/local/bin/tf-summarize
         mode: '0755'
         owner: root
