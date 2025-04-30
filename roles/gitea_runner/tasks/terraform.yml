@@ -23,3 +23,11 @@
     cmd: go install github.com/dineshba/tf-summarize@latest
   when: not tf_summarize.stat.exists
   changed_when: not tf_summarize.stat.exists
+- name: Terraform | Copy tf-summarize binary
+  ansible.builtin.file:
+    src: ~/go/bin/tf-summarize
+    dest: /usr/local/bin/tf-summarize
+    state: present
+    mode: '0755'
+    owner: root
+    group: root
