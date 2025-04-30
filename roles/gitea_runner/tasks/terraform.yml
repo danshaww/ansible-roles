@@ -14,22 +14,10 @@
   become: true
   ansible.builtin.apt:
     pkg: terraform
-- name: Terraform | Install tf-summarize
-  become: true
-  block:
-    - name: Terraform | Check for tf-summarize binary
-      ansible.builtin.stat:
-        path: ~/go/bin/tf-summarize
-      register: tf_summarize
-    - name: Terraform | Install tf-summarize
-      ansible.builtin.command:
-        cmd: go install github.com/dineshba/tf-summarize@latest
-      when: not tf_summarize.stat.exists
-      changed_when: not tf_summarize.stat.exists
-    - name: Terraform | Copy tf-summarize binary
-      ansible.builtin.copy:
-        src: /root/go/bin/tf-summarize
-        dest: /usr/local/bin/tf-summarize
-        mode: '0755'
-        owner: root
-        group: root
+- name: Terraform | Copy tf-summarize binary
+  ansible.builtin.copy:
+    src: tf-summarize
+    dest: /usr/local/bin/tf-summarize
+    mode: '0755'
+    owner: root
+    group: root

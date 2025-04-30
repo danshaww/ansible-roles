@@ -3,6 +3,6 @@ packages:
   - tar
   - jq
   - nodejs
-  - golang-go
+#  - golang-go
   - software-properties-common
   - gnupg
