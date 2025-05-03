@@ -1,0 +1,20 @@
+- name: LetsEncrypt - Copy ACME DNS Challenge Script
+  ansible.builtin.copy:
+    src: acme-dns-auth.py
+    dest: /etc/letsencrypt/acme-dns-auth.py
+    mode: '0755'
+- name: LetsEncrypt - Check if Cert Exists
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ checkmk_server_hostname }}/fullchain.pem"
+  register: certificate
+- name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
+  ansible.builtin.lineinfile:
+    path: /etc/letsencrypt/auth.ini
+    line: "dns_cloudflare_api_token = {{ checkmk_server_cloudflare_api_token }}"
+    regexp: "dns_cloudflare_api_token = "
+    create: true
+    mode: '0600'
+  no_log: true
+- name: LetsEncrypt - Generate Certificate # TODO: Fix the length of this command
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ checkmk_server_hostname }} --non-interactive --agree-tos -m {{ checkmk_server_letsencrypt_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
+  when: not certificate.stat.exists

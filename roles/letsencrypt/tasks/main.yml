@@ -2,7 +2,7 @@
   become: true
   ansible.builtin.apt:
     pkg:
-      - certbot 
+      - certbot
       - python3-certbot-dns-cloudflare
 - name: LetsEncrypt - Copy ACME DNS Challenge Script
   ansible.builtin.copy:
