@@ -1,6 +1,6 @@
 - name: LetsEncrypt - Copy ACME DNS Challenge Script
-  ansible.builtin.copy:
-    src: acme-dns-auth.py
+  ansible.builtin.uri:
+    url: https://raw.githubusercontent.com/alanmburr/acme-dns-certbot/refs/heads/master/acme-dns-auth.py
     dest: /etc/letsencrypt/acme-dns-auth.py
     mode: '0755'
 - name: LetsEncrypt - Check if Cert Exists
