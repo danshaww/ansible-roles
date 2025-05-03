@@ -1,8 +1,7 @@
 galaxy_info:
   author: Dan Shaw
   description: Ansible role to install NGINX.
-  min_ansible_version: 2.1
+  min_ansible_version: "2.1"
+  license: GPLv3
   galaxy_tags: []
-dependencies: [
-  letsencrypt
-]
+dependencies: []
