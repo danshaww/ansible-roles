@@ -1,6 +1,2 @@
 - name: NGINX | Install
   ansible.builtin.include_tasks: install.yml
-
-- name: NGINX | Generate SSL Certificates
-  ansible.builtin.include_tasks: letsencrypt.yml
-  when: nginx_letsencrypt_enabled

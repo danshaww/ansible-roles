@@ -3,9 +3,12 @@
   ansible.builtin.apt:
     pkg: "{{ packages }}"
 - name: NGINX - Copy Default Website
-  copy:
-    src: default
+  ansible.builtin.template:
+    src: default.j2
     dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
   become: true
   notify: Reload Web
 - name: NGINX - Set Directory Permissions

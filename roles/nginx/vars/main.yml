@@ -1,4 +1,2 @@
 packages:
   - nginx
-  - certbot
-  - python3-certbot-dns-cloudflare

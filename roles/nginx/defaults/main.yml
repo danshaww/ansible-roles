@@ -1,4 +1,1 @@
-nginx_cloudflare_api_token: null
-nginx_letsencrypt_email: null
-nginx_letsencrypt_enabled: true
-nginx_certificate: null
+nginx_default_certificate: null

@@ -4,8 +4,8 @@ server {
 
         listen 443 ssl;
         ssl on;
-        ssl_certificate         /etc/letsencrypt/live/internal.epichouse.co.uk/fullchain.pem;
-        ssl_certificate_key     /etc/letsencrypt/live/internal.epichouse.co.uk/privkey.pem;
+        ssl_certificate         /etc/letsencrypt/live/{{ nginx_default_certificate }}/fullchain.pem;
+        ssl_certificate_key     /etc/letsencrypt/live/{{ nginx_default_certificate }}/privkey.pem;
         root /var/www/html;
         index index.html index.htm index.nginx-debian.html;
         server_name _;

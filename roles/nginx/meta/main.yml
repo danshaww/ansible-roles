@@ -4,4 +4,6 @@ galaxy_info:
   min_ansible_version: "2.1"
   license: GPLv3
   galaxy_tags: []
-dependencies: []
+dependencies: [
+  letsencrypt
+]
