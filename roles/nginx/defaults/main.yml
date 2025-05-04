@@ -1,1 +1,4 @@
 nginx_default_certificate: null
+nginx_install: true
+nginx_configure: false
+nginx_config_path: changeme

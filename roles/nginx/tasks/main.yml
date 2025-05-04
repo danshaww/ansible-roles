@@ -1,2 +1,7 @@
 - name: NGINX | Install
   ansible.builtin.include_tasks: install.yml
+  when: nginx_install
+
+- name: NGINX | Configure
+  ansible.builtin.include_tasks: configure.yml
+  when: nginx_configure

@@ -1,0 +1,26 @@
+- name: NGINX Configuration | Get Sites
+  ansible.builtin.shell: ls "{{ nginx_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  register: sites
+  delegate_to: localhost
+  become: true
+  changed_when: false
+
+- name: Configuration | Generate site configuration
+  ansible.builtin.template:
+    src: "{{ nginx_config_path }}/{{ item }}.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+    owner: root
+    group: docker
+    mode: '0770'
+  with_items: "{{ sites.stdout_lines }}"
+
+- name: Configuration | Create Symbolic Links
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ item }}"
+    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    state: link
+  with_items: "{{ sites.stdout_lines }}"
+  notify: Reload Web
+
+
+# TODO: Add functionality to remove sites that are not in config
