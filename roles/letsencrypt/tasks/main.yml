@@ -36,7 +36,7 @@
     --dns-cloudflare-credentials /etc/letsencrypt/auth.ini
     --dns-cloudflare
     --dns-cloudflare-propagation-seconds 60
-  when: not certificate.results[ansible_loop.index].stat.exists
+  when: not certificate.results[index].stat.exists
   with_items: "{{ letsencrypt_certificates }}"
   loop_control:
     extended: true
