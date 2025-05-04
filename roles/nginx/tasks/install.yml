@@ -1,8 +1,8 @@
-- name: NGINX | Install Packages
+- name: NGINX Install | Install Packages
   become: true
   ansible.builtin.apt:
     pkg: "{{ packages }}"
-- name: NGINX - Copy Default Website
+- name: NGINX Install | Copy Default Website
   ansible.builtin.template:
     src: default.j2
     dest: /etc/nginx/sites-available/default
@@ -10,8 +10,13 @@
     group: root
     mode: '0644'
   become: true
+- name: NGINX Install | Ensure Default website is enabled
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/default"
+    dest: "/etc/nginx/sites-enabled/default"
+    state: link
   notify: Reload Web
-- name: NGINX - Set Directory Permissions
+- name: NGINX Install | Set Directory Permissions
   ansible.builtin.file:
     path: /etc/nginx
     owner: root
@@ -19,7 +24,7 @@
     mode: '0644'
     recurse: true
   become: true
-- name: NGINX - UFW Allow HTTPS
+- name: NGINX Install | UFW Allow HTTPS
   community.general.ufw:
     rule: allow
     port: '443'
