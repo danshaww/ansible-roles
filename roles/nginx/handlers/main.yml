@@ -1,10 +1,9 @@
 - name: Test Configuration
   ansible.builtin.command: nginx -t
   listen: Reload Web
-  notifty: Reload Web Service
+  notify: Reload Web Service
 
 - name: Reload Web Service
   ansible.builtin.service:
     name: nginx
     state: reloaded
-
