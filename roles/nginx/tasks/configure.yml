@@ -9,9 +9,6 @@
   ansible.builtin.template:
     src: "{{ nginx_config_path }}/{{ item }}.j2"
     dest: "/etc/nginx/sites-available/{{ item }}"
-    owner: root
-    group: docker
-    mode: '0770'
   with_items: "{{ sites.stdout_lines }}"
 
 - name: Configuration | Create Symbolic Links
