@@ -27,13 +27,13 @@
   ansible.builtin.file:
     dest: "/etc/nginx/sites-enabled/{{ item }}"
     state: absent
-  with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + 'default') }}"
+  with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + default_sites) }}"
 
 
 - name: Configuration | Remove non-required sites
   ansible.builtin.file:
     dest: "/etc/nginx/sites-enabled/{{ item }}"
     state: absent
-  with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + 'default') }}"
+  with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + default_sites) }}"
 
 # TODO: Add functionality to remove sites that are not in config
