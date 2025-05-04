@@ -36,5 +36,5 @@
     --dns-cloudflare-credentials /etc/letsencrypt/auth.ini
     --dns-cloudflare
     --dns-cloudflare-propagation-seconds 60
-  when: not certificate.item.stat.exists
+  when: not certificate.results.[item].stat.exists
   with_items: "{{ letsencrypt_certificates }}"
