@@ -15,7 +15,7 @@
     dest: /etc/letsencrypt/auth.ini
     mode: '0600'
 
-- name: Check for existing certicficates
+- name: Check for existing certificates
   ansible.builtin.stat:
     path: "/etc/letsencrypt/live/{{ item }}/fullchain.pem"
   register: certificates
