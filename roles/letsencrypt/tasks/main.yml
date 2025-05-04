@@ -36,3 +36,4 @@
   when: not item.stat.exists
   changed_when: item.stat.exists
   with_items: "{{ certificates.results }}"
+  no_log: true
