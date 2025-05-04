@@ -9,13 +9,13 @@
   register: current_sites
   changed_when: false
 
-- name: Configuration | Generate site configuration
+- name: NGINX Configuration | Generate site configuration
   ansible.builtin.template:
     src: "{{ nginx_config_path }}/{{ item }}.j2"
     dest: "/etc/nginx/sites-available/{{ item }}"
   with_items: "{{ sites.stdout_lines }}"
 
-- name: Configuration | Create Symbolic Links
+- name: NGINX Configuration | Create Symbolic Links
   ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ item }}"
     dest: "/etc/nginx/sites-enabled/{{ item }}"
@@ -23,14 +23,14 @@
   with_items: "{{ sites.stdout_lines }}"
   notify: Reload Web
 
-- name: Configuration | Deactivate non-required sites
+- name: NGINX Configuration | Deactivate non-required sites
   ansible.builtin.file:
     dest: "/etc/nginx/sites-enabled/{{ item }}"
     state: absent
   with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + default_sites) }}"
+  notify: Reload Web
 
-
-- name: Configuration | Remove non-required sites
+- name: NGINX Configuration | Remove non-required sites
   ansible.builtin.file:
     dest: "/etc/nginx/sites-enabled/{{ item }}"
     state: absent
