@@ -26,15 +26,15 @@
 
 - name: LetsEncrypt | Generate Certificate
   ansible.builtin.shell: |
-    certbot certonly
-    --preferred-challenges dns
-    --debug-challenges
-    -d {{ item }}
-    --non-interactive
-    --agree-tos
-    -m {{ nginx_letsencrypt_email }}
-    --dns-cloudflare-credentials /etc/letsencrypt/auth.ini
-    --dns-cloudflare
-    --dns-cloudflare-propagation-seconds 60"
+    certbot certonly \
+    --preferred-challenges dns \
+    --debug-challenges \
+    -d {{ item }} \
+    --non-interactive \
+    --agree-tos \
+    -m {{ nginx_letsencrypt_email }} \
+    --dns-cloudflare-credentials /etc/letsencrypt/auth.ini \
+    --dns-cloudflare \
+    --dns-cloudflare-propagation-seconds 60" \
   when: not certificate.item.stat.exists
   with_items: "{{ letsencrypt_certificates }}"
