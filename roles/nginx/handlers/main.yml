@@ -1,9 +1,10 @@
-- name: Reload Web
+- name: Test Configuration
+  ansible.builtin.command: nginx -t
+  listen: Reload Web
+  notifty: Reload Web Service
+
+- name: Reload Web Service
   ansible.builtin.service:
     name: nginx
     state: reloaded
-  become: true
-- name: Enable Default SSL Site
-  ansible.builtin.shell: a2ensite default-ssl
-  become: true
-  when: copydefault.changed
+
