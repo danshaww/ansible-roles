@@ -1,8 +1,12 @@
-- name: NGINX Configuration | Get Sites
+- name: NGINX Configuration | Get sites in configuration
   ansible.builtin.shell: ls "{{ nginx_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: sites
   delegate_to: localhost
-  become: true
+  changed_when: false
+
+- name: NGINX Configuration | Get running sites
+  ansible.builtin.shell: "ls /etc/nginx/sites-available"
+  register: current_sites
   changed_when: false
 
 - name: Configuration | Generate site configuration
@@ -19,5 +23,17 @@
   with_items: "{{ sites.stdout_lines }}"
   notify: Reload Web
 
+- name: Configuration | Deactivate non-required sites
+  ansible.builtin.file:
+    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    state: absent
+  with_items: "{{ currentapplications.stdout_lines | difference(sites.stdout_lines) }}"
+
+
+- name: Configuration | Remove non-required sites
+  ansible.builtin.file:
+    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    state: absent
+  with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines) }}"
 
 # TODO: Add functionality to remove sites that are not in config
