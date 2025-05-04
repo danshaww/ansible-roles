@@ -29,10 +29,10 @@
     certbot certonly
     --preferred-challenges dns
     --debug-challenges
-    -d {{ item }}
+    --domain {{ item }}
     --non-interactive
     --agree-tos
-    -m {{ letsencrypt_email }}
+    --email {{ letsencrypt_email }}
     --dns-cloudflare-credentials /etc/letsencrypt/auth.ini
     --dns-cloudflare
     --dns-cloudflare-propagation-seconds 60
