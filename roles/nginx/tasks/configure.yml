@@ -14,6 +14,7 @@
     src: "{{ nginx_config_path }}/{{ item }}.j2"
     dest: "/etc/nginx/sites-available/{{ item }}"
   with_items: "{{ sites.stdout_lines }}"
+  notify: Reload Web
 
 - name: NGINX Configuration | Create Symbolic Links
   ansible.builtin.file:
@@ -21,7 +22,6 @@
     dest: "/etc/nginx/sites-enabled/{{ item }}"
     state: link
   with_items: "{{ sites.stdout_lines }}"
-  notify: Reload Web
 
 - name: NGINX Configuration | Deactivate non-required sites
   ansible.builtin.file:
