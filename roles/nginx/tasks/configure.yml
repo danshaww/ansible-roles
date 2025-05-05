@@ -36,4 +36,5 @@
   with_items: "{{ current_sites.stdout_lines | difference(sites.stdout_lines + default_sites) }}"
   notify: Reload Web
 
-# TODO: Add functionality to remove sites that are not in config
+# TODO: Maybe make similar to Bind DNS? i.e have all config passed in rather than default site in here
+# Specifically nginx.conf
