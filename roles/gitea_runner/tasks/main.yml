@@ -79,3 +79,5 @@
   ansible.builtin.include_tasks: terraform.yml
 - name: Main | Install Docker
   ansible.builtin.include_tasks: docker.yml
+- name: Main | Configure AWS S3 Credentials
+  ansible.builtin.include_tasks: aws_credentials.yml
