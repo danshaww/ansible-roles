@@ -38,4 +38,4 @@
 - name: Configure Vault Password File
   ansible.builtin.copy:
     dest: "/home/{{ username }}/.vault"
-    src: "{{ gitea_vault_password }}"
+    content: "{{ gitea_vault_password }}"
