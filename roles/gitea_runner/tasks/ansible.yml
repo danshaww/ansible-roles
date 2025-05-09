@@ -39,3 +39,6 @@
   ansible.builtin.copy:
     dest: "/home/{{ username }}/.vault"
     content: "{{ gitea_vault_password }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  become: true
