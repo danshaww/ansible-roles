@@ -35,3 +35,7 @@
     requirements: /home/ci/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
     break_system_packages: true
   become: true
+- name: Configure Vault Password File
+  ansible.builtin.copy:
+    dest: "/home/{{ username }}/.vault"
+    src: "{{ gitea_vault_password }}"

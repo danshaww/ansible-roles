@@ -9,3 +9,4 @@ gitea_aws:
   aws_secret_access_key: null
   aws_access_key_id: null
   endpoint_url: null
+gitea_vault_password: ""
