@@ -3,8 +3,12 @@
 
 - name: DNF Packages | Add EPEL Repository
   ansible.builtin.dnf:
-    name: epel-release
-    state: present
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/Everything/$basearch/
+    gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
+    enabled: true
+    gpgcheck: true
 
 
 - name: DNF Packages | Installation
