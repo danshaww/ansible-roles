@@ -2,7 +2,7 @@
   ansible.builtin.shell: dnf install python3-libdnf5 -y
 
 - name: DNF Packages | Add EPEL Repository
-  ansible.builtin.dnf:
+  ansible.builtin.yum_repository:
     name: epel
     description: EPEL YUM repo
     baseurl: https://download.fedoraproject.org/pub/epel/$releasever/Everything/$basearch/
