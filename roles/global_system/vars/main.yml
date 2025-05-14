@@ -17,7 +17,6 @@ system_packages:
     - smartmontools
     - acl
     - xclip
-    - ufw
   apt:
     - neofetch # TODO: Need to determine if this can be retained now EOL
     - cron
