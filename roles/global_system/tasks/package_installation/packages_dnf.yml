@@ -5,7 +5,7 @@
   ansible.builtin.yum_repository:
     name: epel
     description: EPEL YUM repo
-    baseurl: https://download.fedoraproject.org
+    baseurl: https://dl.fedoraproject.org/pub/epel
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
 - name: DNF Packages | Installation
