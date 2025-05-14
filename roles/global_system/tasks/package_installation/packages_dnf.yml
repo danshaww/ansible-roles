@@ -8,6 +8,11 @@
     baseurl: https://download.fedoraproject.org/pub/epel/9/Everything/x86_64
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
+- name: DMF Packages | Import GPG Key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+
 - name: DNF Packages | Installation
   ansible.builtin.dnf:
     pkg: "{{ system_packages.global + system_packages.dnf + global_system_server_packages}}"
