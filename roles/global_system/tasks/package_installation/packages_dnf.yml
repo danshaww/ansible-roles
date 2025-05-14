@@ -31,3 +31,8 @@
       ansible.builtin.dnf:
         pkg: /tmp/check-mk-agent-2.3.0p30-1.noarch.rpm
         state: present
+
+- name: DNF Packages | Uninstall Firewalld
+  ansible.builtin.dnf:
+    name: firewalld
+    state: absent
