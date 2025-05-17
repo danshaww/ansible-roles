@@ -74,7 +74,7 @@
     job: "docker image prune -f && docker volume prune -f"
   become: true
 - name: Installation | Configure GitHub Packages Authentication
-  when: docker_github_auth.enabled
+  when: docker_github_auth.enabled # TODO: Make this dynamic
   become: true
   block:
     - name: Installation | Ensure config directory exists
