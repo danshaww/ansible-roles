@@ -12,10 +12,9 @@
       dir: "/root"
   become: true
 
-- name: SSH | Set Authorised Keys
+- name: SSH | Set authorized_keys
   ansible.builtin.lineinfile:
-    line: "{{ global_user_public_ssh_key }}"
-    regexp: "{{ global_user_public_ssh_key }}"
+    content: "{{ global_user_public_ssh_key }}"
     dest: "{{ item.dir }}/.ssh/authorized_keys"
     mode: '0644'
     owner: "{{ item.user }}"
