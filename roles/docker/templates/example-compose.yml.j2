@@ -1,0 +1,24 @@
+networks:
+  backend: null
+  frontend:
+    external: true
+    name: traefik_backend
+
+services:
+  web:
+    image: nginx
+    restart: unless-stopped
+    environment:
+      - UID=0
+      - GID=121
+    labels:
+      - traefik.enable=true
+      - traefik.backend=frontend
+      - traefik.docker.network=traefik_backend
+      - traefik.http.routers.{{ item }}.rule=Host(`{{ item }}.internal.epichouse.co.uk`)
+      - traefik.http.routers.{{ item }}.entrypoints=websecure
+      - traefik.http.services.{{ item }}.loadbalancer.server.port=80
+      - traefik.http.routers.{{ item }}.tls=true
+      - traefik.http.routers.{{ item }}.tls.certresolver=letsencrypt
+    networks:
+      - frontend
