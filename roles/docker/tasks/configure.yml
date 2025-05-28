@@ -4,6 +4,8 @@
   delegate_to: localhost
   become: true
   changed_when: false
+
+# TODO: Remove duplicate directory creation
 - name: Configuration | Ensure data directories exist for required projects
   ansible.builtin.file:
     path: "{{ docker.paths.volumes }}/{{ item }}"
@@ -22,6 +24,8 @@
     state: directory
   become: true
   with_items: "{{ applications.stdout_lines }}"
+
+
 - name: Configuration | Generate compose files from Jinja templates
   ansible.builtin.template:
     src: "{{ docker_config_path }}/{{ item }}.yml.j2"
