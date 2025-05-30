@@ -3,11 +3,11 @@
   become: true
   block:
     - name: APT Package Installation
-      ansible.builtin.include_tasks: package_installation/packages_apt.yml
+      ansible.builtin.include_tasks: packages_apt.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
 
     - name: DNF Package Installation
-      ansible.builtin.include_tasks: package_installation/packages_dnf.yml
+      ansible.builtin.include_tasks: packages_dnf.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "dnf5"
 
     - name: CheckMK Agent Installation
