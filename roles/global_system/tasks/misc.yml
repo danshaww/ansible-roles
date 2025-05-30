@@ -1,16 +1,21 @@
-- name: Set TimeZone
+- name:  Misc | Set TimeZone
   community.general.timezone:
     name: Europe/London
-- name: Syslog - Copy Config File
+- name:  Misc | Syslog - Copy Config File
   ansible.builtin.copy:
     src: syslog.conf
     dest: /etc/rsyslog.d/50-default.conf
     mode: '0644'
   notify: Restart Syslog
   when: enable_syslog_config
-- name: Allow sudo without password
+- name:  Misc | Allow sudo without password
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/dan
     line: dan ALL=(ALL) NOPASSWD:ALL
     create: true
+    mode: '0644'
+- name: Misc | Render MOTD Template
+  ansible.builtin.template:
+    dest: /etc/motd
+    src: motd.j2
     mode: '0644'

@@ -1,15 +1,4 @@
-- name: Set Server Type (Host)
-  ansible.builtin.set_fact:
-    server_type: "Physical Machine"
-  when: ansible_facts['virtualization_role'] == "host"
-- name: Set Server Type (Virtual Machine)
-  ansible.builtin.set_fact:
-    server_type: "Virtual Machine"
-  when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_tech_guest'] is search ("kvm")
-- name: Set Server Type (LXC Container)
-  ansible.builtin.set_fact:
-    server_type: "LXC Container"
-  when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_tech_guest'] is search ("lxc")
+
 - name: MOTD - Render Template
   ansible.builtin.template:
     dest: /etc/motd

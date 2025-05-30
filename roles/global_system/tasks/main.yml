@@ -26,14 +26,6 @@
       ansible.builtin.include_tasks: firewall.yml
       when: enable_firewall_config
 
-    - name: Environment Variable Config
-      ansible.builtin.include_tasks: env.yml
-      when: enable_env_config
-
-    - name: MOTD Population
-      ansible.builtin.include_tasks: motd.yml
-      when: enable_motd_config
-
     - name: NAS NFS Configuration
       ansible.builtin.include_tasks: nfs_mounts.yml
       when: nfs is defined
