@@ -1,5 +1,0 @@
-- name: Global Packages | Figurine Installation
-  ansible.builtin.copy:
-    src: figurine
-    dest: /usr/local/bin/figurine
-    mode: '0755'

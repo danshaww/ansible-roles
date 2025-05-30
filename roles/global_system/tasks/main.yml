@@ -2,10 +2,6 @@
   tags: system
   become: true
   block:
-    - name: Global Packages Installation
-      ansible.builtin.include_tasks: package_installation/packages_global.yml
-      when: enable_packages
-
     - name: APT Package Installation
       ansible.builtin.include_tasks: package_installation/packages_apt.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
@@ -14,9 +10,9 @@
       ansible.builtin.include_tasks: package_installation/packages_dnf.yml
       when: enable_packages and ansible_facts['pkg_mgr'] == "dnf5"
 
-    - name: Just Installation
-      ansible.builtin.include_tasks: package_installation/just_deb.yml
-      when: enable_packages and ansible_facts['pkg_mgr'] == "apt"
+    - name: CheckMK Agent Installation
+      ansible.builtin.include_tasks: checmk_agent.yml
+      when: enable_checkmk_agent_install
 
     - name: System SSH Config
       ansible.builtin.include_tasks: ssh.yml
@@ -25,10 +21,6 @@
     - name: Firewall Configuration
       ansible.builtin.include_tasks: firewall.yml
       when: enable_firewall_config
-
-    - name: NAS NFS Configuration
-      ansible.builtin.include_tasks: nfs_mounts.yml
-      when: nfs is defined
 
     - name: Misc Tasks
       ansible.builtin.include_tasks: misc.yml

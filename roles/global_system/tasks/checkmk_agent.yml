@@ -1,0 +1,29 @@
+- name: CheckMK Agent Installation | DNF
+  when: global_system_checkmk_install and ansible_facts['pkg_mgr'] == "dnf5"
+  block:
+    - name: CheckMK Agent Installation | DNF | Copy Installation Media
+      ansible.builtin.copy:
+        src: check-mk-agent-2.3.0p30-1.noarch.rpm
+        dest: /tmp
+        mode: '0644'
+        owner: root
+        group: root
+    - name: CheckMK Agent Installation | DNF | Install Agent
+      ansible.builtin.dnf:
+        pkg: /tmp/check-mk-agent-2.3.0p30-1.noarch.rpm
+        state: present
+
+- name: CheckMK Agent Installation | APT
+  when: global_system_checkmk_install and ansible_facts['pkg_mgr'] == "apt"
+  block:
+    - name: CheckMK Agent Installation | APT | Copy Installation Media
+      ansible.builtin.copy:
+        src: check-mk-agent_2.3.0p30-1_all.deb
+        dest: /tmp
+        mode: '0644'
+        owner: root
+        group: root
+    - name: CheckMK Agent Installation | APT | Install Agent
+      ansible.builtin.apt:
+        deb: /tmp/check-mk-agent_2.3.0p30-1_all.deb
+        state: present

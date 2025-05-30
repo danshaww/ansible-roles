@@ -19,3 +19,19 @@
     dest: /etc/motd
     src: motd.j2
     mode: '0644'
+- name: Misc | Check for just bash completions
+  ansible.builtin.stat:
+    path: /usr/share/bash-completion/completions/just
+  register: completions
+- name: Misc | Install just bash completions
+  ansible.builtin.shell: |
+    just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
+    echo "complete -F _just -o bashdefault -o default j" | sudo tee -a /usr/share/bash-completion/completions/just >> /dev/null
+  become: true
+  when: not completions.stat.exists
+  changed_when: not completions.stat.exists
+- name: Misc | Copy Figurine Binary
+  ansible.builtin.copy:
+    src: figurine
+    dest: /usr/local/bin/figurine
+    mode: '0755'

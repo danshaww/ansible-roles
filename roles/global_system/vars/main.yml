@@ -18,6 +18,7 @@ system_packages:
     - acl
     - xclip
     - btop
+    - gpg
   apt:
     - neofetch # TODO: Need to determine if this can be retained now EOL
     - cron

@@ -1,5 +1,5 @@
 - name: DNF Packages | Prerequsits
-  ansible.builtin.shell: dnf install python3-libdnf5 -y
+  ansible.builtin.command: dnf install python3-libdnf5 -y
 
 - name: DNF Packages | Add EPEL Repository
   ansible.builtin.yum_repository:
@@ -8,7 +8,7 @@
     baseurl: https://download.fedoraproject.org/pub/epel/9/Everything/x86_64
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
-- name: DMF Packages | Import GPG Key
+- name: DMF Packages | Import EPEL GPG Key
   ansible.builtin.rpm_key:
     state: present
     key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
@@ -16,18 +16,3 @@
 - name: DNF Packages | Installation
   ansible.builtin.dnf:
     pkg: "{{ system_packages.global + system_packages.dnf + global_system_server_packages}}"
-
-- name: DNF Packages | CheckMK Agent Installation
-  when: global_system_checkmk_install
-  block:
-    - name: CheckMK Agent | Copy Installation Media
-      ansible.builtin.copy:
-        src: check-mk-agent-2.3.0p30-1.noarch.rpm
-        dest: /tmp
-        mode: '0644'
-        owner: root
-        group: root
-    - name: CheckMK Agent | Install Agent
-      ansible.builtin.dnf:
-        pkg: /tmp/check-mk-agent-2.3.0p30-1.noarch.rpm
-        state: present

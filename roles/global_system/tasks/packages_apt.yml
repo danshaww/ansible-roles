@@ -1,0 +1,27 @@
+- name: APT Packages | Update Cache
+  ansible.builtin.apt:
+    update_cache: true
+  changed_when: false
+  ignore_errors: true # This is because of issues with the MPR package repo
+
+- name: APT Packages | Installation
+  ansible.builtin.apt:
+    pkg: "{{ system_packages.global + system_packages.apt + global_system_server_packages}}"
+
+- name: APT Packages | MPR Config & Installation (Non Ubuntu 24.04 Only)
+  when: ansible_facts['distribution_version'] != "24.04"
+  ignore_errors: true
+  block:
+    - name: APT Packages | MPR - Add APT GPG Key
+      ansible.builtin.apt_key:
+        url: https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub
+        keyring: /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg
+    - name: APT Packages | Just - Add MPR APT Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=all,amd64 signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr bookworm"
+        state: present
+        filename: prebuilt-mpr
+
+- name: APT Packages | Just Installation
+  ansible.builtin.apt:
+    pkg: just
