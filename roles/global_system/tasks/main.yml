@@ -11,7 +11,7 @@
       when: enable_packages and ansible_facts['pkg_mgr'] == "dnf5"
 
     - name: CheckMK Agent Installation
-      ansible.builtin.include_tasks: checmk_agent.yml
+      ansible.builtin.include_tasks: checkmk_agent.yml
       when: enable_checkmk_agent_install
 
     - name: System SSH Config
