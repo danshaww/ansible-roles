@@ -9,7 +9,6 @@
     state: present
     filename: hashicorp
   become: true
-  notify: Update APT Cache
 - name: Terraform | Install
   become: true
   ansible.builtin.apt:
