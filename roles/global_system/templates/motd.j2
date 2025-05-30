@@ -2,10 +2,10 @@ Server Function: {{ global_system_server_function }}
 {% if ansible_facts['virtualization_role'] == "host" %}
 Server Type: Physical Machine
 {% endif %}
-{% if ansible_facts['virtualization_role'] == "guest" and ansible_facts['ansible_virtualization_type'] == "kvm" %}
+{% if ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_type'] == "kvm" %}
 Server Type: Virtual Machine
 {% endif %}
-{% if ansible_facts['virtualization_role'] == "guest" and ansible_facts['ansible_virtualization_type'] == "lxc" %}
+{% if ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_type'] == "lxc" %}
 Server Type: LXC Container
 {% endif %}
 Server Location: {{ global_system_server_location }}
