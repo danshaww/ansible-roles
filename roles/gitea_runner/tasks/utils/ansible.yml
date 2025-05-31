@@ -1,6 +1,7 @@
 - name: Ansible Installation | Update APT Cache
   ansible.builtin.apt:
     update_cache: true
+  changed_when: false
 - name: Ansible Installation | Add PPA repository
   ansible.builtin.apt_repository:
     repo: 'ppa:ansible/ansible'
