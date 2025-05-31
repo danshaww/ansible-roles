@@ -1,19 +1,19 @@
-- name: Terraform | Add APT GPG Key
+- name: Terraform Installation | Add APT GPG Key
   ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
   become: true
-- name: Terraform | Add APT Repository
+- name: Terraform Installation | Add APT Repository
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com jammy main"
     state: present
     filename: hashicorp
   become: true
-- name: Terraform | Install
+- name: Terraform Installation | Install
   become: true
   ansible.builtin.apt:
     pkg: terraform
-- name: Terraform | Copy tf-summarize binary
+- name: Terraform Installation | Copy tf-summarize binary
   ansible.builtin.copy:
     src: tf-summarize
     dest: /usr/local/bin/tf-summarize

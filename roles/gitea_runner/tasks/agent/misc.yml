@@ -1,4 +1,10 @@
-- name: AWS Credentials | Create Config Directory
+- name: Misc | Copy SSH Config File
+  ansible.builtin.copy:
+    dest: /home/{{ username }}/.ssh/config
+    src: ssh_config
+    mode: '0755'
+    create: true
+- name: Misc | AWS Credentials | Create Config Directory
   ansible.builtin.file:
     path: "/home/{{ username }}/.aws"
     state: directory
@@ -6,7 +12,7 @@
     owner: "{{ username }}"
     group: "{{ username }}"
   become: true
-- name: AWS Credentials | Create Credentials File
+- name: Misc | AWS Credentials | Create Credentials File
   ansible.builtin.template:
     src: aws_credentials.j2
     dest: "/home/{{ username }}/.aws/credentials"

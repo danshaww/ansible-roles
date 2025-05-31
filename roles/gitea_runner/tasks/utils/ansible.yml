@@ -1,0 +1,32 @@
+- name: Ansible Installation | Update APT Cache
+  ansible.builtin.apt:
+    update_cache: true
+- name: Ansible Installation | Add PPA repository
+  ansible.builtin.apt_repository:
+    repo: 'ppa:ansible/ansible'
+    state: present
+- name: Ansible Installation | Install Packages
+  ansible.builtin.apt:
+    pkg:
+      - software-properties-common
+      - ansible
+      - python3-passlib
+      - python3-pip
+    state: present
+- name: Ansible Installation | Install Collections
+  community.general.ansible_galaxy_install:
+    type: collection
+    name: "{{ item }}"
+  with_items: "{{ ansible_collections }}"
+  become: true
+  become_user: ci
+- name: Ansible Installation | Install azcollection Dependancies
+  ansible.builtin.pip:
+    requirements: /home/ci/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+    break_system_packages: true
+- name: Ansible Installation | Configure Vault Password File
+  ansible.builtin.copy:
+    dest: "/home/{{ username }}/.vault"
+    content: "{{ gitea_vault_password }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"

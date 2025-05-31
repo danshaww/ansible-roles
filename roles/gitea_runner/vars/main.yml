@@ -6,3 +6,7 @@ packages:
 #  - golang-go
   - software-properties-common
   - gnupg
+
+ansible_collections:
+  - lucasheld.uptime_kuma
+  - azure.azcollection

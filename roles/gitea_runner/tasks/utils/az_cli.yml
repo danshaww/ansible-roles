@@ -1,14 +1,14 @@
-- name: AZ CLI | Check for executable
+- name: AZ CLI Installation | Check for executable
   ansible.builtin.stat:
     path: /usr/bin/az
   register: az_installed
-- name:  AZ CLI | Download AZ CLI installer
+- name:  AZ CLI Installation | Download AZ CLI installer
   ansible.builtin.get_url:
     url: https://aka.ms/InstallAzureCLIDeb
     dest: /tmp/InstallAzureCLIDeb.sh
     mode: '0755'
   when: not az_installed.stat.exists
-- name:  AZ CLI | Run AZ CLI installer
+- name:  AZ CLI Installation | Run AZ CLI installer
   ansible.builtin.command: bash /tmp/InstallAzureCLIDeb.sh
   become: true
   changed_when: not az_installed.stat.exists
