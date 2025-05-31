@@ -3,7 +3,6 @@
     dest: /home/{{ username }}/.ssh/config
     src: ssh_config
     mode: '0755'
-    create: true
 - name: Misc | AWS Credentials | Create Config Directory
   ansible.builtin.file:
     path: "/home/{{ username }}/.aws"
@@ -11,7 +10,6 @@
     mode: '0700'
     owner: "{{ username }}"
     group: "{{ username }}"
-  become: true
 - name: Misc | AWS Credentials | Create Credentials File
   ansible.builtin.template:
     src: aws_credentials.j2
@@ -19,4 +17,3 @@
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: '0600'
-  become: true
