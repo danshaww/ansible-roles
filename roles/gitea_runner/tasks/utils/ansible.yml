@@ -31,3 +31,4 @@
     content: "{{ gitea_vault_password }}"
     owner: "{{ username }}"
     group: "{{ username }}"
+    mode: 0400
