@@ -129,3 +129,12 @@
     type: CNAME
   with_items: "{{ cname_records }}"
   when: cname_records != "changeme"
+- name: Dynamic NS Record Creation
+  community.general.nsupdate:
+    server: 127.0.0.1
+    zone: "{{ item }}."
+    record: "{{ item }}."
+    value: "{{ nameservers }}"
+    type: NS
+  with_items: "{{ zones.stdout_lines }}"
+  when: nameservers != "changeme"

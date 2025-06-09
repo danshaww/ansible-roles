@@ -4,3 +4,4 @@ zones_type: static
 a_records: changeme
 cname_records: changeme
 ptr_records: changeme
+nameservers: changeme
