@@ -155,7 +155,7 @@
 - name: Dynamic NS Record Creation
   community.general.nsupdate:
     server: 127.0.0.1
-    record: "{{ item | regex_replace('\\zone$', '')}}"
+    record: "{{ item | regex_replace('zone', '')}}"
     value: "{{ nameservers }}"
     type: NS
   with_items: "{{ zones.stdout_lines }}"
