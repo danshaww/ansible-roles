@@ -112,7 +112,7 @@
     value: "{{ item.value }}"
     type: A
   with_items: "{{ a_records }}"
-  when: a_records is defined
+  when: a_records != null
 - name: Dynamic PTR Record Creation
   community.general.nsupdate:
     server: 127.0.0.1
@@ -120,7 +120,7 @@
     value: "{{ item.value }}"
     type: PTR
   with_items: "{{ ptr_records }}"
-  when: ptr_records is defined
+  when: ptr_records != null
 - name: Dynamic CNAME Record Creation
   community.general.nsupdate:
     server: 127.0.0.1
@@ -128,4 +128,4 @@
     value: "{{ item.value }}"
     type: CNAME
   with_items: "{{ cname_records }}"
-  when: cname_records is defined
+  when: cname_records != null
