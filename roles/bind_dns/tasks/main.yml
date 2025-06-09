@@ -73,3 +73,11 @@
   changed_when: false
   register: testresults
   with_items: "{{ tests }}"
+- name: Copy Justfile
+  ansible.builtin.copy:
+    src: justfile
+    dest: "/home/{{ ansible_user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+  become: true

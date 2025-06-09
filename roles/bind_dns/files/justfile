@@ -1,0 +1,10 @@
+default:
+    just --list
+
+# Output Current BIND Cache Contents
+dump:
+    sudo rndc dumpdb -zones && sudo cat /var/cache/bind/named_dump.db
+
+# Check Config
+check:
+    sudo named-checkconfig
