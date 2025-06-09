@@ -12,3 +12,12 @@
   changed_when: false
   listen:
     - Config Change
+    - AppArmour Change
+- name: Restart AppArmour Service
+  ansible.builtin.systemd_service:
+    name: apparmour.service
+    state: restarted
+  become: true
+  changed_when: false
+  listen:
+    - AppArmour Change

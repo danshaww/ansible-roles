@@ -23,6 +23,15 @@
   become: true
   no_log: true
   notify: Config Change
+- name: Copy AppArmour Config File
+  ansible.builtin.copy:
+    src: apparmour
+    dest: /etc/apparmor.d/local/usr.sbin.named
+    owner: root
+    group: root
+    mode: '0644'
+  notify: AppArmour Change
+  become: true
 - name: Create Zones Directory
   ansible.builtin.file:
     path: /etc/bind/zones
