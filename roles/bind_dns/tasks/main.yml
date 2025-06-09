@@ -49,30 +49,28 @@
   become: true
   changed_when: false
 
-- name: Check for zone files
-  ansible.builtin.stat:
-    path: "/etc/bind/zones/{{ item }}.j2"
-  become: true # TODO: Make this only run once if zonetype is set to dynamic
-  with_items: "{{ zones.stdout_lines }}"
-  register: zoneoutput
-- name: TEMP OUTPUT
-  ansible.builtin.debug:
-    msg: "{{ zoneoutput }}"
-
-
-- name: Render Zone Files
+- name: Render Zone Files (Dynamic)
   ansible.builtin.template:
     src: "{{ config_path }}/zones/{{ item }}.j2"
     dest: "/etc/bind/zones/{{ item }}"
     owner: root
     group: bind
     mode: '0775'
-#  no_log: true
-  become: true # TODO: Make this only run once if zonetype is set to dynamic
+    force: false
+  become: true
   with_items: "{{ zones.stdout_lines }}"
-  when: not zoneoutput.results.[item].stat.exists
+  when: zones_type == "dynamic"
 
-
+- name: Render Zone Files (Static)
+  ansible.builtin.template:
+    src: "{{ config_path }}/zones/{{ item }}.j2"
+    dest: "/etc/bind/zones/{{ item }}"
+    owner: root
+    group: bind
+    mode: '0775'
+  become: true
+  with_items: "{{ zones.stdout_lines }}"
+  when: zones_type == "static"
 
 
 - name: RNDC Reload
