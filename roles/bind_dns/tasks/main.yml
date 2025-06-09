@@ -48,6 +48,18 @@
   delegate_to: localhost
   become: true
   changed_when: false
+
+- name: Check for zone files
+  ansible.builtin.stat:
+    path: "{{ config_path }}/zones/{{ item }}.j2"
+  become: true # TODO: Make this only run once if zonetype is set to dynamic
+  with_items: "{{ zones.stdout_lines }}"
+  register: zones
+- name: TEMP OUTPUT
+  ansible.builtin.debug:
+    msg: "{{ zones }}"
+
+
 - name: Render Zone Files
   ansible.builtin.template:
     src: "{{ config_path }}/zones/{{ item }}.j2"
@@ -67,6 +79,10 @@
   ansible.builtin.command: resolvectl flush-caches
   become: true
   changed_when: false
+
+
+
+
 - name: Test Name Resolution
   ansible.builtin.command: "nslookup {{ item.address }}"
   delegate_to: localhost
