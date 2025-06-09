@@ -1,7 +1,9 @@
 - name: Bind Package Installation
   become: true
   ansible.builtin.apt:
-    pkg: bind9
+    pkg:
+      - bind9
+      - python3-dnspython
 - name: UFW Firewall Configuration
   community.general.ufw:
     rule: allow
