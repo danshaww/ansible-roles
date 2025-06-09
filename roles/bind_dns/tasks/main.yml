@@ -54,10 +54,10 @@
     path: "/etc/bind/zones/{{ item }}.j2"
   become: true # TODO: Make this only run once if zonetype is set to dynamic
   with_items: "{{ zones.stdout_lines }}"
-  register: zones
+  register: zoneoutput
 - name: TEMP OUTPUT
   ansible.builtin.debug:
-    msg: "{{ zones }}"
+    msg: "{{ zoneoutput }}"
 
 
 - name: Render Zone Files
@@ -70,7 +70,7 @@
 #  no_log: true
   become: true # TODO: Make this only run once if zonetype is set to dynamic
   with_items: "{{ zones.stdout_lines }}"
-  when: not zones.results.[item].stat.exists
+  when: not zoneoutput.results.[item].stat.exists
 
 
 
