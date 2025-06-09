@@ -40,7 +40,7 @@
     state: directory
     owner: root
     group: bind
-    mode: '0755'
+    mode: '0775'
   become: true
 - name: Get Zones
   ansible.builtin.shell: ls "{{ config_path }}/zones" | sed 's/\.[^.]*$//'
@@ -54,9 +54,9 @@
     dest: "/etc/bind/zones/{{ item }}"
     owner: root
     group: bind
-    mode: '0644'
+    mode: '0775'
 #  no_log: true
-  become: true
+  become: true # TODO: Make this only run once if zonetype is set to dynamic
   with_items: "{{ zones.stdout_lines }}"
   when: update_zones
 - name: RNDC Reload

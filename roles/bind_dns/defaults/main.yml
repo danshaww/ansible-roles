@@ -1,3 +1,4 @@
 config_path: changeme
 tests: changeme
 update_zones: true
+zones_type: static
