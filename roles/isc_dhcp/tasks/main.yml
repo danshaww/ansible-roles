@@ -5,12 +5,13 @@
       - isc-dhcp-server
 
 
-# - name: Render Config File
-#   ansible.builtin.template:
-#     src: "{{ config_path }}/zones/{{ item }}.j2"
-#     dest: "/etc/bind/zones/{{ item }}"
-#     owner: root
-#     group: bind
-#     mode: '0775'
-#     force: false
-#   become: true
+- name: Render Config File
+  ansible.builtin.template:
+    src: "{{ config_path }}/dhcpd.conf.j2"
+    dest: "/etc/dhcp/dhcpd.conf"
+    owner: root
+    group: root
+    mode: '0644'
+    force: false
+  become: true
+  notify: Restart Service
