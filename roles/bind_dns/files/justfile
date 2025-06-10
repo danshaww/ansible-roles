@@ -8,3 +8,7 @@ dump:
 # Check Config
 check:
     sudo named-checkconfig
+
+# Output Zone Update History
+jnl $zone:
+    named-journalprint /etc/bind/zones/$zone.zone.jnl
