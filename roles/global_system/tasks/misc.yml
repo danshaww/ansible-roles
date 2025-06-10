@@ -37,7 +37,7 @@
     mode: '0755'
 - name: Misc | Copy DNS Registration Script
   ansible.builtin.copy:
-    src: register-dns.sh
+    src: register-host.sh
     dest: /root/register-host.sh
     mode: '0755'
     owner: root
