@@ -38,7 +38,7 @@
 - name: Misc | Copy DNS Registration Script
   ansible.builtin.copy:
     src: register-dns.sh
-    dest: /root/register-dns.sh
+    dest: /root/register-host.sh
     mode: '0755'
     owner: root
     group: root
@@ -46,4 +46,4 @@
   ansible.builtin.cron:
     name: "DNS Registration"
     special_time: reboot
-    job: "/root/register-dns.sh"
+    job: "/root/register-host.sh"
