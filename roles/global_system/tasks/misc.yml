@@ -35,3 +35,15 @@
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
+- name: Misc | Copy DNS Registration Script
+  ansible.builtin.copy:
+    src: register-dns.sh
+    dest: /root/register-dns.sh
+    mode: '0755'
+    owner: root
+    group: root
+- name: Misc | Create DNS Registration Cron Job
+  ansible.builtin.cron:
+    name: "DNS Registration"
+    special_time: reboot
+    job: "/root/register-dns.sh"
