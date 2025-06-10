@@ -4,14 +4,12 @@
     pkg:
       - isc-dhcp-server
 
-
-- name: Render Config File
+- name: ISC | Render Config File
   ansible.builtin.template:
     src: "{{ config_path }}/dhcpd.conf.j2"
     dest: "/etc/dhcp/dhcpd.conf"
     owner: root
     group: root
     mode: '0644'
-    force: false
   become: true
   notify: Restart Service
