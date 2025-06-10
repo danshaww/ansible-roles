@@ -4,3 +4,11 @@
     state: restarted
   become: true
   changed_when: false
+- name: Daemon Reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  become: true
+  changed_when: false
+
+
+

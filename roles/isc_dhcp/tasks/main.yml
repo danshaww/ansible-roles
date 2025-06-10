@@ -13,3 +13,15 @@
     mode: '0644'
   become: true
   notify: Restart Service
+
+- name: ISC | Copy Defaults File
+  ansible.builtin.copy:
+    src: isc-dhcp-server
+    dest: /etc/default/isc-dhcp-server
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: 
+    - Daemon Reload
+    - Restart Service
