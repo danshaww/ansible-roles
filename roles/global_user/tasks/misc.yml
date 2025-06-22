@@ -1,0 +1,7 @@
+- name: Global_User | Misc | Ensure Directory Exists
+  ansible.builtin.file:
+    path: ~/git
+    mode: '0755'
+    state: directory
+    user: global_user_username
+    group: global_user_username

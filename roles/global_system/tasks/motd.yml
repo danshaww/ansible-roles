@@ -1,6 +1,0 @@
-
-- name: MOTD - Render Template
-  ansible.builtin.template:
-    dest: /etc/motd
-    src: motd.j2
-    mode: '0644'

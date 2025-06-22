@@ -10,7 +10,6 @@
       dir: "/home/{{ ansible_env.USER }}"
     - user: "root"
       dir: "/root"
-  become: true
 
 - name: BASHRC Copy
   ansible.builtin.copy:
@@ -24,4 +23,3 @@
       dir: "/home/{{ ansible_env.USER }}"
     - user: "root"
       dir: "/root"
-  become: true

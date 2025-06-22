@@ -1,4 +1,4 @@
-- name: SSH | Set Public Key
+- name: Global_User | SSH | Set Public Key
   ansible.builtin.copy:
     content: "{{ global_user_public_ssh_key }}"
     dest: "{{ item.dir }}/.ssh/id_rsa.pub"
@@ -6,13 +6,12 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
-  become: true
 
-- name: SSH | Set authorized_keys
+- name: Global_User | SSH | Set authorized_keys
   ansible.builtin.copy:
     content: "{{ global_user_public_ssh_key }}"
     dest: "{{ item.dir }}/.ssh/authorized_keys"
@@ -20,13 +19,12 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
-  become: true
 
-- name: SSH | Set Private Key
+- name: Global_User | SSH | Set Private Key
   ansible.builtin.copy:
     content: "{{ global_user_private_ssh_key }}"
     dest: "{{ item.dir }}/.ssh/id_rsa"
@@ -34,21 +32,19 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
-  become: true
 
-- name: SSH | Populate Config (user)
+- name: Global_User | SSH | Populate Config (user)
   ansible.builtin.lineinfile:
     path: "{{ item.dir }}/.ssh/config"
     line: "Host * StrictHostKeyChecking no"
     mode: '0755'
     create: true
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
-  become: true

@@ -1,15 +1,8 @@
----
-- name: User Configuration Tasks
-  tags: user
-  block:
-    - name: Include bashrc Tasks
-      ansible.builtin.include_tasks: bashrc.yml
-    - name: Include htoprc Tasks
-      ansible.builtin.include_tasks: htoprc.yml
-    - name: Include ssh Tasks
-      ansible.builtin.include_tasks: ssh.yml
-    - name: GIT - Ensure Directory Exists
-      ansible.builtin.file:
-        path: ~/git
-        mode: '0755'
-        state: directory
+- name: Global_User | Include bashrc Tasks
+  ansible.builtin.include_tasks: bashrc.yml
+- name: Global_User | Include htoprc Tasks
+  ansible.builtin.include_tasks: htoprc.yml
+- name: Global_User | Include ssh Tasks
+  ansible.builtin.include_tasks: ssh.yml
+- name: Global_User | Include misc Tasks
+  ansible.builtin.include_tasks: misc.yml
