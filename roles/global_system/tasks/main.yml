@@ -1,5 +1,5 @@
-- name: Global_System | APT Package Installation
-  ansible.builtin.include_tasks: packages_apt.yml
+- name: Global_System | Package Installation
+  ansible.builtin.include_tasks: packages.yml
   when: enable_packages
 
 - name: Global_System | System SSH Config
