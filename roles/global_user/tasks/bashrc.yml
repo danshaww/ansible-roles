@@ -6,8 +6,8 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
 
@@ -19,7 +19,7 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
   with_items:
-    - user: "{{ ansible_env.USER }}"
-      dir: "/home/{{ ansible_env.USER }}"
+    - user: "{{ global_user_username }}"
+      dir: "/home/{{ global_user_username }}"
     - user: "root"
       dir: "/root"
