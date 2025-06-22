@@ -3,5 +3,5 @@
     path: ~/git
     mode: '0755'
     state: directory
-    user: global_user_username
+    owner: global_user_username
     group: global_user_username
