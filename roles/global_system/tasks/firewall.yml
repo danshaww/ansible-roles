@@ -16,31 +16,3 @@
         src: "{{ item }}"
       with_items: "{{ global_system_checkmk_hosts }}"
       when: global_system_checkmk_hosts is defined
-
-- name: Firewalld Configuration
-  when: ansible_facts['os_family'] == "RedHat"
-  block:
-    - name: Global_System | Firewalld | Allow SSH (tcp)
-      ansible.posix.firewalld:
-        port: 22/tcp
-        permanent: true
-        immediate: true
-        state: enabled
-    - name: Global_System | Firewalld | Allow SSH (udp)
-      ansible.posix.firewalld:
-        port: 22/udp
-        permanent: true
-        immediate: true
-        state: enabled
-    - name: Global_System | Firewalld | Allow CheckMK (tcp) # TODO: Add source IP for CheckMK Here
-      ansible.posix.firewalld:
-        port: 6556/tcp
-        permanent: true
-        immediate: true
-        state: enabled
-    - name: Global_System | Firewalld | Allow CheckMK (udp) # TODO: Add source IP for CheckMK Here
-      ansible.posix.firewalld:
-        port: 6556/udp
-        permanent: true
-        immediate: true
-        state: enabled
