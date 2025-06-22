@@ -14,12 +14,12 @@
     line: dan ALL=(ALL) NOPASSWD:ALL
     create: true
     mode: '0644'
-- name: Misc | Render MOTD Template
+- name: Global_System | Misc | Render MOTD Template
   ansible.builtin.template:
     dest: /etc/motd
     src: motd.j2
     mode: '0644'
-- name: Misc | Check for just bash completions
+- name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
   register: completions
