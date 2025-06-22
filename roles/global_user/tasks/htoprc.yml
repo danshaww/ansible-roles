@@ -3,14 +3,14 @@
     path: ~/.config/htop
     state: directory
     mode: '0755'
-    user: global_user_username
+    owner: global_user_username
     group: global_user_username
 - name: Global_User | HTOPRC | Copy Virtual Machine File
   ansible.builtin.copy:
     src: htoprc-virtual
     dest: ~/.config/htop/htoprc
     mode: '0755'
-    user: global_user_username
+    owner: global_user_username
     group: global_user_username
   when: ansible_facts['virtualization_role'] == "guest"
 - name: Global_User | HTOPRC | Copy Physical Machine File
@@ -19,6 +19,6 @@
     dest: ~/.config/htop/htoprc
     force: true
     mode: '0755'
-    user: global_user_username
+    owner: global_user_username
     group: global_user_username
   when: ansible_facts['virtualization_role'] == "host"
