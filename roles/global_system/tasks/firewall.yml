@@ -1,15 +1,15 @@
-- name: UFW Configuration
+- name: Global_System | UFW Configuration
   when: ansible_facts['distribution'] == "Ubuntu"
   block:
-    - name: UFW | Enable and set default deny rule
+    - name: Global_System | UFW | Enable and set default deny rule
       community.general.ufw:
         state: enabled
         policy: deny
-    - name: UFW | Allow SSH
+    - name: Global_System | UFW | Allow SSH
       community.general.ufw:
         rule: allow
         port: '22'
-    - name: UFW | Allow CheckMK
+    - name: Global_System | UFW | Allow CheckMK
       community.general.ufw:
         rule: allow
         port: '6556'
@@ -20,25 +20,25 @@
 - name: Firewalld Configuration
   when: ansible_facts['os_family'] == "RedHat"
   block:
-    - name: Firewalld | Allow SSH (tcp)
+    - name: Global_System | Firewalld | Allow SSH (tcp)
       ansible.posix.firewalld:
         port: 22/tcp
         permanent: true
         immediate: true
         state: enabled
-    - name: Firewalld | Allow SSH (udp)
+    - name: Global_System | Firewalld | Allow SSH (udp)
       ansible.posix.firewalld:
         port: 22/udp
         permanent: true
         immediate: true
         state: enabled
-    - name: Firewalld | Allow CheckMK (tcp) # TODO: Add source IP for CheckMK Here
+    - name: Global_System | Firewalld | Allow CheckMK (tcp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
         port: 6556/tcp
         permanent: true
         immediate: true
         state: enabled
-    - name: Firewalld | Allow CheckMK (udp) # TODO: Add source IP for CheckMK Here
+    - name: Global_System | Firewalld | Allow CheckMK (udp) # TODO: Add source IP for CheckMK Here
       ansible.posix.firewalld:
         port: 6556/udp
         permanent: true

@@ -1,18 +1,18 @@
-- name: DNF Packages | Prerequsits
+- name: Global_System | DNF Packages | Prerequsits
   ansible.builtin.command: dnf install python3-libdnf5 -y
 
-- name: DNF Packages | Add EPEL Repository
+- name: Global_System | DNF Packages | Add EPEL Repository
   ansible.builtin.yum_repository:
     name: epel
     description: EPEL YUM repo
     baseurl: https://download.fedoraproject.org/pub/epel/9/Everything/x86_64
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
-- name: DMF Packages | Import EPEL GPG Key
+- name: Global_System | DNF Packages | Import EPEL GPG Key
   ansible.builtin.rpm_key:
     state: present
     key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
-- name: DNF Packages | Installation
+- name: Global_System | DNF Packages | Installation
   ansible.builtin.dnf:
     pkg: "{{ system_packages.global + system_packages.dnf + global_system_server_packages}}"

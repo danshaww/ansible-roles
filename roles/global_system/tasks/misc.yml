@@ -1,14 +1,14 @@
-- name:  Misc | Set TimeZone
+- name: Global_System | Misc | Set TimeZone
   community.general.timezone:
     name: Europe/London
-- name:  Misc | Syslog - Copy Config File
+- name: Global_System | Misc | Syslog - Copy Config File
   ansible.builtin.copy:
     src: syslog.conf
     dest: /etc/rsyslog.d/50-default.conf
     mode: '0644'
   notify: Restart Syslog
   when: enable_syslog_config
-- name:  Misc | Allow sudo without password
+- name: Global_System | Misc | Allow sudo without password
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/dan
     line: dan ALL=(ALL) NOPASSWD:ALL
@@ -23,26 +23,26 @@
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
   register: completions
-- name: Misc | Install just bash completions
+- name: Global_System | Misc | Install just bash completions
   ansible.builtin.shell: |
     just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
     echo "complete -F _just -o bashdefault -o default j" | sudo tee -a /usr/share/bash-completion/completions/just >> /dev/null
   become: true
   when: not completions.stat.exists
   changed_when: not completions.stat.exists
-- name: Misc | Copy Figurine Binary
+- name: Global_System | Misc | Copy Figurine Binary
   ansible.builtin.copy:
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
-- name: Misc | Copy DNS Registration Script
+- name: Global_System | Misc | Copy DNS Registration Script
   ansible.builtin.copy:
     src: register-host.sh
     dest: /root/register-host.sh
     mode: '0755'
     owner: root
     group: root
-- name: Misc | Create DNS Registration Cron Job
+- name: Global_System | Misc | Create DNS Registration Cron Job
   ansible.builtin.cron:
     name: "DNS Registration"
     special_time: reboot

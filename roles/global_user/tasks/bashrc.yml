@@ -1,4 +1,4 @@
-- name: Profile Copy
+- name: Global_User | Profile Copy
   ansible.builtin.copy:
     src: .profile
     dest: "{{ item.dir }}/.profile"
@@ -11,7 +11,7 @@
     - user: "root"
       dir: "/root"
 
-- name: BASHRC Copy
+- name: Global_User | BASHRC Copy
   ansible.builtin.copy:
     src: .bashrc
     dest: "{{ item.dir }}/.bashrc"
