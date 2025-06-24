@@ -2,15 +2,15 @@
   ansible.builtin.apt:
     update_cache: true
   changed_when: false
-  ignore_errors: true # This is because of issues with the MPR package repo
+  failed_when: false # MPR Downtime Issues
 
 - name: Global_System | Packages | Installation
   ansible.builtin.apt:
-    pkg: "{{ system_packages.global + system_packages.apt + global_system_server_packages}}"
+    pkg: "{{ system_packages + global_system_server_packages}}"
 
 - name: Global_System | Packages | MPR Config & Installation (Non Ubuntu 24.04 Only)
   when: ansible_facts['distribution_version'] != "24.04"
-  ignore_errors: true
+  failed_when: false
   block:
     - name: Global_System | Packages | MPR - Add APT GPG Key
       ansible.builtin.apt_key:

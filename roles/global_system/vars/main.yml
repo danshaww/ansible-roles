@@ -1,29 +1,23 @@
 system_packages:
-  global:
-    - nano
-    - htop
-    - git
-    - net-tools
-    - dnsutils
-    - rsync
-    - tmux
-    - rsyslog
-    - unzip
-    - ca-certificates
-    - curl
-    - gnupg
-    - fio
-    - inxi
-    - smartmontools
-    - acl
-    - xclip
-    - btop
-    - gpg
-  apt:
-    - neofetch # TODO: Need to determine if this can be retained now EOL
-    - cron
-    - nfs-common
-  dnf:
-    - python3-libdnf5
-    - fastfetch
-    - just
+  - nano
+  - htop
+  - git
+  - net-tools
+  - dnsutils
+  - rsync
+  - tmux
+  - rsyslog
+  - unzip
+  - ca-certificates
+  - curl
+  - gnupg
+  - fio
+  - inxi
+  - smartmontools
+  - acl
+  - xclip
+  - btop
+  - gpg
+  - neofetch # EOL
+  - cron
+  - nfs-common
