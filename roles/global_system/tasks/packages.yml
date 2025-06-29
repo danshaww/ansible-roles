@@ -2,7 +2,7 @@
   ansible.builtin.apt:
     update_cache: true
   changed_when: false
-  failed_when: false # MPR Downtime Issues
+  ignore_errors: true # MPR Downtime Issues
 
 - name: Global_System | Packages | Installation
   ansible.builtin.apt:
@@ -10,7 +10,7 @@
 
 - name: Global_System | Packages | MPR Config & Installation (Non Ubuntu 24.04 Only)
   when: ansible_facts['distribution_version'] != "24.04"
-  failed_when: false
+  ignore_errors: true
   block:
     - name: Global_System | Packages | MPR - Add APT GPG Key
       ansible.builtin.apt_key:
