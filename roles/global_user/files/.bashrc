@@ -57,12 +57,12 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    if [ "$(whoami)" == root ]; then
+    if [ "$(whoami)" == root ]; then # Green for standard user
     # PS1='\[\e[38;5;160;1m\][\u@\H:\w]\[\e[0m\] \[\e[1m\]\\$\[\e[0m\] '
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    else
-    # PS1='\[\e[38;5;33;1m\][\u@\H:\w]\[\e[0m\] \[\e[1m\]\\$\[\e[0m\] '
     PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;124;1m\]\u@\h\[\e[0m\]:\[\e[34;1m\]\w\[\e[0m\]\$ '
+    else # Red for root user
+    # PS1='\[\e[38;5;33;1m\][\u@\H:\w]\[\e[0m\] \[\e[1m\]\\$\[\e[0m\] '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
     fi
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
