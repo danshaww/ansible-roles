@@ -3,7 +3,9 @@ default:
 
 # Output Current BIND Cache Contents
 dump:
-    sudo rndc dumpdb -zones && sudo cat /var/cache/bind/named_dump.db
+    sudo rndc dumpdb -zones
+    sleep 5
+    sudo cat /var/cache/bind/named_dump.db
 
 # Check Config
 check:
