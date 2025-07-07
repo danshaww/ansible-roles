@@ -1,15 +1,15 @@
 - name: Global_System | Package Installation
   ansible.builtin.include_tasks: packages.yml
-  when: enable_packages
+  when: enable_packages and inventory_hostname in ansible_play_hosts
 
 - name: Global_System | System SSH Config
   ansible.builtin.include_tasks: ssh.yml
-  when: enable_ssh_config
+  when: enable_ssh_config and inventory_hostname in ansible_play_hosts
 
 - name: Global_System | Firewall Configuration
   ansible.builtin.include_tasks: firewall.yml
-  when: enable_firewall_config
+  when: enable_firewall_config and inventory_hostname in ansible_play_hosts
 
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
-  when: enable_misc_config
+  when: enable_misc_config and inventory_hostname in ansible_play_hosts

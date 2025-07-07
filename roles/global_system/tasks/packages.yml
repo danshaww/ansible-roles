@@ -9,7 +9,7 @@
     pkg: "{{ system_packages + global_system_server_packages}}"
 
 - name: Global_System | Packages | MPR Config & Installation (Non Ubuntu 24.04 Only)
-  when: (ansible_facts['distribution_version'] != "24.04" || default(""))
+  when: ansible_facts['distribution_version'] != "24.04"
   ignore_errors: true
   block:
     - name: Global_System | Packages | MPR - Add APT GPG Key
