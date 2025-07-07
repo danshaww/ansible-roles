@@ -1,10 +1,10 @@
 - name: Global_System | Package Installation
   ansible.builtin.include_tasks: packages.yml
-  when: enable_packages and ansible_facts != null
+  when: enable_packages and ansible_facts != ""
 
 - name: Global_System | System SSH Config
   ansible.builtin.include_tasks: ssh.yml
-  when: enable_ssh_config and ansible_facts != null
+  when: enable_ssh_config and ansible_facts != ""
 
 - name: Global_System | Firewall Configuration
   ansible.builtin.include_tasks: firewall.yml
