@@ -13,3 +13,11 @@ global_system_server_packages: []
 global_system_nfs: null
 global_system_checkmk_hosts: []
 global_system_checkmk_install: true
+
+
+
+# These vars are to prevent failure on unreachable hosts with no facts
+ansible_facts:
+  distribution_version: "N/A"
+  distribution: "N/A"
+  virtualization_type: "N/A"
