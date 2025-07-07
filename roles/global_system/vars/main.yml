@@ -21,3 +21,7 @@ system_packages:
   - neofetch # EOL
   - cron
   - nfs-common
+
+server_distribution: ansible_facts['distribution'] || default("none")
+server_distribution_version: ansible_facts['distribution_version'] || default("none")
+server_type: ansible_facts['virtualization_type'] || default("none")
