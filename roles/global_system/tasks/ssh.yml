@@ -10,4 +10,4 @@
     regexp: 'ssh_deletekeys:'
     line: 'ssh_deletekeys: false'
     state: present
-  when: server_distribution == "Ubuntu" and server_type == "kvm"
+  when: ansible_facts.distribution == "Ubuntu" and ansible_factsvirtualization_type == "kvm"
