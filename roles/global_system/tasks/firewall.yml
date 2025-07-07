@@ -1,5 +1,5 @@
 - name: Global_System | UFW Configuration
-  when: ansible_facts['distribution'] == "Ubuntu"
+  when: (ansible_facts['distribution'] == "Ubuntu" || default(""))
   block:
     - name: Global_System | UFW | Enable and set default deny rule
       community.general.ufw:
