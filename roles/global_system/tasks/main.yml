@@ -8,8 +8,8 @@
 
 - name: Global_System | Firewall Configuration
   ansible.builtin.include_tasks: firewall.yml
-  when: enable_firewall_config and ansible_facts != null
+  when: enable_firewall_config and ansible_facts != ""
 
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
-  when: enable_misc_config and ansible_facts != null
+  when: enable_misc_config and ansible_facts != ""
