@@ -1,0 +1,35 @@
+- name: Users - Add Unix Groups
+  when: item.create_group | default(true)
+  ansible.builtin.group:
+    name: "{{ item.username }}"
+    state: present
+    gid: "{{ item.gid | default(item.uid) }}"
+  with_items: "{{ users }}"
+
+- name: Users - Add Unix Users
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    comment: "{{ item.username }}"
+    uid: "{{ item.uid }}"
+    shell: /bin/bash
+    group: "{{ item.username }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    append: true
+    groups: users
+  with_items: "{{ users }}"
+
+- name: Users - Add Users to Users group
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    groups: users
+    append: true
+  with_items: "{{ users }}"
+
+- name: Allow sudo without password
+  when: item.allow_sudo | default(false)
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ item.username }}"
+    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
+    create: true
+    mode: '0644'
+  with_items: "{{ users }}"

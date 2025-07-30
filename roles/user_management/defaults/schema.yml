@@ -1,0 +1,9 @@
+users:
+  - username: example
+    password: password
+    uid: 1055
+    gid: 1055 # Defaults to UID value
+    configure_samba: true
+    allow_sudo: false
+    ssh_private_key:
+    ssh_public_key:

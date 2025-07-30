@@ -1,0 +1,44 @@
+- name: SSH - Create Dir
+  ansible.builtin.file:
+    path: "/home/{{ item.username }}/.ssh"
+    state: directory
+    mode: '0700'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+  become: true
+  no_log: true
+
+- name: SSH - Set Private Key
+  when: item.ssh_private_key is defined
+  ansible.builtin.copy:
+    content: "{{ item.ssh_private_key }}"
+    dest: "/home/{{ item.username }}/.ssh/id_rsa"
+    mode: '0600'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  become: true
+  no_log: true
+  with_items: "{{ users }}"
+
+- name: SSH - Set Public Key
+  when: item.ssh_public_key is defined
+  ansible.builtin.copy:
+    content: "{{ item.ssh_public_key }}"
+    dest: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    mode: '0644'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+  no_log: true
+
+- name: SSH - Set Trusted Keys
+  when: item.ssh_public_key is defined
+  ansible.builtin.copy:
+    content: "{{ item.ssh_public_key }}"
+    dest: "/home/{{ item.username }}/.ssh/authorized_keys"
+    mode: '0644'
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+  with_items: "{{ users }}"
+  no_log: true
