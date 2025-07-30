@@ -1,4 +1,4 @@
-- name: Software Installation
+- name: SSMTP Installation
   ansible.builtin.apt:
     pkg:
       - ssmtp
