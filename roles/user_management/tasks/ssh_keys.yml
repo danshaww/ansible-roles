@@ -1,4 +1,4 @@
-- name: SSH - Create Dir
+- name: Create SSH Directory
   ansible.builtin.file:
     path: "/home/{{ item.username }}/.ssh"
     state: directory
@@ -9,7 +9,7 @@
   become: true
   no_log: true
 
-- name: SSH - Set Private Key
+- name: Set SSH Private Key
   when: item.ssh_private_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_private_key }}"
@@ -21,7 +21,7 @@
   no_log: true
   with_items: "{{ users }}"
 
-- name: SSH - Set Public Key
+- name: Set SSH Public Key
   when: item.ssh_public_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"
@@ -32,7 +32,7 @@
   with_items: "{{ users }}"
   no_log: true
 
-- name: SSH - Set Trusted Keys
+- name: Set SSH Trusted Keys
   when: item.ssh_public_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"

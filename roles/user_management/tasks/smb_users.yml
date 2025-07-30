@@ -1,4 +1,4 @@
-- name: Users - shell - create samba users
+- name: Create Samba Users
   when: item.configure_samba
   ansible.builtin.shell: >
     set -e -o pipefail
@@ -12,7 +12,7 @@
   no_log: true
   changed_when: false
 
-- name: Users - shell - set samba passwords correctly
+- name: Set Samba Passwords
   when: item.configure_samba
   ansible.builtin.shell: >
     set -e -o pipefail
