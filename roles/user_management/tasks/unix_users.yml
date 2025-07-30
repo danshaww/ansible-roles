@@ -19,6 +19,7 @@
     groups: users
   with_items: "{{ users }}"
   no_log: true
+  changed_when: false
 
 - name: Add Unix User to users group
   ansible.builtin.user:
