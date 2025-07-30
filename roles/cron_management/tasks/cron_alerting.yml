@@ -7,14 +7,14 @@
   ansible.builtin.template:
     dest: /etc/ssmtp/ssmtp.conf
     src: ssmtp.conf.j2
-    user: root
+    owner: root
     group: mail
     mode: '0644'
 
 - name: Configure Revaliases
   ansible.builtin.lineinfile:
     path: /etc/ssmtp/revaliases
-    user: root
+    owner: root
     group: mail
     mode: '0640'
     create: true
