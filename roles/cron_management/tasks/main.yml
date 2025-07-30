@@ -1,0 +1,7 @@
+- name: Include Cron Tasks
+  ansible.builtin.include_tasks: cron_jobs.yml
+  when: cron_jobs is defined
+
+- name: Include Cron Alerting Tasks
+  ansible.builtin.include_tasks: cron_alerting.yml
+  when: cron_alerting is defined

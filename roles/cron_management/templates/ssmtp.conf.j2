@@ -18,6 +18,6 @@ UseSTARTTLS=YES
 FromLineOverride=YES
 AuthUser={{ cron_alerting.smtp_user }}
 AuthPass={{ cron_alerting.smtp_password }}
-mailhub={{ cron_alerting.smtp_server }}
+mailhub={{ cron_alerting.smtp_server }}:587
 rewritedomain=epichouse.co.uk
 hostname={{ inventory_hostname }}
