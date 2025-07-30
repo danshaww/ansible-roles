@@ -1,4 +1,4 @@
-- name: Users - Add Unix Groups
+- name: Create Unix Group
   when: item.create_group | default(true)
   ansible.builtin.group:
     name: "{{ item.username }}"
@@ -6,7 +6,7 @@
     gid: "{{ item.gid | default(item.uid) }}"
   with_items: "{{ users }}"
 
-- name: Users - Add Unix Users
+- name: Create/Modify Unix User
   ansible.builtin.user:
     name: "{{ item.username }}"
     comment: "{{ item.username }}"
@@ -18,7 +18,7 @@
     groups: users
   with_items: "{{ users }}"
 
-- name: Users - Add Users to Users group
+- name: Add Unix User to users group
   ansible.builtin.user:
     name: "{{ item.username }}"
     groups: users

@@ -1,8 +1,7 @@
 galaxy_info:
   author: Dan Shaw
-  description: Ansible role containing a range of common storage server related tasks
+  description: Ansible role for creating & managing users.
   min_ansible_version: "2.1"
   license: GPL
   galaxy_tags: []
 dependencies: []
-# TODO: Repurpose this role as a general server role
