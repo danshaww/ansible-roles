@@ -1,5 +1,5 @@
 - name: Create Samba Users
-  when: item.configure_samba
+  when: item.configure_samba | default(false)
   ansible.builtin.shell: >
     set -e -o pipefail
     && (pdbedit --user={{ item.username }} 2>&1 > /dev/null)
@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Set Samba Passwords
-  when: item.configure_samba
+  when: item.configure_samba | default(false)
   ansible.builtin.shell: >
     set -e -o pipefail
     && (smbclient -U {{ item.username }}%{{ item.password }} -L 127.0.0.1 2>&1 > /dev/null)
