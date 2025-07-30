@@ -1,23 +1,6 @@
 - name: Include Filesystem Tasks
   ansible.builtin.include_tasks: filesystem.yml
   when: filesystem is defined
-
-- name: Include Software Tasks
-  ansible.builtin.include_tasks: software.yml
-  when: packages is defined
-
 - name: Include File Sharing Tasks
   ansible.builtin.include_tasks: file-sharing.yml
   when: file_sharing is defined
-
-- name: Include User Config Tasks
-  ansible.builtin.include_tasks: user_configuration.yml
-  when: user_configuration is defined
-
-- name: Include Cron Tasks
-  ansible.builtin.include_tasks: cron_jobs.yml
-  when: cron_jobs is defined
-
-- name: Include Cron Alerting Tasks
-  ansible.builtin.include_tasks: cron_alerting.yml
-  when: cron_alerting is defined
