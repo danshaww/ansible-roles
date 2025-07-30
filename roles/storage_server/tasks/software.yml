@@ -1,4 +1,0 @@
-- name: Software Installation
-  ansible.builtin.apt:
-    pkg: "{{ packages }}"
-  become: true
