@@ -5,4 +5,3 @@ galaxy_info:
   license: GPL
   galaxy_tags: []
 dependencies: []
-# TODO: Repurpose this role as a general server role
