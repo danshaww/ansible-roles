@@ -22,6 +22,15 @@
     group: root
     mode: '0644'
   become: true
-  notify: 
+  notify:
     - Daemon Reload
     - Restart Service
+
+- name: ISC | Copy Justfile
+  ansible.builtin.copy:
+    src: justfile
+    dest: "/home/{{ ansible_user }}/justfile"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+  become: true
