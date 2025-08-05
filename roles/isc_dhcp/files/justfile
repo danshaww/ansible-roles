@@ -1,4 +1,6 @@
 default:
     just --list
 
-# TODO: Populate this with ISC Troubleshooting tasks
+# List DHCP Leases
+list-leases:
+    sudo cat /var/lib/dhcp/dhcpd.leases
