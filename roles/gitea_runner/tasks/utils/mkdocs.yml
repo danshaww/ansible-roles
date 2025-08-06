@@ -4,6 +4,5 @@
       - mkdocs
       - python3-pip
 - name: mkdocs | Install mkdocs-material
-  ansible.builtin.pip:
-    name: mkdocs-material
-    break_system_packages: true
+  ansible.builtin.shell: pip install mkdocs-material --break-system-packages
+  changed_when: false
