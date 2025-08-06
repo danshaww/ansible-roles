@@ -3,6 +3,6 @@
     name:
       - mkdocs
       - python3-pip
-- name: mkdocs | Install mkdocs-material
-  ansible.builtin.shell: pip install mkdocs-material --break-system-packages
-  changed_when: false
+# - name: mkdocs | Install mkdocs-material
+#   ansible.builtin.shell: pip install mkdocs-material --break-system-packages
+#   changed_when: false
