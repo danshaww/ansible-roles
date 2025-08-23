@@ -1,8 +1,9 @@
-- name: Install Docker
+- name: Docker | Include Installation Tasks
   ansible.builtin.include_tasks:
     file: install.yml
   when: docker_install
-- name: Configure Docker
+
+- name: Docker | Include Configuration Tasks
   ansible.builtin.include_tasks:
     file: configure.yml
   when: docker_configure

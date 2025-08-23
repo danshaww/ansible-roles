@@ -1,57 +1,58 @@
-- name: Installation | Configure Group
+- name: Docker | Installation | Create Group
   ansible.builtin.group:
     name: docker
     state: present
     gid: 121
   become: true
-- name: Installation | Add ansible user to Group
+
+- name: Docker | Installation | Add Ansible user to Group
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     groups: docker
     append: true
   become: true
 
-- name: Installation | APT Package Manager
+- name: Docker | Installation | APT Package Manager
   when: ansible_os_family == "Debian"
   become: true
   block:
-    - name: Installation | APT | Add APT GPG Key
+    - name: Docker | Installation | APT | Add APT GPG Key
       ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         keyring: /etc/apt/keyrings/docker.gpg
-    - name: Installation | APT |  Add Repository
+    - name: Docker | Installation | APT |  Add Repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
         state: present
         filename: docker
-    - name: Installation | APT |  Install Packages
+    - name: Docker | Installation | APT |  Install Packages
       ansible.builtin.apt:
         pkg: "{{ docker.packages }}"
 
-- name: Installation | DNF Package Manager
+- name: Docker | Installation | DNF Package Manager
   when: ansible_os_family == "RedHat"
   become: true
   block:
-    - name: Install | DNF | Add Repository
+    - name: Docker | Install | DNF | Add Repository
       ansible.builtin.command: dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
       changed_when: false
-    - name: Install | DNF | Add GPG Key
+    - name: Docker | Install | DNF | Add GPG Key
       ansible.builtin.rpm_key:
         state: present
         key: https://download.docker.com/linux/fedora/gpg
-    - name: Install | DNF | Install Packages
+    - name: Docker | Install | DNF | Install Packages
       ansible.builtin.dnf:
         name: "{{ docker.packages }}"
         state: present
 
-- name : Installation | Enable and Start Docker
+- name: Docker | Installation | Enable and Start Docker
   ansible.builtin.systemd:
     name: docker
     state: started
     enabled: true
   become: true
 
-- name: Installation | Create Directories
+- name: Docker | Installation | Create Directories
   ansible.builtin.file:
     path: "{{ item }}"
     owner: root
@@ -60,29 +61,32 @@
     state: directory
   become: true
   with_items: "{{ docker.paths.values() }}"
-- name: Installation | Install ctop binary
+
+- name: Docker | Installation | Copy ctop binary
   ansible.builtin.copy:
     src: ctop
     dest: /usr/local/bin/ctop
     mode: '0755'
   become: true
-- name: Installation | Create Maintenance Cron Job
+
+- name: Docker | Installation | Create Maintenance Cron Job
   ansible.builtin.cron:
     name: "docker maintenance"
     minute: "0"
     hour: "05"
     job: "docker image prune -f && docker volume prune -f"
   become: true
-- name: Installation | Configure GitHub Packages Authentication
+
+- name: Docker | Installation | Configure GitHub Packages Authentication
   when: docker_github_auth.enabled # TODO: Make this dynamic
   become: true
   block:
-    - name: Installation | Ensure config directory exists
+    - name: Docker | Installation | Ensure config directory exists
       ansible.builtin.file:
         path: /root/.docker
         state: directory
         mode: '0770'
-    - name: Installation | Populate docker config from Jinja template
+    - name: Docker | Installation | Populate docker config from Jinja template
       ansible.builtin.template:
         src: "config.json.j2"
         dest: /root/.docker/config.json

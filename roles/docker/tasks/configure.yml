@@ -1,12 +1,11 @@
-- name: Configuration | Get Required Projects
+- name: Docker | Configuration | Get Required Projects
   ansible.builtin.shell: ls "{{ docker_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: applications
   delegate_to: localhost
   become: true
   changed_when: false
 
-# TODO: Remove duplicate directory creation
-- name: Configuration | Ensure data directories exist for required projects
+- name: Docker | Configuration | Create Volume Directories
   ansible.builtin.file:
     path: "{{ docker.paths.volumes }}/{{ item }}"
     owner: root
@@ -15,7 +14,8 @@
     state: directory
   become: true
   with_items: "{{ applications.stdout_lines }}"
-- name: Configuration | Ensure app directories exist for required projects
+
+- name: Docker | Configuration | Create Compose Project Directories
   ansible.builtin.file:
     path: "{{ docker.paths.apps }}/{{ item }}"
     owner: root
@@ -26,7 +26,7 @@
   with_items: "{{ applications.stdout_lines }}"
 
 
-- name: Configuration | Generate compose files from Jinja templates
+- name: Docker | Configuration | Generate Compose Files
   ansible.builtin.template:
     src: "{{ docker_config_path }}/{{ item }}.yml.j2"
     dest: "{{ docker.paths.apps }}/{{ item }}/compose.yaml"
@@ -37,7 +37,7 @@
   become: true
   register: compose
 
-- name: Configuration | Ensure all deployed compose projects are running
+- name: Docker | Configuration | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.item }}"
     project_src: "{{ docker.paths.apps }}/{{ item.item }}"
@@ -52,16 +52,18 @@
     label: "{{ item.item }}"
 
 
-- name: Configuration | Get running Compose projects
+- name: Docker | Configuration | Get Active Compose Projects
   ansible.builtin.shell: "docker compose ls -q"
   register: currentapplications
   become: true
   changed_when: false
-- name: Configuration | Stop non-required projects
+
+- name: Docker | Configuration | Stop non-required projects
   ansible.builtin.shell: "docker compose -p {{ item }} down"
   with_items: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"
   become: true
-- name: Configuration | Remove non-required projects
+
+- name: Docker | Configuration | Remove non-required projects
   ansible.builtin.file:
     path: "{{ docker.paths.apps }}/{{ item }}"
     state: absent
