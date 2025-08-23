@@ -35,6 +35,13 @@
     mode: '0770'
   with_items: "{{ applications.stdout_lines }}"
   become: true
+  register: compose
+- name: Temp Output Task
+  ansible.builtin.debug:
+    msg: "{{ compose }}"
+
+
+
 - name: Configuration | Ensure all deployed compose projects are running
   community.docker.docker_compose_v2:
     project_name: "{{ item }}"
