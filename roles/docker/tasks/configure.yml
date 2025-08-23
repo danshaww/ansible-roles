@@ -45,13 +45,17 @@
 - name: Configuration | Ensure all deployed compose projects are running
   community.docker.docker_compose_v2:
     project_name: "{{ item }}"
-    project_src: "{{ docker.paths.apps }}/{{ item }}"
+    project_src: "{{ docker.paths.apps }}/{{ item.item }}"
     remove_orphans: true
     build: never
     state: present
   tags: docker
   become: true
-  with_items: "{{ applications.stdout_lines }}"
+  with_items: "{{ compose.results }}"
+  when: item.changed
+
+
+
 - name: Configuration | Get running Compose projects
   ansible.builtin.shell: "docker compose ls -q"
   register: currentapplications
