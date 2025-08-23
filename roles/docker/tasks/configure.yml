@@ -48,7 +48,8 @@
   become: true
   with_items: "{{ compose.results }}"
   when: item.changed
-
+  loop_control:
+    label: "{{ item.item }}"
 
 
 - name: Configuration | Get running Compose projects
