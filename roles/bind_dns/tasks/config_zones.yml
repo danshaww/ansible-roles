@@ -22,7 +22,6 @@
     force: "{{ update_zones }}"
   become: true
   with_items: "{{ zones.stdout_lines }}"
-  when: zones_type == "dynamic"
 - name: Bind DNS | Zone Config | RNDC Reload
   ansible.builtin.command: rndc reload
   become: true
