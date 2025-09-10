@@ -34,8 +34,10 @@
     mode: '0644'
   register: apparmor
   become: true
-
-
+- name: Check Configuration
+  ansible.builtin.command: named-checkconf
+  become: true
+  changed_when: false
 - name: Restart Service
   ansible.builtin.systemd_service:
     name: named.service
@@ -50,12 +52,6 @@
   become: true
   changed_when: false
   when: apparmor.changed
-
-
-
-
-
-
 - name: Create Zones Directory
   ansible.builtin.file:
     path: /etc/bind/zones
