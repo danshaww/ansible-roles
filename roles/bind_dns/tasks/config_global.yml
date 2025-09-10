@@ -1,0 +1,21 @@
+- name: Bind DNS | Global Config | Copy Bind Config File
+  ansible.builtin.copy:
+    src: "{{ config_path }}/named.conf"
+    dest: "/etc/bind/named.conf"
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  no_log: true
+  register: config
+- name: Bind DNS | Global Config | Check Configuration
+  ansible.builtin.command: named-checkconf
+  become: true
+  changed_when: false
+- name: Bind DNS | Global Config | Restart Bind Service
+  ansible.builtin.systemd_service:
+    name: named.service
+    state: restarted
+  become: true
+  changed_when: false
+  when: config.changed or apparmor.changed

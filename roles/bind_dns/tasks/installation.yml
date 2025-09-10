@@ -1,0 +1,41 @@
+- name: Bind DNS | Installation | Package Installation
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - bind9
+      - python3-dnspython
+- name: Bind DNS | Installation | Install Prerequisits on Ansible Host
+  ansible.builtin.apt:
+    pkg: python3-dnspython
+  become: true
+  delegate_to: localhost
+- name: Bind DNS | Installation | Copy AppArmour Config File
+  ansible.builtin.copy:
+    src: apparmour
+    dest: /etc/apparmor.d/local/usr.sbin.named
+    owner: root
+    group: root
+    mode: '0644'
+  register: apparmor
+  become: true
+- name: Bind DNS | Installation | Restart AppArmour Service
+  ansible.builtin.systemd_service:
+    name: apparmor.service
+    state: restarted
+  become: true
+  changed_when: false
+  when: apparmor.changed
+- name: Bind DNS | Installation | UFW Firewall Configuration
+  community.general.ufw:
+    rule: allow
+    port: '53'
+  become: true
+  when: ansible_facts['distribution'] == "Ubuntu"
+- name: Bind DNS | Installation | Copy Justfile
+  ansible.builtin.copy:
+    src: justfile
+    dest: "/home/{{ ansible_user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+  become: true
