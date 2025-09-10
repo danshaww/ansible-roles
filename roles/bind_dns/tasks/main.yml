@@ -1,11 +1,19 @@
 - name: Bind DNS | Installation
   ansible.builtin.include_tasks: installation.yml
+  when: include_installation
+
 - name: Bind DNS | Global Config
   ansible.builtin.include_tasks: config_global.yml
+  when: include_global_config
+
 - name: Bind DNS | Zone Config
   ansible.builtin.include_tasks: config_zones.yml
+  when: include_zone_config
+
 - name: Bind DNS | Record Config
   ansible.builtin.include_tasks: config_records.yml
-  when: zone_type == 'dynamic'
+  when: include_record_config
+
 - name: Bind DNS | Testing
   ansible.builtin.include_tasks: testing.yml
+  when: include_testing

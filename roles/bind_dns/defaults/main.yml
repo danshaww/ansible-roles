@@ -5,3 +5,9 @@ a_records: changeme
 cname_records: changeme
 ptr_records: changeme
 nameservers: changeme
+
+include_installation: true
+include_global_config: true
+include_zone_config: true
+include_record_config: "{% if zone_type == 'dynamic' %}true{% else %}false{% endif %}"
+include_testing: true

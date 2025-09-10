@@ -19,7 +19,7 @@
     owner: root
     group: bind
     mode: '0775'
-    force: "{% if zone_type == 'dynamic' %}false{% else %}true{% endif %}"
+    force: "{{ update_zones }}"
   become: true
   with_items: "{{ zones.stdout_lines }}"
   when: zones_type == "dynamic"
