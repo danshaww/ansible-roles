@@ -1,6 +1,6 @@
 config_path: changeme
 tests: changeme
-zones_type: static
+dynamic_zones: false
 a_records: changeme
 cname_records: changeme
 ptr_records: changeme
@@ -9,5 +9,5 @@ nameservers: changeme
 include_installation: true
 include_global_config: true
 include_zone_config: true
-include_record_config: "{% if zones_type == 'dynamic' %}true{% else %}false{% endif %}"
+include_record_config: "{% if dynamic_zones %}true{% else %}false{% endif %}"
 include_testing: true
