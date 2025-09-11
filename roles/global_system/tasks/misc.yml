@@ -37,7 +37,7 @@
     mode: '0755'
 - name: Global_System | Misc | Remove DNS Registration Script
   ansible.builtin.file:
-    file: /root/register-host.sh
+    path: /root/register-host.sh
     state: absent
 - name: Global_System | Misc | Remove DNS Registration Cron Job
   ansible.builtin.cron:
