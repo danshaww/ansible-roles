@@ -13,7 +13,7 @@
   become: true
 
 - name: Docker | Installation | APT Package Manager
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and not "'docker' in ansible_facts.packages"
   become: true
   block:
     - name: Docker | Installation | APT | Add APT GPG Key
@@ -30,7 +30,7 @@
         pkg: "{{ docker.packages }}"
 
 - name: Docker | Installation | DNF Package Manager
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and not "'docker' in ansible_facts.packages"
   become: true
   block:
     - name: Docker | Install | DNF | Add Repository
