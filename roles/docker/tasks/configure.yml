@@ -19,7 +19,6 @@
       - "{{ docker.paths.volumes }}"
       - "{{ docker.paths.apps }}"
 
-
 - name: Docker | Configuration | Generate Compose Files
   ansible.builtin.template:
     src: "{{ docker_config_path }}/{{ item }}.yml.j2"
@@ -44,7 +43,6 @@
 #  when: item.changed
   loop_control:
     label: "{{ item.item }}"
-
 
 - name: Docker | Configuration | Get Active Compose Projects
   ansible.builtin.shell: "docker compose ls -q"
