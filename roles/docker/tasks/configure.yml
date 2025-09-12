@@ -5,7 +5,7 @@
   become: true
   changed_when: false
 
-- name: Docker | Configuration | Create Volume Directories
+- name: Docker | Configuration | Create Directories
   ansible.builtin.file:
     path: "{{ docker.paths.volumes }}/{{ item }}"
     owner: root
@@ -13,17 +13,11 @@
     mode: '0770'
     state: directory
   become: true
-  with_items: "{{ applications.stdout_lines }}"
-
-- name: Docker | Configuration | Create Compose Project Directories
-  ansible.builtin.file:
-    path: "{{ docker.paths.apps }}/{{ item }}"
-    owner: root
-    group: docker
-    mode: '0770'
-    state: directory
-  become: true
-  with_items: "{{ applications.stdout_lines }}"
+  with_items: "{{ docker_dirs | product(applications.stdout_lines) | map('join', '/') | list }}"
+  vars:
+    docker_dirs:
+      - "{{ docker.paths.volumes }}"
+      - "{{ docker.paths.apps }}"
 
 
 - name: Docker | Configuration | Generate Compose Files
