@@ -52,16 +52,6 @@
     enabled: true
   become: true
 
-# - name: Docker | Installation | Create Directories
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     owner: root
-#     group: docker
-#     mode: '0770'
-#     state: directory
-#   become: true
-#   with_items: "{{ docker.paths.values() }}"
-
 - name: Docker | Installation | Copy ctop binary
   ansible.builtin.copy:
     src: ctop
