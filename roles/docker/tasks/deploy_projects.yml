@@ -1,11 +1,11 @@
-- name: Docker | Configuration | Get Required Projects
+- name: Docker | Configuration | Deploy Projects | Get Required Projects
   ansible.builtin.shell: ls "{{ docker_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: applications
   delegate_to: localhost
   become: true
   changed_when: false
 
-- name: Docker | Configuration | Create Directories
+- name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
     path: "{{ docker.paths.volumes }}/{{ item }}"
     owner: root
@@ -19,7 +19,7 @@
       - "{{ docker.paths.volumes }}"
       - "{{ docker.paths.apps }}"
 
-- name: Docker | Configuration | Generate Compose Files
+- name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ docker_config_path }}/{{ item }}.yml.j2"
     dest: "{{ docker.paths.apps }}/{{ item }}/compose.yaml"
@@ -30,7 +30,7 @@
   become: true
   register: compose
 
-- name: Docker | Configuration | Start Compose Projects
+- name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.item }}"
     project_src: "{{ docker.paths.apps }}/{{ item.item }}"

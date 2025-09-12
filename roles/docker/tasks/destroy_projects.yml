@@ -1,15 +1,15 @@
-- name: Docker | Configuration | Get Active Compose Projects
+- name: Docker | Configuration | Destroy Projects | Get Active Compose Projects
   ansible.builtin.shell: "docker compose ls -q"
   register: currentapplications
   become: true
   changed_when: false
 
-- name: Docker | Configuration | Stop non-required projects
+- name: Docker | Configuration | Destroy Projects | Stop non-required projects
   ansible.builtin.shell: "docker compose -p {{ item }} down"
   with_items: "{{ currentapplications.stdout_lines | difference(applications.stdout_lines) }}"
   become: true
 
-- name: Docker | Configuration | Remove non-required projects
+- name: Docker | Configuration | Destroy Projects | Remove non-required projects
   ansible.builtin.file:
     path: "{{ docker.paths.apps }}/{{ item }}"
     state: absent
