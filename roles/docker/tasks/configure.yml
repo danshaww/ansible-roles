@@ -13,7 +13,7 @@
     mode: '0770'
     state: directory
   become: true
-  with_items: "{{ docker_dirs | product(applications.stdout_lines) | map('join', '/') | list }}"
+  with_items: "{{ docker_dirs | product(applications.stdout_lines) | map('join', '/') | list + docker.paths.values() | list }}"
   vars:
     docker_dirs:
       - "{{ docker.paths.volumes }}"
