@@ -3,7 +3,12 @@
     file: install.yml
   when: docker_install
 
-- name: Docker | Include Configuration Tasks
+- name: Docker | Include Configuration Tasks (Deploy)
   ansible.builtin.include_tasks:
-    file: configure.yml
+    file: deploy_projects.yml
+  when: docker_configure
+
+- name: Docker | Include Configuration Tasks (Destroy)
+  ansible.builtin.include_tasks:
+    file: destroy_projects.yml
   when: docker_configure
