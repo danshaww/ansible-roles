@@ -18,6 +18,5 @@ system_packages:
   - xclip
   - btop
   - gpg
-  # - neofetch # EOL
   - cron
   - nfs-common
