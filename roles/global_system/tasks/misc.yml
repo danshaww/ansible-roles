@@ -35,6 +35,11 @@
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
+- name: Global_System | Misc | Copy Neofetch Binary
+  ansible.builtin.copy:
+    src: figurine
+    dest: /usr/bin/neofetch
+    mode: '0755'
 - name: Global_System | Misc | Remove DNS Registration Script
   ansible.builtin.file:
     path: /root/register-host.sh
