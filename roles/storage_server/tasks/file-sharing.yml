@@ -17,7 +17,7 @@
   when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: File Sharing - Copy Samba Configuration file
-  copy:
+  ansible.builtin.copy:
     src: "{{ file_sharing.smb_config_path }}"
     dest: /etc/samba/smb.conf
     owner: root
@@ -28,7 +28,7 @@
   when: file_sharing.smb_config_path is defined
 
 - name: File Sharing - Copy NFS Exports file
-  copy:
+  ansible.builtin.copy:
     src: "{{ file_sharing.nfs_config_path }}"
     dest: /etc/exports
     owner: root
