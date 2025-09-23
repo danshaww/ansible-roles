@@ -1,5 +1,5 @@
 - name: Mount NFS
-  when: nfs_mounts is not none
+  when: nfs_mounts is defined
   block:
     - name: Create Top Level Mount Points
       ansible.builtin.file:
