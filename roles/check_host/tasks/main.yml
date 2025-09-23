@@ -1,0 +1,9 @@
+- name: Wait for reachable hosts
+  ansible.builtin.wait_for_connection:
+    timeout: 5
+  register: connection_result
+  ignore_errors: true
+- name: Group reachable hosts
+  ansible.builtin.group_by:
+    key: "{{ 'activehosts' if connection_result is succeeded else 'unreachable' }}"
+  changed_when: false
