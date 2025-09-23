@@ -1,0 +1,8 @@
+nfs_mounts: null
+
+## Schema
+
+# nfs_mounts:
+#   nas:
+#     - mount: nas:/dpool/data/fs/media
+#       directory: /mnt/nas/media

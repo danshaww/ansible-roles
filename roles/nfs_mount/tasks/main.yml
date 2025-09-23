@@ -1,0 +1,28 @@
+- name: Mount NFS
+  when: nfs_mounts is not none
+  block:
+    - name: Create Top Level Mount Points
+      ansible.builtin.file:
+        path: "/mnt/{{ item }}"
+        state: directory
+        mode: '0770'
+        owner: root
+        group: users
+      with_items: "{{ nfs_mounts | list }}"
+    - name: Create NFS Mount Points
+      ansible.builtin.file:
+        path: "{{ item.directory }}"
+        state: directory
+        mode: '0770'
+        owner: root
+        group: users
+      with_items: "{{ nfs_mounts.values() | combine }}"
+    - name: Create NFS Mount fstab entries
+      ansible.posix.mount:
+        path: "{{ item.directory }}"
+        src: "{{ item.mount }}"
+        opts: rw
+        state: mounted
+        fstype: nfs
+        boot: true
+      with_items: "{{ nfs_mounts.values() | combine }}"
