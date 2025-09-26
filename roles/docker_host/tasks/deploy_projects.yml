@@ -7,7 +7,7 @@
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
-    path: "{{ docker.paths.volumes }}/{{ item }}"
+    path: "{{ item }}"
     owner: root
     group: docker
     mode: '0770'
