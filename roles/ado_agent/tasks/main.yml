@@ -12,7 +12,7 @@
   register: runner_archive
 - name: Download GitHub Actions Runner
   ansible.builtin.get_url:
-    url: "https://vstsagentpackage.azureedge.net/agent/{{ runner_version }}/vsts-agent-linux-x64-{{ runner_version }}.tar.gz"
+    url: "https://download.agent.dev.azure.com/agent/{{ runner_version }}/vsts-agent-linux-x64-{{ runner_version }}.tar.gz"
     dest: "{{ runner_path }}/vsts-agent-linux-x64-{{ runner_version }}.tar.gz"
     mode: '0644'
   when: not runner_archive.stat.exists
