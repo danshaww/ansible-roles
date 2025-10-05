@@ -40,6 +40,7 @@
   notify:
     - Install Service
     - Start Service
+  become: false
 - name: Populate SSH Config
   ansible.builtin.lineinfile:
     path: /home/{{ username }}/.ssh/config
