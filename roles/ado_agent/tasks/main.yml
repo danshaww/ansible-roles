@@ -54,3 +54,13 @@
   with_items:
     - "Host *"
     - "   StrictHostKeyChecking no"
+- name: Main | Install AZ CLI
+  ansible.builtin.include_tasks: utils/az_cli.yml
+- name: Main | Install Ansible
+  ansible.builtin.include_tasks: utils/ansible.yml
+- name: Main | Install Terraform
+  ansible.builtin.include_tasks: utils/terraform.yml
+- name: Main | Install Docker
+  ansible.builtin.include_tasks: utils/docker.yml
+- name: Main | Install MkDocs
+  ansible.builtin.include_tasks: utils/mkdocs.yml
