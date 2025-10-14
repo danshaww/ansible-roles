@@ -25,10 +25,10 @@
 #   ansible.builtin.pip:
 #     requirements: /home/ci/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
 #     break_system_packages: true
-- name: Ansible Installation | Configure Vault Password File
-  ansible.builtin.copy:
-    dest: "/home/{{ username }}/.vault"
-    content: "{{ gitea_vault_password }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    mode: 0400
+# - name: Ansible Installation | Configure Vault Password File
+#   ansible.builtin.copy:
+#     dest: "/home/{{ username }}/.vault"
+#     content: "{{ gitea_vault_password }}"
+#     owner: "{{ username }}"
+#     group: "{{ username }}"
+#     mode: 0400
