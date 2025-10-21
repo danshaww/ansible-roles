@@ -5,7 +5,3 @@
 - name: Include ssh_keys
   ansible.builtin.include_tasks: ssh_keys.yml
   when: users is defined
-
-- name: Include smb_users
-  ansible.builtin.include_tasks: smb_users.yml
-  when: users is defined

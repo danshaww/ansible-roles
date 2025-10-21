@@ -1,6 +1,11 @@
+- name: Include Installation Tasks
+  ansible.builtin.include_tasks: installation.yml
 - name: Include Filesystem Tasks
   ansible.builtin.include_tasks: filesystem.yml
   when: filesystem is defined
+- name: Include smb_users
+  ansible.builtin.include_tasks: smb_users.yml
+  when: users is defined
 - name: Include File Sharing Tasks
   ansible.builtin.include_tasks: file-sharing.yml
   when: file_sharing is defined
