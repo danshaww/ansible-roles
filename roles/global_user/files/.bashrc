@@ -144,7 +144,6 @@ if [ "$(whoami)" != root ]; then
     echo "" && figurine -f "amc3line.flf" epichouse && echo ""
     [[ -n $(pgrep tmux) ]] && echo -e "tmux sessions:\n" && tmux ls || echo "no tmux sessions running"
 fi
-
-if [ -f ~/.oh_my_posh ]; then
-    . ~/.oh_my_posh
-fi
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
