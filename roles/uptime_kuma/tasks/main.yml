@@ -42,25 +42,7 @@
     api_token: "{{ api_token }}"
   register: monitors_result
 
-- name: Create Groups
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "{{ item.name }}"
-    state: present
-    type: group
-    description: "{{ item.description }}"
-  with_items: "{{ monitor_groups }}"
 
-- name: Delete Groups no longer required
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "{{ item.name }}"
-    state: absent
-    type: group
-  with_items: "{{ monitors_result.monitors }}"
-  when: item.type == 'group' and item.name not in monitor_groups| map(attribute='name')
 
 #- name: Display monitor names where type is group
 #  ansible.builtin.debug:
@@ -68,6 +50,18 @@
 #  with_items: "{{ monitors_result.monitors }}"
 #  when: item.type == 'group' and item.name not in monitor_groups| map(attribute='name')
 
+
+- name: Set fact
+  ansible.builtin.set_fact:
+    monitors: "{{ monitors | default([]) + [{'parent': item.0.name} | combine(item.1)] }}"
+  with_subelements:
+    - "{{ config.monitor_groups }}"
+    - monitors
+
+
+
+- name: Include Groups Tasks
+  ansible.builtin.include_tasks: groups.yml
+
 - name: Include Services Tasks
   ansible.builtin.include_tasks: services.yml
-  when: config.services is defined

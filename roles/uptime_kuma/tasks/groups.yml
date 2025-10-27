@@ -1,0 +1,19 @@
+- name: Create Groups
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: present
+    type: group
+    description: "{{ item.description }}"
+  with_items: "{{ config.monitor_groups }}"
+
+- name: Delete Groups no longer required
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: absent
+    type: group
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.type == 'group' and item.name not in config.monitor_groups | map(attribute='name')

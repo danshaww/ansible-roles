@@ -4,15 +4,17 @@
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
     hostname: "{{ item.name }}"
-    type: ping
+    # hostname: "{%if item.type == 'ping' %}{{ item.name }}{%elif%}null{%endif%}"
+    type: "{{ item.type }}"
     state: present
-    parent_name: Servers
+    parent_name: "{{ item.parent }}"
     notification_names: SMTP
     description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.servers }}"
-  when: config.services.servers is defined
+    maxretries: "{{ item.maxretries | default(config.maxretries) }}"
+    resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
+    # TODO: Add all variables here conditionally
+  with_items: "{{ monitors }}"
+  when: monitors is defined
 
 - name: Servers | Delete
   lucasheld.uptime_kuma.monitor:
@@ -22,103 +24,103 @@
     state: absent
     type: group
   with_items: "{{ monitors_result.monitors }}"
-  when: item.parent == 'Servers' and item.name not in config.services.servers| map(attribute='name') and config.services.servers is defined
+  when: item.name not in monitors | default([]) | map(attribute='name') and item.type != 'group'
 
 
 
 
-- name: Web Services
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "{{ item.name }}"
-    url: "https://{{ item.hostname }}"
-    type: http
-    state: present
-    parent_name: Web Services
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-    expiryNotification: true
-  with_items: "{{ config.services.web_services }}"
-  when: config.services.web_services is defined
-- name: Network Services
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "{{ item.name }}"
-    hostname: "{{ item.hostname }}"
-    type: ping
-    state: present
-    parent_name: Network Infrastructure
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.network }}"
-  when: config.services.network is defined
-- name: MySQL Databases
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "MySQL - {{ item.name }}"
-    databaseConnectionString: "{{ vars['mysql_' + item.database] }}"
-    databaseQuery: "{{ item.query }}"
-    type: mysql
-    state: present
-    parent_name: Database Services
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.mysql }}"
-  when: config.services.mysql is defined
-- name: Postgres Databases
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "Postgres - {{ item.name }}"
-    databaseConnectionString: "{{ vars['postgres_' + item.database] }}"
-    databaseQuery: "{{ item.query }}"
-    type: postgres
-    state: present
-    parent_name: Database Services
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.postgres }}"
-  when: config.services.postgres is defined
-- name: MSSQL Databases
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "MSSQL - {{ item.name }}"
-    databaseConnectionString: "{{ vars['mssql_' + item.database] }}"
-    databaseQuery: "{{ item.query }}"
-    type: sqlserver
-    state: present
-    parent_name: Database Services
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.mssql }}"
-  when: config.services.mssql is defined
-- name: Nameservers
-  lucasheld.uptime_kuma.monitor:
-    api_url: "{{ config.api_url }}"
-    api_token: "{{ api_token }}"
-    name: "{{ item.name }}"
-    hostname: "{{ item.lookup_address }}"
-    dns_resolve_server: "{{ item.ip_address }}"
-    type: dns
-    state: present
-    parent_name: Network Infrastructure
-    notification_names: SMTP
-    description: "{{ item.description }}"
-    maxretries: "{{ config.maxretries}}"
-    resendInterval: "{{ config.resendInterval}}"
-  with_items: "{{ config.services.nameservers }}"
-  when: config.services.nameservers is defined
+# - name: Web Services
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "{{ item.name }}"
+#     url: "https://{{ item.hostname }}"
+#     type: http
+#     state: present
+#     parent_name: Web Services
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#     expiryNotification: true
+#   with_items: "{{ config.services.web_services }}"
+#   when: config.services.web_services is defined
+# - name: Network Services
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "{{ item.name }}"
+#     hostname: "{{ item.hostname }}"
+#     type: ping
+#     state: present
+#     parent_name: Network Infrastructure
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#   with_items: "{{ config.services.network }}"
+#   when: config.services.network is defined
+# - name: MySQL Databases
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "MySQL - {{ item.name }}"
+#     databaseConnectionString: "{{ vars['mysql_' + item.database] }}"
+#     databaseQuery: "{{ item.query }}"
+#     type: mysql
+#     state: present
+#     parent_name: Database Services
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#   with_items: "{{ config.services.mysql }}"
+#   when: config.services.mysql is defined
+# - name: Postgres Databases
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "Postgres - {{ item.name }}"
+#     databaseConnectionString: "{{ vars['postgres_' + item.database] }}"
+#     databaseQuery: "{{ item.query }}"
+#     type: postgres
+#     state: present
+#     parent_name: Database Services
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#   with_items: "{{ config.services.postgres }}"
+#   when: config.services.postgres is defined
+# - name: MSSQL Databases
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "MSSQL - {{ item.name }}"
+#     databaseConnectionString: "{{ vars['mssql_' + item.database] }}"
+#     databaseQuery: "{{ item.query }}"
+#     type: sqlserver
+#     state: present
+#     parent_name: Database Services
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#   with_items: "{{ config.services.mssql }}"
+#   when: config.services.mssql is defined
+# - name: Nameservers
+#   lucasheld.uptime_kuma.monitor:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: "{{ item.name }}"
+#     hostname: "{{ item.lookup_address }}"
+#     dns_resolve_server: "{{ item.ip_address }}"
+#     type: dns
+#     state: present
+#     parent_name: Network Infrastructure
+#     notification_names: SMTP
+#     description: "{{ item.description }}"
+#     maxretries: "{{ config.maxretries}}"
+#     resendInterval: "{{ config.resendInterval}}"
+#   with_items: "{{ config.services.nameservers }}"
+#   when: config.services.nameservers is defined
