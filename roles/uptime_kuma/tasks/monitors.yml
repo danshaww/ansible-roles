@@ -5,7 +5,7 @@
     name: "{{ item.name }}"
     state: present
     type: group
-    description: "{{ item.description }}"
+    description: "{{ item.description | default('') }}"
   with_items: "{{ monitor_groups }}"
   loop_control:
     label: "{{ item.name }}"
