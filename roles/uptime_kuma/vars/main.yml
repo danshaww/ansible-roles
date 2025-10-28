@@ -1,7 +1,7 @@
-monitor_groups:
-  - name: Servers
-    description: Servers
-  - name: Network Infrastructure
-    description: Networking Devices
-  - name: Web Services
-    description: Web Based Services
+# monitor_groups:
+#   - name: Servers
+#     description: Servers
+#   - name: Network Infrastructure
+#     description: Networking Devices
+#   - name: Web Services
+#     description: Web Based Services
