@@ -13,14 +13,12 @@
     resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
     url: "{%if item.type | default('ping') == 'http' %}{{ item.url }}{%else%}null{%endif%}"
     dns_resolve_server: "{%if item.type | default('ping') == 'dns' %}{{ item.dns_resolve_server }}{%else%}null{%endif%}"
-
     databaseConnectionString: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseConnectionString }}{%else%}null{%endif%}"
     databaseQuery: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseQuery }}{%else%}null{%endif%}"
-
-
   with_items: "{{ monitors }}"
   when: monitors is defined
-  no_log: true # Secrets written to output
+  loop_control:
+    label: "{{ item.parent }}:{{ item.name }}"
 
 - name: Services | Delete Monitors
   lucasheld.uptime_kuma.monitor:
@@ -31,57 +29,5 @@
     type: group
   with_items: "{{ monitors_result.monitors }}"
   when: item.name not in monitors | default([]) | map(attribute='name') and item.type != 'group'
-  no_log: true # Secrets written to output
-
-
-# - name: MySQL Databases
-#   lucasheld.uptime_kuma.monitor:
-#     api_url: "{{ config.api_url }}"
-#     api_token: "{{ api_token }}"
-#     name: "MySQL - {{ item.name }}"
-#     databaseConnectionString: "{{ vars['mysql_' + item.database] }}"
-#     databaseQuery: "{{ item.query }}"
-#     type: mysql
-#     state: present
-#     parent_name: Database Services
-#     notification_names: SMTP
-#     description: "{{ item.description }}"
-#     maxretries: "{{ config.maxretries}}"
-#     resendInterval: "{{ config.resendInterval}}"
-#   with_items: "{{ config.services.mysql }}"
-#   when: config.services.mysql is defined
-# - name: Postgres Databases
-#   lucasheld.uptime_kuma.monitor:
-#     api_url: "{{ config.api_url }}"
-#     api_token: "{{ api_token }}"
-#     name: "Postgres - {{ item.name }}"
-#     databaseConnectionString: "{{ vars['postgres_' + item.database] }}"
-#     databaseQuery: "{{ item.query }}"
-#     type: postgres
-#     state: present
-#     parent_name: Database Services
-#     notification_names: SMTP
-#     description: "{{ item.description }}"
-#     maxretries: "{{ config.maxretries}}"
-#     resendInterval: "{{ config.resendInterval}}"
-#   with_items: "{{ config.services.postgres }}"
-#   when: config.services.postgres is defined
-# - name: MSSQL Databases
-#   lucasheld.uptime_kuma.monitor:
-#     api_url: "{{ config.api_url }}"
-#     api_token: "{{ api_token }}"
-#     name: "MSSQL - {{ item.name }}"
-#     databaseConnectionString: "{{ vars['mssql_' + item.database] }}"
-#     databaseQuery: "{{ item.query }}"
-#     type: sqlserver
-#     state: present
-#     parent_name: Database Services
-#     notification_names: SMTP
-#     description: "{{ item.description }}"
-#     maxretries: "{{ config.maxretries}}"
-#     resendInterval: "{{ config.resendInterval}}"
-#   with_items: "{{ config.services.mssql }}"
-#   when: config.services.mssql is defined
-
-
-
+  loop_control:
+    label: "{{ item.parent }}:{{ item.name }}"
