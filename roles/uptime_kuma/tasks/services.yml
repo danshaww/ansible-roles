@@ -3,8 +3,7 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    # hostname: "{{ item.name }}"
-    hostname: "{%if item.type | default('ping') == 'ping' %}{{ item.name }}{%else%}null{%endif%}"
+    hostname: "{%if item.type | default('ping') in 'ping,dns' %}{{ item.hostname | default(item.name) }}{%else%}null{%endif%}"
     type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
@@ -12,10 +11,9 @@
     description: "{{ item.description | default('') }}"
     maxretries: "{{ item.maxretries | default(config.maxretries) }}"
     resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
-
     url: "{%if item.type | default('ping') == 'http' %}{{ item.url }}{%else%}null{%endif%}"
+    dns_resolve_server: "{%if item.type | default('ping') == 'dns' %}{{ item.dns_resolve_server }}{%else%}null{%endif%}"
 
-    # TODO: Add all variables here conditionally
   with_items: "{{ monitors }}"
   when: monitors is defined
 
@@ -30,39 +28,6 @@
   when: item.name not in monitors | default([]) | map(attribute='name') and item.type != 'group'
 
 
-
-
-# - name: Web Services
-#   lucasheld.uptime_kuma.monitor:
-#     api_url: "{{ config.api_url }}"
-#     api_token: "{{ api_token }}"
-#     name: "{{ item.name }}"
-#     url: "https://{{ item.hostname }}"
-#     type: http
-#     state: present
-#     parent_name: Web Services
-#     notification_names: SMTP
-#     description: "{{ item.description }}"
-#     maxretries: "{{ config.maxretries}}"
-#     resendInterval: "{{ config.resendInterval}}"
-#     expiryNotification: true
-#   with_items: "{{ config.services.web_services }}"
-#   when: config.services.web_services is defined
-# - name: Network Services
-#   lucasheld.uptime_kuma.monitor:
-#     api_url: "{{ config.api_url }}"
-#     api_token: "{{ api_token }}"
-#     name: "{{ item.name }}"
-#     hostname: "{{ item.hostname }}"
-#     type: ping
-#     state: present
-#     parent_name: Network Infrastructure
-#     notification_names: SMTP
-#     description: "{{ item.description }}"
-#     maxretries: "{{ config.maxretries}}"
-#     resendInterval: "{{ config.resendInterval}}"
-#   with_items: "{{ config.services.network }}"
-#   when: config.services.network is defined
 # - name: MySQL Databases
 #   lucasheld.uptime_kuma.monitor:
 #     api_url: "{{ config.api_url }}"
