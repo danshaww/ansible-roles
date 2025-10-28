@@ -5,11 +5,11 @@
     name: "{{ item.name }}"
     hostname: "{{ item.name }}"
     # hostname: "{%if item.type == 'ping' %}{{ item.name }}{%elif%}null{%endif%}"
-    type: "{{ item.type }}"
+    type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
     notification_names: SMTP
-    description: "{{ item.description }}"
+    description: "{{ item.description | default(null) }}"
     maxretries: "{{ item.maxretries | default(config.maxretries) }}"
     resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
     # TODO: Add all variables here conditionally
