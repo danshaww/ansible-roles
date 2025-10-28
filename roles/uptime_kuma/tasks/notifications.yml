@@ -1,4 +1,4 @@
-- name: SMTP Configuration
+- name: Notifications | SMTP Configuration
   lucasheld.uptime_kuma.notification:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"

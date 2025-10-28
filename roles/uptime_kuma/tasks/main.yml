@@ -4,11 +4,5 @@
 - name: Include Notification Tasks
   ansible.builtin.include_tasks: notifications.yml
 
-- name: Include Groups Tasks
-  ansible.builtin.include_tasks: groups.yml
-  when:
-    - config.monitor_groups is defined
-
-- name: Include Services Tasks
-  ansible.builtin.include_tasks: services.yml
-  when: monitors is defined
+- name: Include Monitors Tasks
+  ansible.builtin.include_tasks: monitors.yml
