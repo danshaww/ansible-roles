@@ -1,10 +1,10 @@
-- name: Servers | Create
+- name: Services | Create Monitors
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    hostname: "{{ item.name }}"
-    # hostname: "{%if item.type == 'ping' %}{{ item.name }}{%elif%}null{%endif%}"
+    # hostname: "{{ item.name }}"
+    hostname: "{%if item.type | default('ping') == 'ping' %}{{ item.name }}{%else%}null{%endif%}"
     type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
@@ -12,11 +12,14 @@
     description: "{{ item.description | default('') }}"
     maxretries: "{{ item.maxretries | default(config.maxretries) }}"
     resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
+
+    url: "{%if item.type | default('ping') == 'http' %}{{ item.url }}{%else%}null{%endif%}"
+
     # TODO: Add all variables here conditionally
   with_items: "{{ monitors }}"
   when: monitors is defined
 
-- name: Servers | Delete
+- name: Services | Delete Monitors
   lucasheld.uptime_kuma.monitor:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
