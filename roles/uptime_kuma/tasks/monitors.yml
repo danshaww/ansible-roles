@@ -6,7 +6,7 @@
     state: present
     type: group
     description: "{{ item.description }}"
-  with_items: "{{ config.monitor_groups }}"
+  with_items: "{{ monitor_groups }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -18,7 +18,7 @@
     state: absent
     type: group
   with_items: "{{ monitors_result.monitors }}"
-  when: item.type == 'group' and item.name not in config.monitor_groups | map(attribute='name')
+  when: item.type == 'group' and item.name not in monitor_groups | map(attribute='name')
   loop_control:
     label: "{{ item.name }}"
 
