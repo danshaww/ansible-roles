@@ -27,7 +27,7 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    hostname: "{%if item.type | default('ping') in 'ping,dns,port' %}{{ item.hostname | default(item.name) }}{%else%}null{%endif%}"
+    hostname: "{%if item.type | default('ping') in 'ping,dns,port' %}{{ item.hostname | default(item.name) }}{%else%}0{%endif%}"
     type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
