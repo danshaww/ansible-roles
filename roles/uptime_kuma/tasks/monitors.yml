@@ -39,7 +39,7 @@
     dns_resolve_server: "{%if item.type | default('ping') == 'dns' %}{{ item.dns_resolve_server }}{%else%}null{%endif%}"
     databaseConnectionString: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseConnectionString }}{%else%}null{%endif%}"
     databaseQuery: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseQuery }}{%else%}null{%endif%}"
-    port: "{%if item.type | default('ping') == 'port' %}{{ item.port }}{%else%}null{%endif%}"
+    port: "{%if item.type | default('ping') == 'port' %}{{ item.port }}{%else%}None{%endif%}"
 
   with_items: "{{ monitors }}"
   when: monitors is defined
