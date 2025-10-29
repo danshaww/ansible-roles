@@ -27,7 +27,7 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    hostname: "{%if item.type | default('ping') in 'ping,dns' %}{{ item.hostname | default(item.name) }}{%else%}null{%endif%}"
+    hostname: "{%if item.type | default('ping') in 'ping,dns,port' %}{{ item.hostname | default(item.name) }}{%else%}null{%endif%}"
     type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
@@ -39,6 +39,8 @@
     dns_resolve_server: "{%if item.type | default('ping') == 'dns' %}{{ item.dns_resolve_server }}{%else%}null{%endif%}"
     databaseConnectionString: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseConnectionString }}{%else%}null{%endif%}"
     databaseQuery: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseQuery }}{%else%}null{%endif%}"
+    port: "{%if item.type | default('ping') == 'port' %}{{ item.port }}{%else%}null{%endif%}"
+
   with_items: "{{ monitors }}"
   when: monitors is defined
   loop_control:
