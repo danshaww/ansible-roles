@@ -1,3 +1,7 @@
 global_user_public_ssh_key: changeme
 global_user_private_ssh_key: changeme
 global_user_username: null
+enable_bashrc: true
+enable_htoprc: true
+enable_sshuser_config: true
+enable_miscuser_config: true

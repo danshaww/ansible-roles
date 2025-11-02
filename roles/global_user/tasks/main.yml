@@ -1,8 +1,15 @@
 - name: Global_User | Include bashrc Tasks
   ansible.builtin.include_tasks: bashrc.yml
+  when: enable_bashrc
+
 - name: Global_User | Include htoprc Tasks
   ansible.builtin.include_tasks: htoprc.yml
+  when: enable_htoprc
+
 - name: Global_User | Include ssh Tasks
   ansible.builtin.include_tasks: ssh.yml
+  when: enable_sshuser_config
+
 - name: Global_User | Include misc Tasks
   ansible.builtin.include_tasks: misc.yml
+  when: enable_miscuser_config
