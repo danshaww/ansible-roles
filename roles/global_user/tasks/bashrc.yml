@@ -7,7 +7,7 @@
     group: "{{ item.user }}"
   with_items:
     - user: "{{ global_user_username }}"
-      dir: "/home/{{ global_user_username }}"
+      dir: "{{ global_user_home_directory }}"
     - user: "root"
       dir: "/root"
 
@@ -20,6 +20,6 @@
     group: "{{ item.user }}"
   with_items:
     - user: "{{ global_user_username }}"
-      dir: "/home/{{ global_user_username }}"
+      dir: "{{ global_user_home_directory }}"
     - user: "root"
       dir: "/root"

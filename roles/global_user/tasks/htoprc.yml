@@ -1,6 +1,6 @@
 - name: Global_User | HTOPRC | Create Directory
   ansible.builtin.file:
-    path: "/home/{{ global_user_username }}/.config/htop"
+    path: "{{ global_user_home_directory }}/.config/htop"
     state: directory
     mode: '0755'
     owner: "{{ global_user_username }}"
@@ -8,7 +8,7 @@
 - name: Global_User | HTOPRC | Copy Virtual Machine File
   ansible.builtin.copy:
     src: htoprc-virtual
-    dest: "/home/{{ global_user_username }}/.config/htop/htoprc"
+    dest: "{{ global_user_home_directory }}/.config/htop/htoprc"
     mode: '0755'
     owner: "{{ global_user_username }}"
     group: "{{ global_user_username }}"
@@ -16,7 +16,7 @@
 - name: Global_User | HTOPRC | Copy Physical Machine File
   ansible.builtin.copy:
     src: htoprc-physical
-    dest: "/home/{{ global_user_username }}/.config/htop/htoprc"
+    dest: "{{ global_user_home_directory }}/.config/htop/htoprc"
     force: true
     mode: '0755'
     owner: "{{ global_user_username }}"

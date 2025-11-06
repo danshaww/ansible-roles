@@ -1,6 +1,6 @@
 - name: Global_User | Misc | Ensure Directory Exists
   ansible.builtin.file:
-    path: "/home/{{ global_user_username }}/git"
+    path: "{{ global_user_home_directory }}/git"
     mode: '0755'
     state: directory
     owner: "{{ global_user_username }}"
