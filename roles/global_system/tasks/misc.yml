@@ -19,6 +19,11 @@
     dest: /etc/motd
     src: motd.j2
     mode: '0644'
+- name: Global_System | Misc | Render Issue Template
+  ansible.builtin.template:
+    dest: /etc/issue
+    src: issue.j2
+    mode: '0644'
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
