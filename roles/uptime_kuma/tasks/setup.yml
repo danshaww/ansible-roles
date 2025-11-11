@@ -12,6 +12,9 @@
     api_username: "{{ config.api_username }}"
     api_password: "{{ config.api_password }}"
   register: result
+  until: result | succeeded
+  retries: 10
+  delay: 5
 - name: Setup | Extract the token from the result and set it as fact
   ansible.builtin.set_fact:
     api_token: "{{ result.token }}"
@@ -20,12 +23,19 @@
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
     keepDataPeriodDays: "{{ config.log_retention_days }}"
+  register: task_result_6
+  until: task_result_6 | succeeded
+  retries: 10
+  delay: 5
 
 - name: Setup | Get all monitors
   lucasheld.uptime_kuma.monitor_info:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
   register: monitors_result
+  until: monitors_result | succeeded
+  retries: 10
+  delay: 5
 
 - name: Setup | Set Monitors fact
   ansible.builtin.set_fact:

@@ -9,6 +9,10 @@
   with_items: "{{ monitor_groups }}"
   loop_control:
     label: "{{ item.name }}"
+  register: task_result_1
+  until: task_result_1 | succeeded
+  retries: 10
+  delay: 5
 
 - name: Monitors | Delete Groups
   lucasheld.uptime_kuma.monitor:
@@ -21,6 +25,10 @@
   when: item.type == 'group' and item.name not in monitor_groups | map(attribute='name')
   loop_control:
     label: "{{ item.name }}"
+  register: task_result_2
+  until: task_result_2 | succeeded
+  retries: 10
+  delay: 5
 
 - name: Monitors | Create Monitors
   lucasheld.uptime_kuma.monitor:
@@ -45,6 +53,10 @@
   when: monitors is defined
   loop_control:
     label: "{{ item.parent }}:{{ item.name }}"
+  register: task_result_3
+  until: task_result_3 | succeeded
+  retries: 10
+  delay: 5
 
 - name: Monitors | Delete Monitors
   lucasheld.uptime_kuma.monitor:
@@ -57,3 +69,7 @@
   when: item.name not in monitors | default([]) | map(attribute='name') and item.type != 'group'
   loop_control:
     label: "{{ item.parent }}:{{ item.name }}"
+  register: task_result_4
+  until: task_result_4 | succeeded
+  retries: 10
+  delay: 5
