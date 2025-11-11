@@ -13,8 +13,6 @@
     smtpSecure: 'true'
     state: present
   when: config.enable_smtp
-  register: task_result_5
-  until: task_result_5 | succeeded
   retries: 10
   delay: 5
 # TODO: Make this dynamic
