@@ -1,6 +1,6 @@
 - name: Bind DNS | Global Config | Copy Bind Config File
-  ansible.builtin.copy:
-    src: "{{ config_path }}/named.conf"
+  ansible.builtin.template:
+    src: "{{ config_path }}/named.conf.j2"
     dest: "/etc/bind/named.conf"
     owner: root
     group: bind
