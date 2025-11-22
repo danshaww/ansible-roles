@@ -1,18 +1,31 @@
-- name: Notifications | SMTP Configuration
+# - name: Notifications | SMTP Configuration
+#   lucasheld.uptime_kuma.notification:
+#     api_url: "{{ config.api_url }}"
+#     api_token: "{{ api_token }}"
+#     name: SMTP
+#     type: smtp
+#     smtpHost: "{{ config.smtp_host }}"
+#     smtpFrom: "{{ config.smtp_from }}"
+#     smtpTo: "{{ config.smtp_to }}"
+#     smtpUsername: "{{ config.smtp_username }}"
+#     smtpPassword: "{{ config.smtp_password }}"
+#     smtpPort: 465
+#     smtpSecure: 'true'
+#     state: present
+#   when: config.enable_smtp
+#   retries: 10
+#   delay: 5
+# TODO: Make this dynamic
+
+
+- name: Notifications | Discord Configuration
   lucasheld.uptime_kuma.notification:
     api_url: "{{ config.api_url }}"
     api_token: "{{ api_token }}"
-    name: SMTP
-    type: smtp
-    smtpHost: "{{ config.smtp_host }}"
-    smtpFrom: "{{ config.smtp_from }}"
-    smtpTo: "{{ config.smtp_to }}"
-    smtpUsername: "{{ config.smtp_username }}"
-    smtpPassword: "{{ config.smtp_password }}"
-    smtpPort: 465
-    smtpSecure: 'true'
+    name: Discord
+    type: discord
+    discordWebhookUrl: "{{ config.discord_webhook }}"
     state: present
   when: config.enable_smtp
   retries: 10
   delay: 5
-# TODO: Make this dynamic
