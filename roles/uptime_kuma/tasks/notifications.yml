@@ -26,5 +26,7 @@
     type: discord
     discordWebhookUrl: "{{ config.discord_webhook }}"
     state: present
+    applyExisting: true
+    isDefault: true
   retries: 10
   delay: 5
