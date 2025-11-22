@@ -26,6 +26,5 @@
     type: discord
     discordWebhookUrl: "{{ config.discord_webhook }}"
     state: present
-  when: config.enable_smtp
   retries: 10
   delay: 5
