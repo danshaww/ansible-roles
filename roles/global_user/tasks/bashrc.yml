@@ -10,6 +10,8 @@
       dir: "{{ global_user_home_directory }}"
     - user: "root"
       dir: "/root"
+    - user: "root"
+      dir: "/etc/skel"
 
 - name: Global_User | BASHRC Copy
   ansible.builtin.copy:
@@ -23,3 +25,5 @@
       dir: "{{ global_user_home_directory }}"
     - user: "root"
       dir: "/root"
+    - user: "root"
+      dir: "/etc/skel"
