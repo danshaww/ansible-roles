@@ -35,7 +35,6 @@
     type: "{{ item.type | default('ping')}}"
     state: present
     parent_name: "{{ item.parent }}"
-    notification_names: SMTP
     description: "{{ item.description | default('') }}"
     maxretries: "{{ item.maxretries | default(config.maxretries) }}"
     resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
