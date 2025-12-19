@@ -1,6 +1,7 @@
 global_user_public_ssh_key: changeme
 global_user_private_ssh_key: changeme
 global_user_username: null
+global_user_group: "{{ global_user_username }}"
 global_user_home_directory: "/home/{{ global_user_username }}"
 enable_bashrc: true
 enable_htoprc: true

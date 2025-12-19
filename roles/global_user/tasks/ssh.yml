@@ -4,11 +4,13 @@
     dest: "{{ item.dir }}/.ssh/id_rsa.pub"
     mode: '0644'
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
+    group: "{{ item.group }}"
   with_items:
     - user: "{{ global_user_username }}"
+      group: "{{ global_user_group }}"
       dir: "{{ global_user_home_directory }}"
     - user: "root"
+      group: "root"
       dir: "/root"
 
 - name: Global_User | SSH | Set authorized_keys
@@ -17,11 +19,13 @@
     dest: "{{ item.dir }}/.ssh/authorized_keys"
     mode: '0644'
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
+    group: "{{ item.group }}"
   with_items:
     - user: "{{ global_user_username }}"
+      group: "{{ global_user_group }}"
       dir: "{{ global_user_home_directory }}"
     - user: "root"
+      group: "root"
       dir: "/root"
 
 - name: Global_User | SSH | Set Private Key
@@ -30,11 +34,13 @@
     dest: "{{ item.dir }}/.ssh/id_rsa"
     mode: '0600'
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
+    group: "{{ item.group }}"
   with_items:
     - user: "{{ global_user_username }}"
+      group: "{{ global_user_group }}"
       dir: "{{ global_user_home_directory }}"
     - user: "root"
+      group: "root"
       dir: "/root"
 
 - name: Global_User | SSH | Populate Config (user)

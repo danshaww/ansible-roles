@@ -4,4 +4,4 @@
     mode: '0755'
     state: directory
     owner: "{{ global_user_username }}"
-    group: "{{ global_user_username }}"
+    group: "{{ global_user_group }}"
