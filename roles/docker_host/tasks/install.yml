@@ -29,22 +29,6 @@
       ansible.builtin.apt:
         pkg: "{{ docker.packages }}"
 
-# - name: Docker | Installation | DNF Package Manager
-#   when: ansible_os_family == "RedHat" and not "'docker' in ansible_facts.packages"
-#   become: true
-#   block:
-#     - name: Docker | Install | DNF | Add Repository
-#       ansible.builtin.command: dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-#       changed_when: false
-#     - name: Docker | Install | DNF | Add GPG Key
-#       ansible.builtin.rpm_key:
-#         state: present
-#         key: https://download.docker.com/linux/fedora/gpg
-#     - name: Docker | Install | DNF | Install Packages
-#       ansible.builtin.dnf:
-#         name: "{{ docker.packages }}"
-#         state: present
-
 - name: Docker | Installation | Enable and Start Docker
   ansible.builtin.systemd:
     name: docker
