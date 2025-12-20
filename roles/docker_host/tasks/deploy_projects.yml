@@ -1,5 +1,5 @@
 - name: Docker | Configuration | Deploy Projects | Get Required Projects
-  ansible.builtin.shell: ls "{{ docker_config_path }}" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "{{ docker_config_path }}/compose" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
   register: applications
   delegate_to: localhost
   become: true
