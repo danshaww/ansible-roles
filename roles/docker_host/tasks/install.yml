@@ -75,7 +75,7 @@
     mode: '0644'
   become: true
   register: dockersocket
-  when: docker_socket_change
+  when: docker_update_socket
 
 - name: Docker | Installation | Reload systemd & restart docker
   ansible.builtin.systemd_service:
