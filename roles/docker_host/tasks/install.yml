@@ -82,4 +82,4 @@
     state: restarted
     daemon_reload: true
     name: docker
-  when: docker_socket_change and dockersocket.changed
+  when: docker_update_socket and dockersocket.changed
