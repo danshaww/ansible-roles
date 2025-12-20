@@ -4,13 +4,16 @@
     dest: "{{ item.dir }}/.profile"
     mode: '0644'
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
+    group: "{{ item.group }}"
   with_items:
     - user: "{{ global_user_username }}"
+      group: "{{ global_user_group }}"
       dir: "{{ global_user_home_directory }}"
     - user: "root"
+      group: "root"
       dir: "/root"
     - user: "root"
+      group: "root"
       dir: "/etc/skel"
 
 - name: Global_User | BASHRC Copy
@@ -19,11 +22,14 @@
     dest: "{{ item.dir }}/.bashrc"
     mode: '0644'
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
+    group: "{{ item.group }}"
   with_items:
     - user: "{{ global_user_username }}"
+      group: "{{ global_user_group }}"
       dir: "{{ global_user_home_directory }}"
     - user: "root"
+      group: "root"
       dir: "/root"
     - user: "root"
+      group: "root"
       dir: "/etc/skel"
