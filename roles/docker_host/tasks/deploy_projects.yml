@@ -21,7 +21,7 @@
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
-    src: "{{ docker_config_path }}/{{ item }}.yml.j2"
+    src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
     dest: "{{ docker.paths.apps }}/{{ item }}/compose.yaml"
     owner: root
     group: docker

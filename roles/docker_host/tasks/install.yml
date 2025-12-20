@@ -65,3 +65,21 @@
         src: "config.json.j2"
         dest: /root/.docker/config.json
         mode: '0770'
+
+- name: Docker | Installation | Deploy docker.socket config
+  ansible.builtin.template:
+    src: "{{ docker_config_path }}/docker.socket.j2"
+    dest: /lib/systemd/system/docker.socket
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  register: docker_socket_change
+  when: docker_update_socket
+
+- name: Docker | Installation | Reload systemd & restart docker
+  ansible.builtin.systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: docker
+  when: docker_update_socket.changed
