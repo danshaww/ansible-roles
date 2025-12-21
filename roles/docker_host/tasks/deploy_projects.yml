@@ -20,7 +20,7 @@
       - "{{ docker.paths.apps }}"
 
 - name: Docker | Configuration | Deploy Projects | Set Additional ACL
-  ansible.builtin.file:
+  ansible.posix.acl:
     path: "{{ item }}"
     entity: "{{ docker_management_group }}"
     etype: group
