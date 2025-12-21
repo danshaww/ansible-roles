@@ -24,7 +24,6 @@
     path: "{{ item }}"
     entity: "{{ docker_management_group }}"
     etype: group
-    permissions: rwx
     default: true
     state: absent
   become: true
