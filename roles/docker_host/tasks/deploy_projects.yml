@@ -24,21 +24,6 @@
     path: "{{ item }}"
     entity: "{{ docker_management_group }}"
     etype: group
-    default: true
-    state: absent
-  become: true
-  when: docker_management_group is not none
-  with_items: "{{ docker.paths.values() | list + docker_dirs | product(applications.stdout_lines) | map('join', '/') | list }}"
-  vars:
-    docker_dirs:
-      - "{{ docker.paths.volumes }}"
-      - "{{ docker.paths.apps }}"
-
-- name: Docker | Configuration | Deploy Projects | Set Additional ACL
-  ansible.posix.acl:
-    path: "{{ item }}"
-    entity: "{{ docker_management_group }}"
-    etype: group
     permissions: rwx
     default: false
     state: present
