@@ -10,7 +10,6 @@ Server Type: Virtual Machine
 Server Type: LXC Container
 {% endif %}
 Server Location: {{ global_system_server_location }}
-Server Deployment Type: {{ global_system_server_deployment_type }}
 {% if inventory_hostname is search("prd") %}
 Server Environment: Production
 {% endif %}
