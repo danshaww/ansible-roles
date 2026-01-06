@@ -1,0 +1,46 @@
+- name: Act Configuration | Install dependancies
+  ansible.builtin.apt:
+    pkg: "{{ packages }}"
+    state: present
+    update_cache: true
+- name: Act Configuration | Create runner directory
+  ansible.builtin.file:
+    path: "{{ runner_path }}"
+    state: directory
+    mode: '0775'
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  changed_when: false
+
+- name: Check for existing archive
+  ansible.builtin.stat:
+    path: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+  register: runner_archive
+- name: Download GitHub Actions Runner
+  ansible.builtin.get_url:
+    url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    mode: '0644'
+  when: not runner_archive.stat.exists
+- name: Extract Archive
+  ansible.builtin.unarchive:
+    src: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ runner_path }}"
+    remote_src: true
+  when: not runner_archive.stat.exists
+
+- name: Configure GitHub Actions Runner
+  ansible.builtin.command: >
+    ./config.sh --url https://github.com/{{ github_org }}
+    --token {{ github_token }}
+    --name {{ runner_name }}
+    --labels {{ runner_labels }}
+    --runnergroup Default
+    --work _work
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.runner"
+  notify: Start Service
+    - Install Service
+    - Start Service
+

@@ -1,0 +1,5 @@
+- name: Misc | Copy SSH Config File
+  ansible.builtin.copy:
+    dest: /home/{{ username }}/.ssh/config
+    src: ssh_config
+    mode: '0755'
