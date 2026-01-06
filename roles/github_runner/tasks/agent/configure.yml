@@ -43,7 +43,7 @@
   args:
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.runner"
-  notify: Start Service
+  notify:
     - Install Service
     - Start Service
   become: true
