@@ -22,12 +22,14 @@
     dest: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
     mode: '0644'
   when: not runner_archive.stat.exists
+  become: false
 - name: Extract Archive
   ansible.builtin.unarchive:
     src: "{{ runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
     dest: "{{ runner_path }}"
     remote_src: true
   when: not runner_archive.stat.exists
+  become: false
 
 - name: Configure GitHub Actions Runner
   ansible.builtin.command: >
