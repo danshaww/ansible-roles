@@ -53,6 +53,7 @@
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.service"
   become: true
+  become_user: "{{ username }}"
   when: runner_conf.changed
 - name: Start Service
   ansible.builtin.service:

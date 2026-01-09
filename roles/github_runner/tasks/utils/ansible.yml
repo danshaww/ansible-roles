@@ -20,7 +20,7 @@
     name: "{{ item }}"
   with_items: "{{ ansible_collections }}"
   become: true
-  become_user: ci
+  become_user: "{{ username }}"
 # - name: Ansible Installation | Install azcollection Dependancies
 #   ansible.builtin.pip:
 #     requirements: /home/ci/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
