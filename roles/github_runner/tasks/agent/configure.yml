@@ -43,8 +43,20 @@
   args:
     chdir: "{{ runner_path }}"
     creates: "{{ runner_path }}/.runner"
-  notify:
-    - Install Service
-    - Start Service
+  register: runner_conf
   become: true
   become_user: "{{ username }}"
+
+- name: Install Service
+  ansible.builtin.command: ./svc.sh install
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.service"
+  become: true
+  when: runner_conf.changed
+- name: Start Service
+  ansible.builtin.service:
+    name: actions.runner.{{ github_org | replace('/', '.') }}.{{ runner_name }}.service
+    state: started
+    enabled: true
+  become: true
