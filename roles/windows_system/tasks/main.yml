@@ -1,0 +1,3 @@
+- name: windows_system | Include General Tasks
+  ansible.builtin.include_tasks: general.yml
+  when: enable_general
