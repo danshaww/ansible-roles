@@ -3,6 +3,7 @@
     path: HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server
     name: fDenyTSConnections
     data: 0
+    type: dword
   register: enable_rdp
 
 - name: General | Enable Remote Desktop
@@ -10,6 +11,7 @@
     path: HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services\Client
     name: fClientDisableUDP
     data: 0
+    type: dword
   register: enable_rdp
 
 - name: General | Enable Remote Desktop
@@ -17,6 +19,7 @@
     path: HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp
     name: UserAuthentication
     data: 1
+    type: dword
   register: enable_rdp
 
 - name: General | Add Remote Desktop Firewall Rule
