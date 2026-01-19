@@ -5,6 +5,20 @@
     data: 0
   register: enable_rdp
 
+- name: General | Enable Remote Desktop
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services\Client
+    name: fClientDisableUDP
+    data: 0
+  register: enable_rdp
+
+- name: General | Enable Remote Desktop
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp
+    name: UserAuthentication
+    data: 1
+  register: enable_rdp
+
 - name: General | Add Remote Desktop Firewall Rule
   ansible.windows.win_shell: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
   when: enable_rdp.changed
