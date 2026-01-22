@@ -8,7 +8,7 @@ if [ -z "$CONTAINER" ]; then
 fi
 
 # Query Docker for container state
-STATE=$(sudo docker inspect -f '{{.State.Status}}' "$CONTAINER" 2>/dev/null)
+STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER" 2>/dev/null)
 
 if [ $? -ne 0 ]; then
     echo "CRITICAL - Container '$CONTAINER' not found"
