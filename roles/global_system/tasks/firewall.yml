@@ -9,10 +9,8 @@
       community.general.ufw:
         rule: allow
         port: '22'
-    - name: Global_System | UFW | Allow CheckMK
+    - name: Global_System | UFW | Allow Nagios
       community.general.ufw:
         rule: allow
-        port: '6556'
-        src: "{{ item }}"
-      with_items: "{{ global_system_checkmk_hosts }}"
-      when: global_system_checkmk_hosts is defined
+        port: '5666'
+      when: enable_nagios_config
