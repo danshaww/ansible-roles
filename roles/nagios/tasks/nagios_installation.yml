@@ -9,42 +9,19 @@
     dest: /tmp/
     remote_src: true
 
-- name: Get Directory
-  ansible.builtin.shell: ls /tmp |grep nagios-
-  register: nagios_dir
-
 - name: Comile Source
   ansible.builtin.shell: ./configure --with-httpd-conf=/etc/apache2/sites-available && make all
   args:
     chdir: "/tmp/nagios-{{ nagios_version }}"
 
-# - name: Perform user & Group creation
-#   ansible.builtin.shell: sudo make install-groups-users
-#   args:
-#     chdir: "/tmp/nagios-{{ nagios_version }}"
-
-- name: Install Nagios Binaries
-  ansible.builtin.shell: make install
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-
-- name: Install Service
-  ansible.builtin.shell: make install-daemoninit
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-
-- name: Install Command Mode
-  ansible.builtin.shell: make install-commandmode
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-
-- name: Install Sample Config
-  ansible.builtin.shell: make install-config
-  args:
-    chdir: "/tmp/nagios-{{ nagios_version }}"
-
-- name: Install Apache Config
-  ansible.builtin.shell: make install-webconf
+- name: Install Nagios
+  ansible.builtin.shell: make "{{ item }}"
+  with_items:
+    - install
+    - install-daemoninit
+    - install-commandmode
+    - install-config
+    - install-webconf
   args:
     chdir: "/tmp/nagios-{{ nagios_version }}"
 
@@ -54,7 +31,7 @@
     name: nagiosadmin
     password: "{{ nagios_admin_password }}"
 
-- name: Enable nagios Site
+- name: Enable nagios Apache Site
   ansible.builtin.shell: a2ensite nagios
 
 - name: Start Nagios Service
@@ -68,3 +45,8 @@
     name: apache2
     state: reloaded
     enabled: true
+
+- name: Remove temp Directory
+  ansible.builtin.file:
+    path: /tmp/nagios-{{ nagios_version }}
+    state: absent

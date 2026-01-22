@@ -3,10 +3,12 @@
     url: https://raw.githubusercontent.com/alanmburr/acme-dns-certbot/refs/heads/master/acme-dns-auth.py
     dest: /etc/letsencrypt/acme-dns-auth.py
     mode: '0755'
+
 - name: LetsEncrypt - Check if Cert Exists
   ansible.builtin.stat:
     path: "/etc/letsencrypt/live/{{ nagios_hostname }}/fullchain.pem"
   register: certificate
+
 - name: LetsEncrypt - Configure Letsencrypt Cloudflare Credentials
   ansible.builtin.lineinfile:
     path: /etc/letsencrypt/auth.ini
@@ -15,15 +17,16 @@
     create: true
     mode: '0600'
   no_log: true
+
 - name: LetsEncrypt - Generate Certificate # TODO: Fix the length of this command
   ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ nagios_hostname }} --non-interactive --agree-tos -m {{ nagios_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
   when: not certificate.stat.exists
-
 
 - name: Enable the Apache2 module ssl
   community.general.apache2_module:
     state: present
     name: ssl
+
 - name: Apache - Enable Modules
   community.general.apache2_module:
     state: present
@@ -31,10 +34,12 @@
   with_items:
     - headers
     - rewrite
+
 - name: Apache - Render Config
   ansible.builtin.template:
     src: default-ssl.conf.j2
     dest: /etc/apache2/sites-available/default-ssl.conf
+
 - name: Apache - Set Directory Permissions
   ansible.builtin.file:
     path: /etc/apache
@@ -43,18 +48,22 @@
     mode: '0644'
     recurse: true
   become: true
+
 - name: Enable Default SSL Site
   ansible.builtin.shell: a2ensite default-ssl && a2dissite 000-default
+
 - name: Apache - UFW Allow HTTPS
   community.general.ufw:
     rule: allow
     port: '443'
   when: (ansible_facts['distribution'] == "Ubuntu")
+
 - name: Restart Apache Service
   ansible.builtin.service:
     name: apache2
     state: restarted
     enabled: true
+
 - name: Enable Apache Modules
   community.general.apache2_module:
     state: present
@@ -62,6 +71,7 @@
   with_items:
     - cgi
     - rewrite
+
 - name: Restart Apache Service
   ansible.builtin.service:
     name: apache2
