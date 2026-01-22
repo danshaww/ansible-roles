@@ -5,12 +5,15 @@
     gid: 121
   become: true
 
-- name: Docker | Installation | Add Ansible user to Group
+- name: Docker | Installation | Add users to Group
   ansible.builtin.user:
-    name: "{{ ansible_user }}"
+    name: "{{ item }}"
     groups: docker
     append: true
   become: true
+  with_items:
+    - "{{ ansible_user }}"
+    - nagios
 
 - name: Docker | Installation | APT Package Manager
   # when: ansible_os_family == "Debian" and not "'docker' in ansible_facts.packages"
