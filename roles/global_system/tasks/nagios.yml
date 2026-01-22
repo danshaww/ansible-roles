@@ -1,0 +1,37 @@
+- name: Install Packages
+  ansible.builtin.apt:
+    package:
+      - nagios-nrpe-server
+      - nagios-plugins
+
+- name: Update NRPE Config
+  ansible.builtin.copy:
+    src: nagios/nrpe.cfg
+    dest: /etc/nagios/nrpe.cfg
+  register: nrpe_config
+
+- name: Stop & Disable xinetd
+  ansible.builtin.service:
+    name: xinetd
+    state: stopped
+    enabled: false
+  become: true
+
+- name: Copy Scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /usr/lib/nagios/plugins/
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - nagios/check_cpu.sh
+    - nagios/check_mem.sh
+
+- name: Restart NRPE
+  ansible.builtin.service:
+    name: nagios-nrpe-server
+    state: restarted
+    enabled: true
+  become: true
+  when: nrpe_config.changed
