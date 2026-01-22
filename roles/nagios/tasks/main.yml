@@ -33,5 +33,8 @@
 - name: Include SMTP Configuration
   ansible.builtin.include_tasks: smtp_configuration.yml
 
+- name: Include Dark Theme
+  ansible.builtin.include_tasks: dark_theme.yml
+
 - name: Include Deploy Config
   ansible.builtin.include_tasks: nagios_config_deployment.yml
