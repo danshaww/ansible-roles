@@ -14,6 +14,10 @@
     dest: /tmp/plugins/
     remote_src: true
 
+- name: Get Directory
+  ansible.builtin.shell: ls /tmp/plugins |grep nagios-plugins-
+  register: nagios_plugin_dir
+
 - name: Install Plugins
   ansible.builtin.shell: ./configure && make && make install
   args:
