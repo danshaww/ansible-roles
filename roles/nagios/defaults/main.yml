@@ -1,4 +1,4 @@
-nagios_version: 4.5.9
+nagios_version: 4.5.11
 nagios_admin_password: changeme
 nagios_smtp_username: changeme
 nagios_smtp_password: changeme
