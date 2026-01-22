@@ -28,6 +28,7 @@
   with_items:
     - nagios/check_cpu.sh
     - nagios/check_mem.sh
+    - nagios/check_service.sh
 
 - name: Restart NRPE
   ansible.builtin.service:
