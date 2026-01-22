@@ -54,6 +54,9 @@
     name: nagiosadmin
     password: "{{ nagios_admin_password }}"
 
+- name: Enable nagios Site
+  ansible.builtin.shell: a2ensite nagios
+
 - name: Start Nagios Service
   ansible.builtin.service:
     name: nagios
