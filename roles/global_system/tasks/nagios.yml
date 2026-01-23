@@ -1,25 +1,25 @@
-- name: Install Packages
-  ansible.builtin.apt:
-    package:
-      - nagios-nrpe-server
-  when: ansible_facts.distribution_version == "24.04"
+# - name: Install Packages
+#   ansible.builtin.apt:
+#     package:
+#       - nagios-nrpe-server
+#   when: ansible_facts.distribution_version == "24.04"
 
 - name: Uninstall Packages
   ansible.builtin.apt:
     package:
       - nagios-nrpe-server
     state: absent
-  when: ansible_facts.distribution_version != "24.04"
+  # when: ansible_facts.distribution_version != "24.04"
 
 - name: Check for NRPE binary
   ansible.builtin.stat:
-    path: /usr/sbin/nrpe
+    path: /usr/local/nagios/bin/nrpe
   register: nrpe_bin
   changed_when: false
 
 - name: Install NRPE from source (Debian Only)
   when:
-    - ansible_facts.distribution_version != "24.04"
+    # - ansible_facts.distribution_version != "24.04"
     - not nrpe_bin.stat.exists
   block:
     - name: Install Build tools
@@ -58,7 +58,7 @@
 - name: Update NRPE Config
   ansible.builtin.copy:
     src: nagios/nrpe.cfg
-    dest: /etc/nagios/nrpe.cfg
+    dest: /usr/local/nagios/etc/nrpe.cfg
   register: nrpe_config
 
 - name: Stop & Disable xinetd
@@ -84,7 +84,7 @@
 
 - name: Restart NRPE
   ansible.builtin.service:
-    name: nagios-nrpe-server
+    name: nrpe
     state: restarted
     enabled: true
   become: true
