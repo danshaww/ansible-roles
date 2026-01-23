@@ -46,6 +46,7 @@
     - name: Install NRPE
       ansible.builtin.shell: make "{{ item }}"
       with_items:
+        - check_nrpe
         - install
         - install-config
         - install-init
