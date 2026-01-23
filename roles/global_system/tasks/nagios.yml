@@ -9,7 +9,6 @@
   ansible.builtin.stat:
     path: /usr/sbin/nrpe
   register: nrpe_bin
-  when: ansible_facts.distribution_version == "24.04"
   changed_when: false
 
 - name: Install NRPE from source (Debian Only)
