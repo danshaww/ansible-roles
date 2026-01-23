@@ -22,22 +22,27 @@
     - ansible_facts.distribution_version != "24.04"
     - not nrpe_bin.stat.exists
   block:
+    - name: Install Build tools
+      ansible.builtin.apt:
+        package:
+          - build-essential
+          - libssl-dev
+          - autoconf
+          - automake
+          - libtool
     - name: Download NRPE Source
       ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-4.1.3/nrpe-4.1.3.tar.gz
       args:
         chdir: /tmp
-
     - name: Unarchive NRPE Source
       ansible.builtin.unarchive:
         src: /tmp/nrpe-4.1.3.tar.gz
         dest: /tmp/
         remote_src: true
-
     - name: Comile NRPE Source
       ansible.builtin.shell: ./configure --enable-command-args --enable-ssl
       args:
         chdir: "/tmp/nrpe-4.1.3"
-
     - name: Install NRPE
       ansible.builtin.shell: make "{{ item }}"
       with_items:
