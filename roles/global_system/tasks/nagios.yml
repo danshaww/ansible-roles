@@ -2,7 +2,6 @@
   ansible.builtin.apt:
     package:
       - nagios-nrpe-server
-      - nagios-plugins
   when: ansible_facts.distribution_version == "24.04"
 
 

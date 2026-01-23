@@ -21,3 +21,4 @@ system_packages:
   - cron
   - nfs-common
   - just
+  - nagios-plugins
