@@ -46,8 +46,10 @@
     - name: Install NRPE
       ansible.builtin.shell: make "{{ item }}"
       with_items:
-        - check_nrpe
+        - all
         - install
+        - install-groups-users
+        - install-plugin
         - install-config
         - install-init
       args:
