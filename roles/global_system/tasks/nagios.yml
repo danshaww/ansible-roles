@@ -23,14 +23,14 @@
 
     - name: Unarchive NRPE Source
       ansible.builtin.unarchive:
-        src: /tmp/v4.1.3.tar.gz
+        src: /tmp/nrpe-4.1.3.tar.gz
         dest: /tmp/
         remote_src: true
 
     - name: Comile NRPE Source
       ansible.builtin.shell: ./configure --enable-command-args --enable-ssl
       args:
-        chdir: "/tmp/v4.1.3"
+        chdir: "/tmp/nrpe-4.1.3"
 
     - name: Install NRPE
       ansible.builtin.shell: make "{{ item }}"
@@ -39,7 +39,7 @@
         - install-config
         - install-init
       args:
-        chdir: "/tmp/v4.1.3"
+        chdir: "/tmp/nrpe-4.1.3"
 
 - name: Update NRPE Config
   ansible.builtin.copy:
