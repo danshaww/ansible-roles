@@ -1,16 +1,3 @@
-# - name: Install Packages
-#   ansible.builtin.apt:
-#     package:
-#       - nagios-nrpe-server
-#   when: ansible_facts.distribution_version == "24.04"
-
-- name: Uninstall Packages
-  ansible.builtin.apt:
-    package:
-      - nagios-nrpe-server
-    state: absent
-  # when: ansible_facts.distribution_version != "24.04"
-
 - name: Check for NRPE binary
   ansible.builtin.stat:
     path: /usr/local/nagios/bin/nrpe
@@ -19,7 +6,6 @@
 
 - name: Install NRPE from source (Debian Only)
   when:
-    # - ansible_facts.distribution_version != "24.04"
     - not nrpe_bin.stat.exists
   block:
     - name: Install Build tools

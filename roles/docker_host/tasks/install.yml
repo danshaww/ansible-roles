@@ -43,7 +43,7 @@
     enabled: true
   become: true
 
-- name: Docker | Installation | Copy ctop binary
+- name: Docker | Installation | Copy ctop binary # need to make this multi arch
   ansible.builtin.copy:
     src: ctop
     dest: /usr/local/bin/ctop

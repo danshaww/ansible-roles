@@ -35,21 +35,13 @@
   become: true
   when: not completions.stat.exists
   changed_when: not completions.stat.exists
-- name: Global_System | Misc | Copy Figurine Binary
+- name: Global_System | Misc | Copy Figurine Binary # need to make this multi arch
   ansible.builtin.copy:
     src: figurine
     dest: /usr/local/bin/figurine
     mode: '0755'
-- name: Global_System | Misc | Copy Neofetch Binary
+- name: Global_System | Misc | Copy Neofetch Binary # need to make this multi arch
   ansible.builtin.copy:
     src: neofetch
     dest: /usr/bin/neofetch
     mode: '0755'
-- name: Global_System | Misc | Remove DNS Registration Script
-  ansible.builtin.file:
-    path: /root/register-host.sh
-    state: absent
-- name: Global_System | Misc | Remove DNS Registration Cron Job
-  ansible.builtin.cron:
-    name: "DNS Registration"
-    state: absent
