@@ -3,6 +3,45 @@
     package:
       - nagios-nrpe-server
       - nagios-plugins
+  when: ansible_facts.distribution_version == "24.04"
+
+
+- name: Check for NRPE binary
+  ansible.builtin.stat:
+    path: /usr/sbin/nrpe
+  register: nrpe_bin
+  when: ansible_facts.distribution_version == "24.04"
+  changed_when: false
+
+- name: Install NRPE from source (Debian Only)
+  when:
+    - ansible_facts.distribution_version != "24.04"
+    - not nrpe_bin.stat.exists
+  block:
+    - name: Download NRPE Source
+      ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nrpe/archive/refs/tags/v4.1.0.tar.gz
+      args:
+        chdir: /tmp
+
+    - name: Unarchive NRPE Source
+      ansible.builtin.unarchive:
+        src: /tmp/v4.1.0.tar.gz
+        dest: /tmp/
+        remote_src: true
+
+    - name: Comile NRPE Source
+      ansible.builtin.shell: ./configure --enable-command-args --enable-ssl
+      args:
+        chdir: "/tmp/v4.1.0"
+
+    - name: Install NRPE
+      ansible.builtin.shell: make "{{ item }}"
+      with_items:
+        - install
+        - install-config
+        - install-init
+      args:
+        chdir: "/tmp/nagios-{{ nagios_version }}"
 
 - name: Update NRPE Config
   ansible.builtin.copy:
