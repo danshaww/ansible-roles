@@ -1,6 +1,6 @@
 - name: Check for NRPE binary
   ansible.builtin.stat:
-    path: /usr/local/bin/nrpe
+    path: /usr/local/nagios/bin/nrpe
   register: nrpe_bin
   changed_when: false
 
@@ -44,7 +44,7 @@
 - name: Copy Scripts
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: /usr/lib/plugins/
+    dest: /usr/lib/nagios/plugins/
     owner: root
     group: root
     mode: 0755
