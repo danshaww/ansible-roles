@@ -1,0 +1,13 @@
+- name: Update NRPE Config
+  ansible.builtin.copy:
+    src: nrpe.cfg
+    dest: /usr/local/nagios/etc/nrpe.cfg
+  register: nrpe_config
+
+- name: Restart NRPE
+  ansible.builtin.service:
+    name: nrpe
+    state: restarted
+    enabled: true
+  become: true
+  when: nrpe_config.changed

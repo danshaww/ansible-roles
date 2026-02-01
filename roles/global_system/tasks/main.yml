@@ -13,7 +13,3 @@
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
   when: enable_misc_config
-
-- name: Global_System | Nagios Tasks
-  ansible.builtin.include_tasks: nagios.yml
-  when: enable_nagios_config
