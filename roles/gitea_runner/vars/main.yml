@@ -6,6 +6,7 @@ packages:
 #  - golang-go
   - software-properties-common
   - gnupg
+  - mkisofs
 
 ansible_collections:
   - lucasheld.uptime_kuma
