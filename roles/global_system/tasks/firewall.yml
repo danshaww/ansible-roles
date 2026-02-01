@@ -9,8 +9,3 @@
       community.general.ufw:
         rule: allow
         port: '22'
-    - name: Global_System | UFW | Allow Nagios
-      community.general.ufw:
-        rule: allow
-        port: '5666'
-      when: enable_nagios_config
