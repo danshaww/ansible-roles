@@ -12,7 +12,9 @@
 - name: Terraform Installation | Install
   become: true
   ansible.builtin.apt:
-    pkg: terraform
+    pkg:
+      - terraform
+      - packer
 - name: Terraform Installation | Copy tf-summarize binary
   ansible.builtin.copy:
     src: tf-summarize
