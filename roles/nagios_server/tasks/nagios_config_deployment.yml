@@ -1,5 +1,5 @@
 - name: Copy Files
-  ansible.builtin.copy:
+  ansible.posix.synchronize:
     src: "{{ nagios_config_path }}"
     dest: /usr/local/nagios/etc
     mode: '0755'
