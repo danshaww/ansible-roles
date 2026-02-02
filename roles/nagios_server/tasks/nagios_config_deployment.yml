@@ -5,6 +5,9 @@
     archive: false
     delete: true
     recursive: true
+    rsync_opts:
+      - --exclude=htpasswd.users
+      - --exclude=nrpe.cfg
   notify: Restart Nagios
 
 - name: Set Permissions
