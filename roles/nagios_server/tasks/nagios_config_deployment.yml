@@ -3,6 +3,7 @@
     src: "{{ nagios_config_path }}"
     dest: /usr/local/nagios/etc
     archive: false
+    delete: true
   notify: Restart Nagios
 
 - name: Check Nagios Config
