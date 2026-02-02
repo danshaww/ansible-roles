@@ -21,7 +21,7 @@
 
 - name: Nagios | Remove Objects
   ansible.builtin.file:
-    path: "{{ nagios_config_path }}/objects/{{ item }}"
+    path: "/usr/local/nagios/etc/objects/{{ item }}"
     state: absent
   become: true
   with_items: "{{ current_objects.stdout_lines | difference(required_objects.stdout_lines) }}"
