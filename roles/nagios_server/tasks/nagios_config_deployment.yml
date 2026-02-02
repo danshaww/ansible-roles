@@ -2,9 +2,7 @@
   ansible.posix.synchronize:
     src: "{{ nagios_config_path }}"
     dest: /usr/local/nagios/etc
-    mode: '0755'
-    owner: nagios
-    group: nagios
+    archive: false
   notify: Restart Nagios
 
 - name: Check Nagios Config
