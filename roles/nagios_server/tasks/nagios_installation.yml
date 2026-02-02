@@ -36,6 +36,7 @@
     src: "/etc/apache2/sites-available/nagios.conf"
     dest: "/etc/apache2/sites-enabled/nagios.conf"
     state: link
+  register: enable_nagios_site
 
 - name: Start Nagios Service
   ansible.builtin.service:
@@ -48,6 +49,7 @@
     name: apache2
     state: reloaded
     enabled: true
+  when: enable_nagios_site.changed
 
 - name: Remove temp Directory
   ansible.builtin.file:
