@@ -8,6 +8,7 @@
   no_log: true
   notify:
     - Restart Service
+    - Test Name Resolution
 
 - name: Bind DNS | Global Config | Check Configuration
   ansible.builtin.command: named-checkconf

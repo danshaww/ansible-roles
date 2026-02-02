@@ -28,6 +28,7 @@
   notify:
     - RNDC Reload
     - Clear Cache
+    - Test Name Resolution
 
 - name: Bind DNS | Zone Config | Render Zone Files
   ansible.builtin.template:
