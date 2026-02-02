@@ -1,6 +1,0 @@
-- name: Bind DNS | Testing | Test Name Resolution
-  ansible.builtin.command: "nslookup {{ item.address }}"
-  delegate_to: localhost
-  changed_when: false
-  register: testresults
-  with_items: "{{ tests }}"

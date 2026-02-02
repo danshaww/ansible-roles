@@ -14,6 +14,7 @@
   ansible.builtin.include_tasks: config_records.yml
   when: include_record_config
 
-- name: Bind DNS | Testing
-  ansible.builtin.include_tasks: testing.yml
-  when: include_testing
+- name: Bind DNS | Trigger Test Handler
+  ansible.builtin.command: /bin/true
+  notify: Test Name Resolution
+  changed_when: false

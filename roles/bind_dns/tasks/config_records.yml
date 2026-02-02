@@ -6,6 +6,7 @@
     type: A
   with_items: "{{ a_records }}"
   when: a_records != "changeme"
+
 - name: Bind DNS | Record Config | Dynamic PTR Record Creation
   community.general.nsupdate:
     server: 127.0.0.1
@@ -14,6 +15,7 @@
     type: PTR
   with_items: "{{ ptr_records }}"
   when: ptr_records != "changeme"
+
 - name: Bind DNS | Record Config | Dynamic CNAME Record Creation
   community.general.nsupdate:
     server: 127.0.0.1
@@ -22,6 +24,7 @@
     type: CNAME
   with_items: "{{ cname_records }}"
   when: cname_records != "changeme"
+
 - name: Bind DNS | Record Config | Dynamic NS Record Creation
   community.general.nsupdate:
     server: 127.0.0.1

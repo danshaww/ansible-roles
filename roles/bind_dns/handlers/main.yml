@@ -1,0 +1,20 @@
+- name: RNDC Reload
+  ansible.builtin.command: rndc reload
+  changed_when: false
+
+- name: Clear Cache
+  ansible.builtin.command: resolvectl flush-caches
+  changed_when: false
+
+- name: Restart Service
+  ansible.builtin.systemd_service:
+    name: named.service
+    state: restarted
+  changed_when: false
+
+- name: Test Name Resolution
+  ansible.builtin.command: "nslookup {{ item.address }}"
+  delegate_to: localhost
+  changed_when: false
+  register: testresults
+  with_items: "{{ tests }}"

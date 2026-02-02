@@ -1,17 +1,33 @@
-- name: Bind DNS | Zone Config | Create Zones Directory
+- name: Bind DNS | Zone Config | Create Directories
   ansible.builtin.file:
-    path: /etc/bind/zones
+    path: "/etc/bind/{{ item }}"
     state: directory
     owner: root
     group: bind
     mode: '0775'
-  become: true
+  with_items:
+    - zones
+    - tmp
+
 - name: Bind DNS | Zone Config | Get Zones
   ansible.builtin.shell: ls "{{ config_path }}/zones" | sed 's/\.[^.]*$//'
   register: zones
   delegate_to: localhost
-  become: true
   changed_when: false
+
+- name: Bind DNS | Zone Config | Copy Placeholder Zone Files
+  ansible.builtin.copy:
+    src: "{{ config_path }}/zones/{{ item }}.j2"
+    dest: "/etc/bind/tmp/{{ item }}"
+    owner: root
+    group: bind
+    mode: '0775'
+    force: "{{ update_zones }}"
+  register: placeholder_zone_copy
+  notify:
+    - RNDC Reload
+    - Clear Cache
+
 - name: Bind DNS | Zone Config | Render Zone Files
   ansible.builtin.template:
     src: "{{ config_path }}/zones/{{ item }}.j2"
@@ -20,13 +36,5 @@
     group: bind
     mode: '0775'
     force: "{{ update_zones }}"
-  become: true
   with_items: "{{ zones.stdout_lines }}"
-- name: Bind DNS | Zone Config | RNDC Reload
-  ansible.builtin.command: rndc reload
-  become: true
-  changed_when: false
-- name: Bind DNS | Zone Config | Clear Cache
-  ansible.builtin.command: resolvectl flush-caches
-  become: true
-  changed_when: false
+  when: placeholder_zone_copy.changed
