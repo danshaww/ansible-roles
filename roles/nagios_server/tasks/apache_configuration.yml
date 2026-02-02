@@ -3,6 +3,7 @@
     url: https://raw.githubusercontent.com/alanmburr/acme-dns-certbot/refs/heads/master/acme-dns-auth.py
     dest: /etc/letsencrypt/acme-dns-auth.py
     mode: '0755'
+  changed_when: false
 
 - name: LetsEncrypt - Check if Cert Exists
   ansible.builtin.stat:
