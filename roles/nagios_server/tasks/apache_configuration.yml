@@ -50,7 +50,10 @@
   become: true
 
 - name: Enable Default SSL Site
-  ansible.builtin.shell: a2ensite default-ssl && a2dissite 000-default
+  ansible.builtin.file:
+    src: "/etc/apache2/sites-available/default-ssl.conf"
+    dest: "/etc/nginx/sites-enabled/default-ssl.conf"
+    state: link
 
 - name: Apache - UFW Allow HTTPS
   community.general.ufw:
