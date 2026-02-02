@@ -4,6 +4,7 @@
     dest: /usr/local/nagios/etc
     archive: false
     delete: true
+    recursive: true
   notify: Restart Nagios
 
 - name: Check Nagios Config
