@@ -8,14 +8,14 @@
     mode: 0755
 
 - name: Nagios | Get Required Objects
-  ansible.builtin.shell: ls "{{ nagios_config_path }}/objects" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "{{ nagios_config_path }}/objects" | cat
   register: required_objects
   delegate_to: localhost
   become: true
   changed_when: false
 
 - name: Nagios | Get Current Objects
-  ansible.builtin.shell: ls "/usr/local/nagios/etc/objects" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  ansible.builtin.shell: ls "/usr/local/nagios/etc/objects" | cat
   register: current_objects
   changed_when: false
 
