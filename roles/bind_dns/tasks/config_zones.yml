@@ -23,6 +23,7 @@
     group: bind
     mode: '0775'
     force: "{{ update_zones }}"
+  with_items: "{{ zones.stdout_lines }}"
   register: placeholder_zone_copy
   notify:
     - RNDC Reload
