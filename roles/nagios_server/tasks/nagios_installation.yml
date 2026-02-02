@@ -34,7 +34,7 @@
 - name: Enable Nagios SSL Site
   ansible.builtin.file:
     src: "/etc/apache2/sites-available/nagios.conf"
-    dest: "/etc/nginx/sites-enabled/nagios.conf"
+    dest: "/etc/apache2/sites-enabled/nagios.conf"
     state: link
 
 - name: Start Nagios Service
