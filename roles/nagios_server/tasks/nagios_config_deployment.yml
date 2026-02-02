@@ -9,6 +9,10 @@
       - --exclude=htpasswd.users
       - --exclude=nrpe.cfg
   notify: Restart Nagios
+  register: temp
+
+- debug:
+    msg: "{{ temp }}"
 
 - name: Set Permissions
   ansible.builtin.file:
