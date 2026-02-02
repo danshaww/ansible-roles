@@ -1,27 +1,30 @@
+
 - name: Copy Files
-  ansible.posix.synchronize:
+  ansible.builtin.copy:
     src: "{{ nagios_config_path }}"
     dest: /usr/local/nagios/etc
-    archive: false
-    delete: true
-    recursive: true
-    rsync_opts:
-      - --exclude=htpasswd.users
-      - --exclude=nrpe.cfg
-  notify: Restart Nagios
-  register: temp
-
-- debug:
-    msg: "{{ temp }}"
-
-- name: Set Permissions
-  ansible.builtin.file:
-    path: /usr/local/nagios/etc
-    state: directory
     owner: nagios
     group: nagios
     mode: 0755
-    recurse: true
+
+- name: Nagios | Get Required Objects
+  ansible.builtin.shell: ls "{{ nagios_config_path }}/objects" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  register: required_objects
+  delegate_to: localhost
+  become: true
+  changed_when: false
+
+- name: Nagios | Get Current Objects
+  ansible.builtin.shell: ls "/usr/local/nagios/etc/objects" | sed 's/\.[^.]*$//' | sed 's/\.[^.]*$//'
+  register: current_objects
+  changed_when: false
+
+- name: Nagios | Remove Objects
+  ansible.builtin.file:
+    path: "{{ nagios_config_path }}/objects/{{ item }}"
+    state: absent
+  become: true
+  with_items: "{{ current_objects.stdout_lines | difference(required_objects.stdout_lines) }}"
 
 - name: Check Nagios Config
   ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
