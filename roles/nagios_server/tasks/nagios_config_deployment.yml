@@ -15,7 +15,7 @@
     owner: nagios
     user: nagios
     mode: 0755
-    recursive: true
+    recurse: true
   when: config_change.changed
 
 - name: Check Nagios Config
