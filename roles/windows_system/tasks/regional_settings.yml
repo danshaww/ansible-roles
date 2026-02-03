@@ -1,0 +1,105 @@
+- name: Check if en-GB language is installed
+  ansible.windows.win_shell: |
+    (Get-InstalledLanguage | Where-Object LanguageTag -eq 'en-GB') -ne $null
+  register: en_gb_installed
+  changed_when: false
+
+- name: Install English (United Kingdom) language pack
+  ansible.windows.win_shell: |
+    try {
+      Install-Language en-GB -CopyToSettings -Confirm:$false
+    } catch {
+      lpksetup.exe /i en-GB /r /s
+    }
+  when: en_gb_installed.stdout | trim != 'True'
+  register: lang_install
+
+- name: Get current system locale
+  ansible.windows.win_shell: |
+    (Get-WinSystemLocale).Name
+  register: system_locale
+  changed_when: false
+
+- name: Set system locale to en-GB
+  ansible.windows.win_shell: |
+    Set-WinSystemLocale en-GB
+  when: system_locale.stdout | trim != 'en-GB'
+  register: system_locale_change
+
+- name: Get current culture
+  ansible.windows.win_shell: |
+    (Get-Culture).Name
+  register: culture
+  changed_when: false
+
+- name: Set culture to en-GB
+  ansible.windows.win_shell: |
+    Set-Culture en-GB
+  when: culture.stdout | trim != 'en-GB'
+  register: culture_change
+
+- name: Get current home location
+  ansible.windows.win_shell: |
+    (Get-WinHomeLocation).GeoId
+  register: geo
+  changed_when: false
+
+- name: Set home location to United Kingdom
+  ansible.windows.win_shell: |
+    Set-WinHomeLocation -GeoId 242
+  when: geo.stdout | trim != '242'
+  register: geo_change
+
+- name: Get current user language list
+  ansible.windows.win_shell: |
+    (Get-WinUserLanguageList).LanguageTag -join ','
+  register: user_langs
+  changed_when: false
+
+- name: Set user language list to en-GB only
+  ansible.windows.win_shell: |
+    $list = New-WinUserLanguageList en-GB
+    Set-WinUserLanguageList $list -Force
+  when: user_langs.stdout | trim != 'en-GB'
+  register: user_lang_change
+
+- name: Check if UK locale XML already exists
+  ansible.windows.win_stat:
+    path: C:\Windows\Temp\uk-locale.xml
+  register: uk_xml
+
+- name: Create UK locale XML
+  ansible.windows.win_copy:
+    dest: C:\Windows\Temp\uk-locale.xml
+    content: |
+      <gs:GlobalizationServices xmlns:gs="urn:longhornGlobalizationUnattend">
+        <gs:UserList>
+          <gs:User UserID="Current"/>
+          <gs:User UserID="Default"/>
+        </gs:UserList>
+        <gs:LocationPreferences>
+          <gs:GeoID Value="242"/>
+        </gs:LocationPreferences>
+        <gs:SystemLocale Name="en-GB"/>
+        <gs:UserLocale>
+          <gs:Locale Name="en-GB"/>
+        </gs:UserLocale>
+      </gs:GlobalizationServices>
+  when: not uk_xml.stat.exists
+  register: xml_change
+
+- name: Apply UK locale to system and new users
+  ansible.windows.win_shell: |
+    control.exe intl.cpl,,/f:"C:\Windows\Temp\uk-locale.xml"
+  when: xml_change is changed
+  register: apply_xml
+
+- name: Reboot if locale or language changed
+  ansible.windows.win_reboot:
+    msg: "Rebooting to apply UK language and regional settings"
+  when: >
+    lang_install is changed or
+    system_locale_change is changed or
+    culture_change is changed or
+    geo_change is changed or
+    user_lang_change is changed
