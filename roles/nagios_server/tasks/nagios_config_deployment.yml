@@ -6,6 +6,8 @@
     owner: nagios
     group: nagios
     mode: 0755
+  notify:
+    - Restart Nagios
 
 - name: Nagios | Get Required Objects
   ansible.builtin.shell: ls "{{ nagios_config_path }}/objects" | cat
