@@ -44,7 +44,7 @@
   ansible.windows.win_user:
     name: Administrator
     state: present
-    enabled: no
+    account_disabled: true
 
 - name: Reboot if required for locale changes
   ansible.windows.win_reboot:
