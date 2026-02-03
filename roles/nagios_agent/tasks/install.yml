@@ -62,3 +62,10 @@
     enabled: false
   become: true
   ignore_errors: true
+
+- name: Add Nagios user to users group
+  ansible.builtin.user:
+    name: nagios
+    groups: users
+    append: true
+  no_log: true
