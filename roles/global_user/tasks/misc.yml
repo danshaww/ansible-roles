@@ -5,3 +5,10 @@
     state: directory
     owner: "{{ global_user_username }}"
     group: "{{ global_user_group }}"
+
+- name: Global_User | Misc | Add To Users Group
+  ansible.builtin.user:
+    name: "{{ global_user_username }}"
+    groups: users
+    append: true
+  no_log: true
