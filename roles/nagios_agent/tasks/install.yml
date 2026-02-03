@@ -53,6 +53,7 @@
     - check_mem.sh
     - check_service.sh
     - check_docker.sh
+    - check_nfs.sh
 
 - name: Stop & Disable xinetd
   ansible.builtin.service:
