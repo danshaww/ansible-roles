@@ -32,7 +32,21 @@
     copy_settings: yes
   register: region_result
 
+- name: Disable UAC
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableLUA
+    data: 0
+    type: dword
+  register: uac_result
+
+- name: Disable built-in Administrator account
+  ansible.windows.win_user:
+    name: Administrator
+    state: present
+    enabled: no
+
 - name: Reboot if required for locale changes
   ansible.windows.win_reboot:
     reboot_timeout: 3600
-  when: region_result.changed
+  when: region_result.changed or uac_result.changed
