@@ -20,5 +20,5 @@
 
 - name: utilities | Remove VS Code installer
   ansible.windows.win_file:
-    path: "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+    path: "{{ vscode_installer }}"
     state: absent
