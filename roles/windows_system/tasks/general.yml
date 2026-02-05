@@ -46,6 +46,20 @@
     state: present
     account_disabled: true
 
+- name: Hide Windows search bar
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: SearchboxTaskbarMode
+    data: 0
+    type: dword
+
+- name: Hide Task View button
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: ShowTaskViewButton
+    data: 0
+    type: dword
+
 - name: Reboot if required for locale changes
   ansible.windows.win_reboot:
     reboot_timeout: 3600
