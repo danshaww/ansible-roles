@@ -1,3 +1,7 @@
 - name: windows_system | Include General Tasks
   ansible.builtin.include_tasks: general.yml
   when: enable_general
+
+- name: windows_system | Install Utilities
+  ansible.builtin.include_tasks: utilities.yml
+  when: enable_utilities

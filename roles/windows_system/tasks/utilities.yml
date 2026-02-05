@@ -1,0 +1,24 @@
+- name: utilities | Check VS Code installation
+  ansible.windows.win_stat:
+    path: "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+  register: vscode_check
+
+- name: utilities | Download VS Code system installer
+  ansible.windows.win_get_url:
+    url: "{{ vscode_url }}"
+    dest: "{{ vscode_installer }}"
+  when: not vscode_check.stat.exists
+
+- name: utilities | Install VS Code
+  ansible.windows.win_package:
+    path: "{{ vscode_installer }}"
+    arguments: >
+      /VERYSILENT
+      /MERGETASKS=!runcode,addcontextmenufiles,addcontextmenufolders,addtopath
+    state: present
+  when: not vscode_check.stat.exists
+
+- name: utilities | Remove VS Code installer
+  ansible.windows.win_file:
+    path: "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+    state: absent
