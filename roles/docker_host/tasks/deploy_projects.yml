@@ -93,7 +93,7 @@
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.item }}"
-    project_src: /var/lib/docker/compose/{{ item.item }}.yaml"
+    project_src: /var/lib/docker/compose/{{ item.item }}"
     remove_orphans: true
     build: never
     state: present
