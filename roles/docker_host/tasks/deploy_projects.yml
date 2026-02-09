@@ -69,10 +69,20 @@
     state: directory
   become: true
 
+- name: Docker | Configuration | Deploy Projects | Create Directories
+  ansible.builtin.file:
+    path: "/var/lib/docker/compose/{{ item }}"
+    owner: root
+    group: root
+    mode: '0700'
+    state: directory
+  become: true
+  with_items: "{{ applications.stdout_lines }}"
+
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
-    dest: /var/lib/docker/compose/{{ item }}.yaml
+    dest: /var/lib/docker/compose/{{ item }}/compose.yml
     owner: root
     group: root
     mode: '0700'
