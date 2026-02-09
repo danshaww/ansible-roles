@@ -19,22 +19,20 @@
     append: true
   become: true
 
-- name: Docker | Installation | APT Package Manager
-  # when: ansible_os_family == "Debian" and not "'docker' in ansible_facts.packages"
-  become: true
-  block:
-    - name: Docker | Installation | APT | Add APT GPG Key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        keyring: /etc/apt/keyrings/docker.gpg
-    - name: Docker | Installation | APT |  Add Repository
-      ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
-        state: present
-        filename: docker
-    - name: Docker | Installation | APT |  Install Packages
-      ansible.builtin.apt:
-        pkg: "{{ docker.packages }}"
+- name: Docker | Installation | APT | Add APT GPG Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/keyrings/docker.gpg
+
+- name: Docker | Installation | APT |  Add Repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu   jammy stable"
+    state: present
+    filename: docker
+
+- name: Docker | Installation | APT |  Install Packages
+  ansible.builtin.apt:
+    pkg: "{{ docker_packages }}"
 
 - name: Docker | Installation | Enable and Start Docker
   ansible.builtin.systemd:
@@ -73,20 +71,3 @@
         dest: /root/.docker/config.json
         mode: '0770'
 
-- name: Docker | Installation | Deploy docker.socket config
-  ansible.builtin.template:
-    src: "{{ docker_config_path }}/docker.socket.j2"
-    dest: /lib/systemd/system/docker.socket
-    owner: root
-    group: root
-    mode: '0644'
-  become: true
-  register: dockersocket
-  when: docker_update_socket
-
-- name: Docker | Installation | Reload systemd & restart docker
-  ansible.builtin.systemd_service:
-    state: restarted
-    daemon_reload: true
-    name: docker
-  when: docker_update_socket and dockersocket.changed
