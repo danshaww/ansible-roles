@@ -11,10 +11,6 @@ docker_gitea_auth:
   pat: changeme
 
 docker:
-  paths:
-    main: /srv/docker
-    volumes: /srv/docker/volumes
-    apps: /srv/docker/apps
   packages:
     - docker-ce
     - docker-ce-cli
