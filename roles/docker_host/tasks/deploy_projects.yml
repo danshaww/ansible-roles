@@ -64,8 +64,8 @@
   ansible.builtin.file:
     path: /var/lib/docker/compose
     owner: root
-    group: docker
-    mode: '0770'
+    group: root
+    mode: '0700'
     state: directory
   become: true
 
@@ -73,8 +73,8 @@
   ansible.builtin.file:
     path: "/var/lib/docker/compose/{{ item }}"
     owner: root
-    group: docker
-    mode: '0770'
+    group: root
+    mode: '0700'
     state: directory
   become: true
   with_items: "{{ applications.stdout_lines }}"
@@ -84,8 +84,8 @@
     src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
     dest: /var/lib/docker/compose/{{ item }}/compose.yml
     owner: root
-    group: docker
-    mode: '0770'
+    group: root
+    mode: '0700'
   with_items: "{{ applications.stdout_lines }}"
   become: true
   register: compose
@@ -93,7 +93,7 @@
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.item }}"
-    project_src: /var/lib/docker/compose/{{ item.item }}"
+    project_src: /var/lib/docker/compose/{{ item.item }}
     remove_orphans: true
     build: never
     state: present
