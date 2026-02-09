@@ -59,3 +59,23 @@
 #  when: item.changed
   loop_control:
     label: "{{ item.item }}"
+
+- name: Docker | Configuration | Deploy Projects | Create Directories
+  ansible.builtin.file:
+    path: /var/lib/docker/compose
+    owner: root
+    group: root
+    mode: '0700'
+    state: directory
+  become: true
+
+- name: Docker | Configuration | Deploy Projects | Generate Compose Files
+  ansible.builtin.template:
+    src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
+    dest: /var/lib/docker/compose/{{ item }}.yaml"
+    owner: root
+    group: root
+    mode: '0700'
+  with_items: "{{ applications.stdout_lines }}"
+  become: true
+  register: compose
