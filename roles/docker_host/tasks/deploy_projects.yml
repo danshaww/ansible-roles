@@ -72,7 +72,7 @@
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
-    dest: /var/lib/docker/compose/{{ item }}.yaml"
+    dest: /var/lib/docker/compose/{{ item }}.yaml
     owner: root
     group: root
     mode: '0700'
