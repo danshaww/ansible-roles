@@ -1,8 +1,13 @@
+- name: Add Ansible repository
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items: "{{ system_repos }}"
+
 - name: Global_System | Packages | Update Cache
   ansible.builtin.apt:
     update_cache: true
   changed_when: false
-  ignore_errors: true # MPR Downtime Issues
 
 - name: Global_System | Packages | Installation
   ansible.builtin.apt:
