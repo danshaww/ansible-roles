@@ -49,19 +49,3 @@
     hour: "05"
     job: "docker image prune -f"
   become: true
-
-- name: Docker | Installation | Configure GitHub Packages Authentication
-  when: docker_github_auth.enabled # TODO: Make this dynamic
-  become: true
-  block:
-    - name: Docker | Installation | Ensure config directory exists
-      ansible.builtin.file:
-        path: /root/.docker
-        state: directory
-        mode: '0770'
-    - name: Docker | Installation | Populate docker config from Jinja template
-      ansible.builtin.template:
-        src: "config.json.j2"
-        dest: /root/.docker/config.json
-        mode: '0770'
-

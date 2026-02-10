@@ -1,14 +1,15 @@
 - name: Docker | Include Installation Tasks
-  ansible.builtin.include_tasks:
-    file: install.yml
+  ansible.builtin.include_tasks: install.yml
   when: docker_install
 
+- name: Docker | Include Config Tasks
+  ansible.builtin.include_tasks: deploy_config.yml
+  when: docker_configure
+
 - name: Docker | Include Configuration Tasks (Deploy)
-  ansible.builtin.include_tasks:
-    file: deploy_projects.yml
+  ansible.builtin.include_tasks: deploy_projects.yml
   when: docker_configure
 
 - name: Docker | Include Configuration Tasks (Destroy)
-  ansible.builtin.include_tasks:
-    file: destroy_projects.yml
+  ansible.builtin.include_tasks: destroy_projects.yml
   when: docker_configure
