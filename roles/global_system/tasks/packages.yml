@@ -1,9 +1,3 @@
-- name: Add Ansible repository
-  ansible.builtin.apt_repository:
-    repo: "{{ item }}"
-    state: absent
-  with_items: "{{ system_repos }}"
-
 - name: Global_System | Packages | Update Cache
   ansible.builtin.apt:
     update_cache: true

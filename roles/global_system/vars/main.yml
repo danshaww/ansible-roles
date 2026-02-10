@@ -22,7 +22,3 @@ system_packages:
   - nfs-common
   - just
   - nagios-plugins
-  - fastfetch
-
-system_repos:
-  - ppa:zhangsongcui3371/fastfetch
