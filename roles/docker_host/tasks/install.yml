@@ -47,7 +47,7 @@
     name: "docker maintenance"
     minute: "0"
     hour: "05"
-    job: "docker image prune -f && docker volume prune -f"
+    job: "docker image prune -f"
   become: true
 
 - name: Docker | Installation | Configure GitHub Packages Authentication
