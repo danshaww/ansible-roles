@@ -5,14 +5,6 @@
     gid: 121
   become: true
 
-- name: Docker | Installation | Add users to Docker group
-  ansible.builtin.user:
-    name: "{{ item }}"
-    groups: docker
-    append: true
-  become: true
-  with_items: "{{ docker_users }}"
-
 - name: Docker | Installation | APT | Add APT GPG Key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -40,12 +32,4 @@
     src: ctop
     dest: /usr/local/bin/ctop
     mode: '0755'
-  become: true
-
-- name: Docker | Installation | Create Maintenance Cron Job
-  ansible.builtin.cron:
-    name: "docker maintenance"
-    minute: "0"
-    hour: "05"
-    job: "docker image prune -f"
   become: true
