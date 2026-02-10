@@ -5,19 +5,13 @@
     gid: 121
   become: true
 
-- name: Docker | Installation | Add current user to Group
+- name: Docker | Installation | Add users to Docker group
   ansible.builtin.user:
-    name: "{{ ansible_user }}"
+    name: "{{ item }}"
     groups: docker
     append: true
   become: true
-
-- name: Docker | Installation | Add nagios user to Group
-  ansible.builtin.user:
-    name: nagios
-    groups: docker
-    append: true
-  become: true
+  with_items: "{{ docker_users }}"
 
 - name: Docker | Installation | APT | Add APT GPG Key
   ansible.builtin.apt_key:

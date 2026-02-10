@@ -9,7 +9,8 @@ docker_github_auth:
 docker_gitea_auth:
   enabled: false
   pat: changeme
-
+docker_users:
+  - dan
 docker_packages:
   - docker-ce
   - docker-ce-cli
