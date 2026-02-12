@@ -1,0 +1,18 @@
+unifi_os_firewall_ports:
+  - 5005
+  - 5514
+  - 6789
+  - 8080
+  - 8444
+  - 8880
+  - 8881
+  - 8882
+  - 9543
+  - 11084
+  - 11443
+  - 3478 #UDP
+  - 10003 #UDP
+
+unifi_os_packages:
+  - podman
+  - slirp4netns

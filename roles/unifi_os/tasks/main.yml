@@ -1,0 +1,35 @@
+- name: UFW Configuration
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items: "{{ unifi_os_firewall_ports }}"
+
+- name: APT Package Installation
+  ansible.builtin.apt:
+    pkg: "{{ unifi_os_packages }}"
+
+- name: Check for existing UOS service
+  ansible.builtin.stat:
+    path: /etc/systemd/system/uosserver.service
+  register: service
+  changed_when: false
+
+- name: Install
+  when: not service.stat.exists
+  block:
+
+    - name: Download Unifi Installation Media
+      ansible.builtin.get_url:
+        url: "https://fw-download.ubnt.com/data/unifi-os-server/{{ unifi_os_installation_media }}"
+        dest: "/tmp/{{ unifi_os_installation_media }}"
+        mode: '0770'
+      when: not service.stat.exists
+
+    - name: Install Unifi OS Server
+      ansible.builtin.shell: "echo Y | /tmp/{{ unifi_os_installation_media }}"
+      when: not service.stat.exists
+
+- name: Remove Installation Media
+  ansible.builtin.file:
+    path: "/tmp/{{ unifi_os_installation_media }}"
+    state: absent
