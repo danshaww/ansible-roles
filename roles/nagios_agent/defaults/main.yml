@@ -1,3 +1,4 @@
 enable_nagios_config: true
 enable_config: true
 enable_install: true
+enable_firewall: true

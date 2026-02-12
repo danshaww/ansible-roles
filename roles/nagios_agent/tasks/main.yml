@@ -8,3 +8,7 @@
     - name: Nagios Agent | Config Deployment
       ansible.builtin.include_tasks: config.yml
       when: enable_config
+
+    - name: Nagios Agent | Firewall Config
+      ansible.builtin.include_tasks: firewall.yml
+      when: enable_firewall
