@@ -22,9 +22,7 @@
 - name: Docker | Installation | Create Maintenance Cron Job
   ansible.builtin.cron:
     name: "docker maintenance"
-    minute: "0"
-    hour: "05"
-    job: "docker image prune -f -a"
+    state: absent
   become: true
 
 - name: Docker | Installation | Add users to Docker group
