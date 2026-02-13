@@ -19,12 +19,6 @@
         dest: /root/.docker/config.json
         mode: '0770'
 
-- name: Docker | Installation | Create Maintenance Cron Job
-  ansible.builtin.cron:
-    name: "docker maintenance"
-    state: absent
-  become: true
-
 - name: Docker | Installation | Add users to Docker group
   ansible.builtin.user:
     name: "{{ item }}"
