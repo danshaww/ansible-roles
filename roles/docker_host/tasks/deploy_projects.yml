@@ -7,19 +7,22 @@
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
-    path: /var/lib/docker/compose
+    path: "{{ item }}"
     owner: root
-    group: root
-    mode: '0700'
+    group: docker
+    mode: '0750'
     state: directory
   become: true
+  with_items:
+    - /var/lib/docker/compose
+    - /var/lib/docker
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
     path: "/var/lib/docker/compose/{{ item }}"
     owner: root
-    group: root
-    mode: '0700'
+    group: docker
+    mode: '0750'
     state: directory
   become: true
   with_items: "{{ applications.stdout_lines }}"
@@ -29,8 +32,8 @@
     src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
     dest: /var/lib/docker/compose/{{ item }}/compose.yml
     owner: root
-    group: root
-    mode: '0700'
+    group: docker
+    mode: '0750'
   with_items: "{{ applications.stdout_lines }}"
   become: true
   register: compose
