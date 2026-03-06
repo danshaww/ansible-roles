@@ -7,7 +7,8 @@
     group: "{{ item.username }}"
   with_items: "{{ users }}"
   become: true
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
 
 - name: Set SSH Private Key
   when: item.ssh_private_key is defined
@@ -18,8 +19,18 @@
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
   become: true
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
   with_items: "{{ users }}"
+
+- name: Remove SSH Private Key if required
+  when: not item.ssh_private_key is defined
+  ansible.builtin.file:
+    path: "/home/{{ item.username }}/.ssh/id_rsa"
+    state: absent
+  with_items: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
 
 - name: Set SSH Public Key
   when: item.ssh_public_key is defined
@@ -30,15 +41,35 @@
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
 
-- name: Set SSH Trusted Keys
-  when: item.ssh_public_key is defined
+- name: Remove SSH Public Key if required
+  when: not item.ssh_public_key is defined
+  ansible.builtin.file:
+    path: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    state: absent
+  with_items: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Populate SSH Config file
+  when: item.ssh_config is defined
   ansible.builtin.copy:
-    content: "{{ item.ssh_public_key }}"
-    dest: "/home/{{ item.username }}/.ssh/authorized_keys"
-    mode: '0644'
+    content: "{{ item.ssh_config }}"
+    dest: "/home/{{ item.username }}/.ssh/config"
+    mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Install authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ item.0.username }}"
+    key: "{{ item.1 }}"
+    exclusive: "{{ item.0.ssh_manage_keys | default(false) }}"
+  loop: "{{ users | subelements('ssh_authorized_keys', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.username }}"

@@ -5,7 +5,8 @@
     state: present
     gid: "{{ item.gid | default(item.uid) }}"
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
 
 - name: Create/Modify Unix User
   ansible.builtin.user:
@@ -18,7 +19,8 @@
     append: true
     groups: users
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
   changed_when: false
 
 - name: Add Unix User to users group
@@ -27,7 +29,8 @@
     groups: users
     append: true
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
 
 - name: Allow sudo without password
   when: item.allow_sudo | default(false)
@@ -37,4 +40,5 @@
     create: true
     mode: '0644'
   with_items: "{{ users }}"
-  no_log: true
+  loop_control:
+    label: "{{ item.username }}"
