@@ -73,3 +73,12 @@
   loop: "{{ users | subelements('ssh_authorized_keys', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.username }}"
+
+- name: Remove authorized_keys file if required
+  when: not item.ssh_authorized_keys is defined and (item.ssh_manage_keys | default(false))
+  ansible.builtin.file:
+    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/authorized_keys"
+    state: absent
+  with_items: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
