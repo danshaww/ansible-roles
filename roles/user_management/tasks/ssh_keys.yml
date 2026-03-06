@@ -1,6 +1,6 @@
 - name: Create SSH Directory
   ansible.builtin.file:
-    path: "/home/{{ item.username }}/.ssh"
+    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh"
     state: directory
     mode: '0700'
     owner: "{{ item.username }}"
@@ -14,7 +14,7 @@
   when: item.ssh_private_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_private_key }}"
-    dest: "/home/{{ item.username }}/.ssh/id_rsa"
+    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa"
     mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
@@ -24,9 +24,9 @@
   with_items: "{{ users }}"
 
 - name: Remove SSH Private Key if required
-  when: not item.ssh_private_key is defined
+  when: not item.ssh_private_key is defined and ssh_manage_keys
   ansible.builtin.file:
-    path: "/home/{{ item.username }}/.ssh/id_rsa"
+    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa"
     state: absent
   with_items: "{{ users }}"
   loop_control:
@@ -36,7 +36,7 @@
   when: item.ssh_public_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"
-    dest: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
     mode: '0644'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
@@ -45,9 +45,9 @@
     label: "{{ item.username }}"
 
 - name: Remove SSH Public Key if required
-  when: not item.ssh_public_key is defined
+  when: not item.ssh_public_key is defined and ssh_manage_keys
   ansible.builtin.file:
-    path: "/home/{{ item.username }}/.ssh/id_rsa.pub"
+    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
     state: absent
   with_items: "{{ users }}"
   loop_control:
@@ -57,7 +57,7 @@
   when: item.ssh_config is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_config }}"
-    dest: "/home/{{ item.username }}/.ssh/config"
+    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/config"
     mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
