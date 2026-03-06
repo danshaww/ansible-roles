@@ -24,7 +24,7 @@
   with_items: "{{ users }}"
 
 - name: Remove SSH Private Key if required
-  when: not item.ssh_private_key is defined and item.ssh_manage_keys
+  when: not item.ssh_private_key is defined and (item.ssh_manage_keys | default(false))
   ansible.builtin.file:
     path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa"
     state: absent
@@ -45,7 +45,7 @@
     label: "{{ item.username }}"
 
 - name: Remove SSH Public Key if required
-  when: not item.ssh_public_key is defined and item.ssh_manage_keys
+  when: not item.ssh_public_key is defined and (item.ssh_manage_keys | default(false))
   ansible.builtin.file:
     path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
     state: absent
