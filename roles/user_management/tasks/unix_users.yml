@@ -66,7 +66,7 @@
 - name: Copy Home Directory Files
   ansible.builtin.copy:
     src: "{{ item.1.src }}"
-    dest: "{% if item.0.username != 'root' %}/home{% endif %}/{{ item.0.username }}/{{ item.1.dest }}"
+    dest: "{% if item.0.username != 'root' %}/home{% endif %}/{{ item.0.username }}/{{ item.1.dest | default() }}"
     mode: 0644
     owner: "{{ item.0.username }}"
     group: "{{ item.0.username }}"
