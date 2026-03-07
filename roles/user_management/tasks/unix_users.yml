@@ -13,10 +13,11 @@
     name: "{{ item.username }}"
     comment: "{{ item.username }}"
     uid: "{{ item.uid }}"
-    shell: /bin/bash
-    group: "{{ item.username }}"
+    shell: "{{ item.shell | default('/bin/bash')}}"
+    home: "{{ item.home | default('/home/[item.username]') }}"
+    group: "{{ item.group | default(item.username) }}"
     password: "{{ item.password | password_hash('sha512') }}"
-    append: true
+    append: "{{ item.append | default(true) }}"
     groups: users
   with_items: "{{ users }}"
   loop_control:
