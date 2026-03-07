@@ -14,7 +14,7 @@
     comment: "{{ item.username }}"
     uid: "{{ item.uid }}"
     shell: "{{ item.shell | default('/bin/bash')}}"
-    home: "{{ item.home | default('/home/[item.username]') }}"
+    home: "{{ item.home | default (null)}}"
     group: "{{ item.group | default(item.username) }}"
     password: "{{ (item.password | password_hash('sha512')) | default(null) }}"
     append: "{{ item.append | default(true) }}"
