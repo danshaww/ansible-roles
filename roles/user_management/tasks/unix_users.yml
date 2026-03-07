@@ -63,4 +63,4 @@
   with_items: "{{ users }}"
   loop: "{{ users | subelements('home_dir_files', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.username }}{{ item.source }}"
+    label: "{{ item.0.username }}{{ item.1.source }}"
