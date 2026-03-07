@@ -72,4 +72,4 @@
     group: "{{ item.0.username }}"
   loop: "{{ users | subelements('home_dir_files', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.username }} - {{ item.1.source }}"
+    label: "{{ item.0.username }} - {{ item.1.src }}"
