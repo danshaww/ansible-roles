@@ -4,4 +4,4 @@ static_dirs:
   - dir: .config
     mode: 0644
   - dir: .config/htop
-    mode: 0644
+    mode: 755
