@@ -2,6 +2,6 @@ static_dirs:
   - dir: .ssh
     mode: 0700
   - dir: .config
-    mode: 700
+    mode: 0700
   - dir: .config/htop
-    mode: 700
+    mode: 0700
