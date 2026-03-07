@@ -53,14 +53,12 @@
     label: "{{ item.username }}"
 
 - name: Copy Home Directory Files
-  when: item.0.home_dir_files is defined
   ansible.builtin.copy:
     content: "{{ item.1.source }}"
     dest: "{% if item.0.username != 'root' %}/home{% endif %}/{{ item.0.username }}/{{ item.1.dest }}"
     mode: 0644
     owner: "{{ item.0.username }}"
     group: "{{ item.0.username }}"
-  with_items: "{{ users }}"
   loop: "{{ users | subelements('home_dir_files', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.username }} - {{ item.1.source }}"
