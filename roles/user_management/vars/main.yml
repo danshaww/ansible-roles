@@ -1,0 +1,5 @@
+static_dirs:
+  - dir: .ssh
+    mode: 0700
+  - dir: .config
+    mode: 0644

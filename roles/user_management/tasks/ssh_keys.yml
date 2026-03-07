@@ -1,15 +1,3 @@
-- name: Create SSH Directory
-  ansible.builtin.file:
-    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh"
-    state: directory
-    mode: '0700'
-    owner: "{{ item.username }}"
-    group: "{{ item.username }}"
-  with_items: "{{ users }}"
-  become: true
-  loop_control:
-    label: "{{ item.username }}"
-
 - name: Set SSH Private Key
   when: item.ssh_private_key is defined
   ansible.builtin.copy:
