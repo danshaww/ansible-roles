@@ -11,3 +11,6 @@ users:
     ssh_public_key:
     ssh_authorized_keys:
     ssh_manage_keys: false # remove authorized keys not in Ansible config
+    home_dir_files:
+      - source: ../config/.bashrc
+        dest: .bashrc
