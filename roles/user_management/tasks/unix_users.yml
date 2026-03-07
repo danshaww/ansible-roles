@@ -16,7 +16,7 @@
     shell: "{{ item.shell | default('/bin/bash')}}"
     home: "{{ item.home | default('/home/[item.username]') }}"
     group: "{{ item.group | default(item.username) }}"
-    password: "{{ item.password | password_hash('sha512') }}"
+    password: "{{ (item.password | password_hash('sha512')) | default(null) }}"
     append: "{{ item.append | default(true) }}"
     groups: users
   with_items: "{{ users }}"
