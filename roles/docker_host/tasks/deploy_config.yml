@@ -1,12 +1,5 @@
-- name: Docker | Deploy Config | Check for config.json.j2
-  ansible.builtin.stat:
-    path: "{{ docker_config_path }}/config.json.j2"
-  register: config_json
-  delegate_to: localhost
-  become: false
-
 - name: Docker | Installation | Configure GitHub Packages Authentication
-  when: config_json.stat.exists
+  when: docker_enable_auth
   become: true
   block:
     - name: Docker | Installation | Ensure config directory exists
