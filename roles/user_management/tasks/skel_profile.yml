@@ -1,0 +1,8 @@
+- name: Copy Skel Profile Files
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "/etc/skel/{{ item.dest | default() }}"
+    mode: 0644
+    owner: root
+    group: root
+  with_items: "{{ skel_profile.files }}"

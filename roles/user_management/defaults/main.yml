@@ -1,3 +1,23 @@
 enable_user_management: true
-
 home_path: /home
+
+## Schema below, these will always be replaced
+skel_profile:
+  files: []
+
+users:
+  - username: example
+    group: # Defaults to username
+    password: password
+    uid: 1055
+    gid: 1055 # Defaults to UID value
+    home: # Defaults to /home/{username}
+    shell: # Defaults to /bin/bash
+    allow_sudo: false
+    ssh_private_key:
+    ssh_public_key:
+    ssh_authorized_keys:
+    ssh_manage_keys: false # remove authorized keys not in Ansible config
+    home_dir_files:
+      - src: ../config/.bashrc
+        dest: .bashrc

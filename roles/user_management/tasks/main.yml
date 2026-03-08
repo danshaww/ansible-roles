@@ -5,3 +5,7 @@
 - name: Include ssh_keys
   ansible.builtin.include_tasks: ssh_keys.yml
   when: users is defined and enable_user_management
+
+- name: Include Skel Profile Config
+  ansible.builtin.include_tasks: skel_profile.yml
+  when: skel_profile is defined and enable_user_management
