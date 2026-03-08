@@ -3,6 +3,7 @@
     path: "{{ docker_config_path }}/config.json.j2"
   register: config_json
   delegate_to: localhost
+  become: false
 
 - name: Docker | Installation | Configure GitHub Packages Authentication
   when: config_json.stat.exists
