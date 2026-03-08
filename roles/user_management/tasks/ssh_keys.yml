@@ -2,7 +2,7 @@
   when: item.ssh_private_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_private_key }}"
-    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa"
+    dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa"
     mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
@@ -14,7 +14,7 @@
 - name: Remove SSH Private Key if required
   when: not item.ssh_private_key is defined and (item.ssh_manage_keys | default(false))
   ansible.builtin.file:
-    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa"
+    path: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa"
     state: absent
   with_items: "{{ users }}"
   loop_control:
@@ -24,7 +24,7 @@
   when: item.ssh_public_key is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"
-    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
+    dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
     mode: '0644'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
@@ -35,7 +35,7 @@
 - name: Remove SSH Public Key if required
   when: not item.ssh_public_key is defined and (item.ssh_manage_keys | default(false))
   ansible.builtin.file:
-    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
+    path: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
     state: absent
   with_items: "{{ users }}"
   loop_control:
@@ -45,7 +45,7 @@
   when: item.ssh_config is defined
   ansible.builtin.copy:
     content: "{{ item.ssh_config }}"
-    dest: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/config"
+    dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/config"
     mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.username }}"
@@ -65,7 +65,7 @@
 - name: Remove authorized_keys file if required
   when: not item.ssh_authorized_keys is defined and (item.ssh_manage_keys | default(false))
   ansible.builtin.file:
-    path: "{% if item.username != 'root' %}/home{% endif %}/{{ item.username }}/.ssh/authorized_keys"
+    path: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/authorized_keys"
     state: absent
   with_items: "{{ users }}"
   loop_control:

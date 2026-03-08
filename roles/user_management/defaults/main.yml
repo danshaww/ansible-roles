@@ -1,1 +1,3 @@
 enable_user_management: true
+
+home_path: /home
