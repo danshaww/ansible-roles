@@ -1,7 +1,0 @@
-galaxy_info:
-  author: Dan Shaw
-  description: Ansible Role to install and configure Bind DNS, using Jinja2 templates to build configuration files.
-  license: GPL
-  min_ansible_version: "2.1"
-  galaxy_tags: []
-dependencies: []
