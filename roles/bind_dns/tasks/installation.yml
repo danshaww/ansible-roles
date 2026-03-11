@@ -9,7 +9,7 @@
     pkg: python3-dnspython
   delegate_to: localhost
 - name: Bind DNS | Installation | Check for apparmour service
-  ansibe.builtin.stat:
+  ansible.builtin.stat:
     path: /usr/lib/systemd/system/apparmor.service
   register: apparmor_path
 - name: Bind DNS | Installation | Copy AppArmour Config File
