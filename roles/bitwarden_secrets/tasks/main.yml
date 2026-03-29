@@ -16,6 +16,7 @@
   retries: 30
   delay: 2
   no_log: true
+  run_once: true
 - name: Build secrets dict
   set_fact:
     secrets: >-
