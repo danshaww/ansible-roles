@@ -12,22 +12,25 @@
 - name: Wait for secret fetch jobs
   async_status:
     jid: "{{ item.ansible_job_id }}"
-  loop: "{{ async_jobs.results }}"
-  register: job_results
-  until: job_results.finished
+  register: job_result
+  until: job_result.finished
   retries: 30
   delay: 2
+  loop: "{{ async_jobs.results }}"
+  loop_control:
+    label: "{{ item.item }}"
   delegate_to: localhost
   run_once: true
   no_log: true
 
-- name: Build secrets dict
+- name: Build secrets dict safely
   set_fact:
     secrets_dict: >-
       {{
         dict(
-          secrets_list |
-          zip(job_results.results | map(attribute='stdout'))
+          job_result.results |
+          map(attribute='item') |
+          zip(job_result.results | map(attribute='stdout'))
         )
       }}
   delegate_to: localhost
