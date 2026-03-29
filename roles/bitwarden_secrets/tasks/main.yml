@@ -21,7 +21,7 @@
     label: "{{ item.item }}"
   delegate_to: localhost
   run_once: true
-  no_log: true
+  # no_log: true
 
 - name: Build secrets dict safely
   set_fact:
@@ -35,9 +35,9 @@
       }}
   delegate_to: localhost
   run_once: true
-  no_log: true
+  # no_log: true
 
 - name: Distribute secrets to all hosts
   set_fact:
     secrets: "{{ hostvars['localhost'].secrets_dict }}"
-  no_log: true
+  # no_log: true
