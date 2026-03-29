@@ -1,6 +1,6 @@
     - name: Fetch secrets in parallel
       shell: >
-        bw get password "{{ item }}"
+        /usr/local/bin/bw get password "{{ item }}"
       loop: "{{ secrets_list }}"
       async: 60
       poll: 0
