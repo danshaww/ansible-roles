@@ -10,5 +10,5 @@
   ansible.builtin.include_tasks: utils/hashicorp.yml
 - name: Main | Install Docker
   ansible.builtin.include_tasks: utils/docker.yml
-- name: Main | Install MkDocs
-  ansible.builtin.include_tasks: utils/mkdocs.yml
+- name: Main | Install Bitwarden CLI
+  ansible.builtin.include_tasks: utils/bitwarden_cli.yml

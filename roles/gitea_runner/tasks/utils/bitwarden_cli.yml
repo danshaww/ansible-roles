@@ -1,0 +1,12 @@
+- name: Download Bitwarden CLI binary
+  get_url:
+    url: "https://github.com/bitwarden/clients/releases/download/cli-v2026.2.0/bw-linux-2026.2.0.zip"
+    dest: /tmp/bw.zip
+    mode: '0644'
+
+- name: Unzip Bitwarden CLI
+  unarchive:
+    src: /tmp/bw.zip
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: '0755'
