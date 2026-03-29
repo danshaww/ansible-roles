@@ -7,6 +7,10 @@
   register: async_jobs
   no_log: true
   run_once: true
+  environment:
+    BW_SESSION: "{{ lookup('env', 'BW_SESSION') }}"
+
+
 - name: Wait for results
   async_status:
     jid: "{{ item.ansible_job_id }}"
