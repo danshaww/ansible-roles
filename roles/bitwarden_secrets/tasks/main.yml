@@ -1,28 +1,36 @@
-- name: Fetch secrets in parallel
-  shell: >
-    bw get password "{{ item }}"
-  loop: "{{ secrets_list }}"
-  async: 60
-  poll: 0
-  register: async_jobs
+- name: Get Bitwarden folders
+  command: bw list folders
+  register: bw_folders
   no_log: true
-  run_once: true
-  environment:
-    BW_SESSION: "{{ lookup('env', 'BW_SESSION') }}"
-
-
-- name: Wait for results
-  async_status:
-    jid: "{{ item.ansible_job_id }}"
-  loop: "{{ async_jobs.results }}"
-  register: job_results
-  until: job_results.finished
-  retries: 30
-  delay: 2
+- name: Get matching folder IDs (including subfolders)
+  set_fact:
+    bw_folder_ids: >-
+      {{
+        (bw_folders.stdout | from_json)
+        | selectattr('name', 'match', '^' ~ 'Homelab')
+        | map(attribute='id')
+        | list
+      }}
   no_log: true
-  run_once: true
-- name: Build secrets dict
+- name: Get all Bitwarden items
+  command: bw list items
+  register: bw_items
+  no_log: true
+- name: Build secrets dict from folder
   set_fact:
     secrets: >-
-      {{ dict(secrets_list | zip(job_results.results | map(attribute='stdout'))) }}
+      {{
+        dict(
+          (bw_items.stdout | from_json)
+          | selectattr('folderId', 'in', bw_folder_ids)
+          | selectattr('login.password', 'defined')
+          | map(attribute='name')
+          | zip(
+              (bw_items.stdout | from_json)
+              | selectattr('folderId', 'in', bw_folder_ids)
+              | selectattr('login.password', 'defined')
+              | map(attribute='login.password')
+            )
+        )
+      }}
   no_log: true
