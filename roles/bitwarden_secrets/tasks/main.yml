@@ -6,6 +6,7 @@
   poll: 0
   register: async_jobs
   no_log: true
+  run_once: true
 - name: Wait for results
   async_status:
     jid: "{{ item.ansible_job_id }}"
