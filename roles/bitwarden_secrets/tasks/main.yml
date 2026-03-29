@@ -15,10 +15,10 @@
       until: job_results.finished
       retries: 30
       delay: 2
-      no_log: true
+      # no_log: true
       run_once: true
     - name: Build secrets dict
       set_fact:
         secrets: >-
           {{ dict(secrets_list | zip(job_results.results | map(attribute='stdout'))) }}
-      no_log: true
+      # no_log: true
