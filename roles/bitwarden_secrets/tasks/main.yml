@@ -2,6 +2,7 @@
   command: bw list items
   register: bw_items
   no_log: true
+  changed_when: false
 - name: Build secrets dict
   set_fact:
     secrets: >-
