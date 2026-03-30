@@ -1,33 +1,17 @@
-- name: Get Bitwarden folders
-  command: bw list folders
-  register: bw_folders
-  no_log: true
-- name: Get matching folder IDs (including subfolders)
-  set_fact:
-    bw_folder_ids: >-
-      {{
-        (bw_folders.stdout | from_json)
-        | selectattr('name', 'match', '^' ~ 'Homelab')
-        | map(attribute='id')
-        | list
-      }}
-  no_log: true
 - name: Get all Bitwarden items
   command: bw list items
   register: bw_items
   no_log: true
-- name: Build secrets dict from folder
+- name: Build secrets dict
   set_fact:
     secrets: >-
       {{
         dict(
           (bw_items.stdout | from_json)
-          | selectattr('folderId', 'in', bw_folder_ids)
           | selectattr('login.password', 'defined')
           | map(attribute='name')
           | zip(
               (bw_items.stdout | from_json)
-              | selectattr('folderId', 'in', bw_folder_ids)
               | selectattr('login.password', 'defined')
               | map(attribute='login.password')
             )
