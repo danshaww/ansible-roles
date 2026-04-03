@@ -12,6 +12,7 @@ ansible_collections:
   - lucasheld.uptime_kuma
   - azure.azcollection
 
-bws_version: "1.0.1"   # check latest release
+bws_version: "1.0.1"
 bws_arch: "x64"
 bws_url: "https://github.com/bitwarden/sdk-sm/releases/download/{{ bws_version }}/bws-linux-{{ bws_arch }}"
+bws_install_path: "/usr/local/bin/bws"
