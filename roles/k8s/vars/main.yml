@@ -7,3 +7,6 @@ allowed_ports:
   - 10259 # Kube Scheduler
   - 10257 # Kube Controller Manager
   - 8472 # Flannel
+  - 443 # Nginx Ingress
+  - 8443 # Nginx Ingress
+  - 80 # Nginx Ingress
