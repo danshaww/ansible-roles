@@ -37,6 +37,13 @@
     group: root
     mode: '0644'
   register: sysctl_config
+
 - name: Enable sysctl config
   when: sysctl_config.changed
   shell: sysctl --system
+
+- name: Configure UFW Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items: "{{ allowed_ports }}"

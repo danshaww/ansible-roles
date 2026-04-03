@@ -1,1 +1,8 @@
 containerd_config_path: /etc/containerd/config.toml
+allowed_ports:
+  - 6443 # API Server
+  - 2379 # ETCD
+  - 2380 # ETCD
+  - 10250 # Kubelet API
+  - 10259 # Kube Scheduler
+  - 10257 # Kube Controller Manager
