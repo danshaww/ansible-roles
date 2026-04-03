@@ -6,3 +6,4 @@ allowed_ports:
   - 10250 # Kubelet API
   - 10259 # Kube Scheduler
   - 10257 # Kube Controller Manager
+  - 8472 # Flannel
