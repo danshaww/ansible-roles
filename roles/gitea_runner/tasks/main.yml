@@ -12,3 +12,5 @@
   ansible.builtin.include_tasks: utils/docker.yml
 - name: Main | Install Bitwarden CLI
   ansible.builtin.include_tasks: utils/bitwarden_cli.yml
+- name: Main | Install Bitwarden Secrets CLI
+  ansible.builtin.include_tasks: utils/bitwarden_secrets_cli.yml
