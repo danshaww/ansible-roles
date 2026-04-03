@@ -11,3 +11,7 @@ packages:
 ansible_collections:
   - lucasheld.uptime_kuma
   - azure.azcollection
+
+bw_version: "2024.2.0"
+bw_url: "https://github.com/bitwarden/clients/releases/download/cli-v{{ bw_version }}/bw-linux-{{ bw_version }}.zip"
+bw_install_path: "/usr/local/bin/bw"
