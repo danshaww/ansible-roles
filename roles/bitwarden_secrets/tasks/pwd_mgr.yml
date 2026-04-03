@@ -1,0 +1,21 @@
+- name: Get all Bitwarden items
+  command: bw list items
+  register: bw_items
+  no_log: true
+  changed_when: false
+- name: Build secrets dict
+  set_fact:
+    secrets: >-
+      {{
+        dict(
+          (bw_items.stdout | from_json)
+          | selectattr('login.password', 'defined')
+          | map(attribute='name')
+          | zip(
+              (bw_items.stdout | from_json)
+              | selectattr('login.password', 'defined')
+              | map(attribute='login.password')
+            )
+        )
+      }}
+  no_log: true

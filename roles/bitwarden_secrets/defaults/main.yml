@@ -1,3 +1,10 @@
 secrets_list:
   - secret1
   - secret2
+
+mode: pwd_mgr
+
+bws_cli_path: "bws"
+bws_flatten_secrets: true
+bws_prefix: ""
+bws_no_log: true
