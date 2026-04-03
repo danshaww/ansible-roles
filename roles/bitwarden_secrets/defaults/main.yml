@@ -2,7 +2,7 @@ secrets_list:
   - secret1
   - secret2
 
-mode: pwd_mgr
+mode: secrets_mgr
 
 bws_cli_path: "bws"
 bws_flatten_secrets: true
