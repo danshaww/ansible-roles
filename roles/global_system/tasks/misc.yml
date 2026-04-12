@@ -45,3 +45,7 @@
     src: neofetch
     dest: /usr/bin/neofetch
     mode: '0755'
+- name: Global_System| Misc | Install Starship
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
+  changed_when: false
+  become: true
