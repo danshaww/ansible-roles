@@ -28,7 +28,7 @@ system_packages:
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
   apk:
-    # - sudo - needs community repo??? tf
+    - sudo
     - nano
     - htop
     - git
@@ -43,6 +43,6 @@ system_packages:
     - smartmontools
     - acl
     - gpg
-    # - cron - not in main repo
-    # - just - not in main repo
+    - cron
+    - just
     - nagios-plugins
