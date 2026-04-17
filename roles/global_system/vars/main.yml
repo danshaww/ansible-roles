@@ -43,6 +43,5 @@ system_packages:
     - smartmontools
     - acl
     - gpg
-    - cron
     - just
     - nagios-plugins
