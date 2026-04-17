@@ -24,6 +24,7 @@ system_packages:
     - nfs-common
     - just
     - nagios-plugins
+    - qemu-guest-agent
   apk_repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
@@ -46,3 +47,4 @@ system_packages:
     - just
     - nagios-plugins
     - tzdata
+    - qemu-guest-agent
