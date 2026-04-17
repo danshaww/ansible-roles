@@ -1,8 +1,11 @@
-- name: Global_System | Packages | Update Cache
-  ansible.builtin.apt:
-    update_cache: true
-  changed_when: false
-
-- name: Global_System | Packages | Installation
+- name: Global_System | Packages | Apt Installation
   ansible.builtin.apt:
     pkg: "{{ system_packages + global_system_server_packages}}"
+    update_cache: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Global_System | Packages | Apk Installation
+  community.general.apk:
+    name: "{{ system_packages + global_system_server_packages}}"
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
