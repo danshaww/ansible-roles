@@ -45,3 +45,4 @@ system_packages:
     - gpg
     - just
     - nagios-plugins
+    - tzdata
