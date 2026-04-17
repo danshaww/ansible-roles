@@ -25,12 +25,11 @@ system_packages:
     - just
     - nagios-plugins
   apk:
-    - sudo
+    # - sudo - needs community repo??? tf
     - nano
     - htop
     - git
     - net-tools
-    - dnsutils
     - rsync
     - tmux
     - rsyslog
@@ -38,14 +37,9 @@ system_packages:
     - ca-certificates
     - curl
     - gnupg
-    - fio
-    - inxi
     - smartmontools
     - acl
-    - xclip
-    - btop
     - gpg
-    - cron
-    - nfs-common
+    # - cron - not in main repo
     - just
     - nagios-plugins
