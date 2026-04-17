@@ -1,20 +1,12 @@
 - name: Global_System | Packages | Apt Installation
   ansible.builtin.apt:
-    pkg: "{{ system_packages + global_system_server_packages }}"
+    name: "{{ system_packages.apt + global_system_server_packages }}"
     update_cache: true
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and item.apt_disabled is defined
+  loop_control:
 
-- name: Global_System | Packages | Check if package exists (APK)
-  ansible.builtin.shell: "apk info -e {{ item }}"
-  register: pkg_check
-  failed_when: false
-  changed_when: false
-  loop: "{{ system_packages + global_system_server_packages }}"
-  when: ansible_pkg_mgr == "apk"
-
-- name: Global_System | Packages | APK Installation
+- name: Global_System | Packages | Apk Installation
   community.general.apk:
-    name: "{{ item.item }}"
-    state: present
-  loop: "{{ pkg_check.results }}"
-  when: (item.rc == 0) and (ansible_pkg_mgr == "apk")
+    name: "{{ system_packages.apk + global_system_server_packages }}"
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
