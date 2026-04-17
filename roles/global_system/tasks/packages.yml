@@ -5,12 +5,11 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Global_System | Packages | Apk Repository Configuration
-  copy:
-    dest: /etc/apk/repositories
-    content: |
-      https://dl-cdn.alpinelinux.org/alpine/v3.23/main
-      https://dl-cdn.alpinelinux.org/alpine/v3.23/community
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: "{{ item }}"
   when: ansible_pkg_mgr == "apk"
+  with_items: "{{ apk_repositories }}"
 
 - name: Global_System | Packages | Apk Installation
   community.general.apk:

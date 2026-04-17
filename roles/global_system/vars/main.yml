@@ -24,6 +24,9 @@ system_packages:
     - nfs-common
     - just
     - nagios-plugins
+  apk_repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
   apk:
     # - sudo - needs community repo??? tf
     - nano
