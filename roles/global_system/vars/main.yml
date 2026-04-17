@@ -1,5 +1,6 @@
 system_packages:
   apt:
+    - sudo
     - nano
     - htop
     - git
@@ -24,6 +25,7 @@ system_packages:
     - just
     - nagios-plugins
   apk:
+    - sudo
     - nano
     - htop
     - git

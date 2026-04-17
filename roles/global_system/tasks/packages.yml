@@ -2,8 +2,7 @@
   ansible.builtin.apt:
     name: "{{ system_packages.apt + global_system_server_packages }}"
     update_cache: true
-  when: ansible_pkg_mgr == "apt" and item.apt_disabled is defined
-  loop_control:
+  when: ansible_pkg_mgr == "apt"
 
 - name: Global_System | Packages | Apk Installation
   community.general.apk:
