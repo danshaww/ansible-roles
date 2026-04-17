@@ -9,7 +9,7 @@
     path: /etc/apk/repositories
     line: "{{ item }}"
   when: ansible_pkg_mgr == "apk"
-  with_items: "{{ apk_repositories }}"
+  with_items: "{{ system_packages.apk_repositories }}"
 
 - name: Global_System | Packages | Apk Installation
   community.general.apk:
