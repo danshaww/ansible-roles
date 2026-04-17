@@ -4,6 +4,14 @@
     update_cache: true
   when: ansible_pkg_mgr == "apt"
 
+- name: Global_System | Packages | Apk Repository Configuration
+  copy:
+    dest: /etc/apk/repositories
+    content: |
+      https://dl-cdn.alpinelinux.org/alpine/v3.23/main
+      https://dl-cdn.alpinelinux.org/alpine/v3.23/community
+  when: ansible_pkg_mgr == "apk"
+
 - name: Global_System | Packages | Apk Installation
   community.general.apk:
     name: "{{ system_packages.apk + global_system_server_packages }}"
