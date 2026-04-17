@@ -41,5 +41,5 @@ system_packages:
     - acl
     - gpg
     # - cron - not in main repo
-    - just
+    # - just - not in main repo
     - nagios-plugins
