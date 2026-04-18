@@ -20,8 +20,8 @@
     - name: Install Build tools (APK)
       community.general.apk:
         name:
-          - build-essential
-          - libssl-dev
+          - build-base
+          - openssl-dev
           - autoconf
           - automake
           - libtool
