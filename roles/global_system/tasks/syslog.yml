@@ -11,3 +11,9 @@
     dest: /etc/
     mode: '0644'
   notify: Restart Syslog
+
+- name: Global_System | Syslog | Configure rsyslog service
+  ansible.builtin.service:
+    name: rsyslog
+    state: started
+    enabled: true
