@@ -1,12 +1,6 @@
 - name: Global_System | Misc | Set TimeZone
   community.general.timezone:
     name: Europe/London
-- name: Global_System | Misc | Allow sudo without password
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/dan
-    line: dan ALL=(ALL) NOPASSWD:ALL
-    create: true
-    mode: '0644'
 - name: Global_System | Misc | Render MOTD Template
   ansible.builtin.template:
     dest: /etc/motd
@@ -21,6 +15,14 @@
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
   register: completions
+- name: Global_System | Misc | Ensure bash completions path completions exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /usr/share/bash-completion
+    - /usr/share/bash-completion/completions
+
 - name: Global_System | Misc | Install just bash completions
   ansible.builtin.shell: |
     just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
