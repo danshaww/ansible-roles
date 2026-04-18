@@ -10,6 +10,10 @@
   ansible.builtin.include_tasks: firewall.yml
   when: enable_firewall_config
 
+- name: Global_System | Syslog Config
+  ansible.builtin.include_tasks: syslog.yml
+  when: enable_syslog_config
+
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
   when: enable_misc_config

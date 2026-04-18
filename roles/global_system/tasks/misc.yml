@@ -1,13 +1,6 @@
 - name: Global_System | Misc | Set TimeZone
   community.general.timezone:
     name: Europe/London
-- name: Global_System | Misc | Syslog - Copy Config File
-  ansible.builtin.copy:
-    src: syslog.conf
-    dest: /etc/rsyslog.d/50-default.conf
-    mode: '0644'
-  notify: Restart Syslog
-  when: enable_syslog_config
 - name: Global_System | Misc | Allow sudo without password
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/dan
