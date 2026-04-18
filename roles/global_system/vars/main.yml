@@ -49,3 +49,4 @@ system_packages:
     - tzdata
     - qemu-guest-agent
     - tar
+    - shadow
