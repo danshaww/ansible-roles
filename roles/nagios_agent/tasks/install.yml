@@ -8,14 +8,24 @@
   when:
     - not nrpe_bin.stat.exists
   block:
-    - name: Install Build tools
+    - name: Install Build tools (APT)
       ansible.builtin.apt:
-        package:
+        name:
           - build-essential
           - libssl-dev
           - autoconf
           - automake
           - libtool
+      when: ansible_pkg_mgr == "apt"
+    - name: Install Build tools (APK)
+      community.general.apk:
+        name:
+          - build-essential
+          - libssl-dev
+          - autoconf
+          - automake
+          - libtool
+      when: ansible_pkg_mgr == "apk"
     - name: Download NRPE Source
       ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-4.1.3/nrpe-4.1.3.tar.gz
       args:
@@ -55,13 +65,13 @@
     - check_docker.sh
     - check_nfs.sh
 
-- name: Stop & Disable xinetd
-  ansible.builtin.service:
-    name: xinetd
-    state: stopped
-    enabled: false
-  become: true
-  ignore_errors: true
+# - name: Stop & Disable xinetd
+#   ansible.builtin.service:
+#     name: xinetd
+#     state: stopped
+#     enabled: false
+#   become: true
+#   ignore_errors: true
 
 - name: Add Nagios user to users group
   ansible.builtin.user:
