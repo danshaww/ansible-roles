@@ -4,3 +4,5 @@
 #   nas:
 #     - mount: nas:/dpool/data/fs/media
 #       directory: /mnt/nas/media
+#       owner: user1 #not required
+#       group: group1 #not required
