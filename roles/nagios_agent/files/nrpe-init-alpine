@@ -1,7 +1,9 @@
 #!/sbin/openrc-run
 
 name="NRPE"
-command="/usr/local/nagios/bin/nrpe -c /usr/local/nagios/etc/nrpe.cfg -f"
+command="/usr/local/nagios/bin/nrpe"
+command_args="-c /usr/local/nagios/etc/nrpe.cfg -f"
+command_user="nagios:nagios"
 pidfile="/run/nrpe.pid"
 
 depend() {
