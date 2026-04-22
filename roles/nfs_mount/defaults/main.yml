@@ -6,3 +6,4 @@
 #       directory: /mnt/nas/media
 #       owner: user1 #not required
 #       group: group1 #not required
+#       mode: 0777 #notrequired

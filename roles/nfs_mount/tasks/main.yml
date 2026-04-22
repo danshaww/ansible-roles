@@ -13,7 +13,7 @@
       ansible.builtin.file:
         path: "{{ item.directory }}"
         state: directory
-        mode: '0770'
+        mode: "{{ item.mode | default('0770') }}"
         owner: "{{ item.owner | default('root') }}"
         group: "{{ item.owner | default('users') }}"
       with_items: "{{ nfs_mounts.values() | combine }}"
