@@ -59,17 +59,11 @@
 
 - name: Copy Scripts
   ansible.builtin.copy:
-    src: "{{ item }}"
+    src: plugins/
     dest: /usr/lib/nagios/plugins/
     owner: root
     group: root
     mode: 0755
-  with_items:
-    - check_cpu.sh
-    - check_mem.sh
-    - check_service.sh
-    - check_docker.sh
-    - check_nfs.sh
 
 # - name: Stop & Disable xinetd
 #   ansible.builtin.service:
