@@ -29,6 +29,7 @@ system_packages:
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
   apk:
+    - bash
     - sudo
     - nano
     - htop
