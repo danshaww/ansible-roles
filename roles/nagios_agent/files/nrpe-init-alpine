@@ -2,7 +2,7 @@
 
 name="NRPE"
 command="/usr/local/nagios/bin/nrpe"
-command_args="-c /usr/local/nagios/etc/nrpe.cfg -f"
+command_args="-c /usr/local/nagios/etc/nrpe.cfg"
 pidfile="/run/nrpe.pid"
 
 depend() {
