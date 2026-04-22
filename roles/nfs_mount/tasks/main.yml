@@ -15,7 +15,7 @@
         state: directory
         mode: "{{ item.mode | default('0770') }}"
         owner: "{{ item.owner | default('root') }}"
-        group: "{{ item.owner | default('users') }}"
+        group: "{{ item.group | default('users') }}"
       with_items: "{{ nfs_mounts.values() | combine }}"
     - name: Create NFS Mount fstab entries
       ansible.posix.mount:
