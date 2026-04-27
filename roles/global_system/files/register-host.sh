@@ -4,7 +4,7 @@
 
 # Variables
 ttl="3600"
-domain="internal.epichouse.co.uk."
+domain="epichouse.co.uk."
 ip=$(hostname -I | cut -d' ' -f1 )
 reverse=$(hostname -I | cut -d' ' -f1 | awk -F. '{print $4"."$3"." $2"."$1}')
 a="$(hostname).$domain"
