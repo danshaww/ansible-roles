@@ -6,6 +6,7 @@ enable_motd_config: true
 enable_syslog_config: true
 enable_misc_config: true
 enable_checkmk_agent_install: true
+enable_dns: true
 global_system_server_function: changeme
 global_system_server_location: changeme
 global_system_server_deployment_type: changeme
