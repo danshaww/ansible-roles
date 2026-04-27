@@ -56,3 +56,6 @@
     name: "DNS Registration"
     special_time: reboot
     job: "/root/register-host.sh"
+- name: Misc | Trigger Dynamic DNS Script
+  ansible.builtin.shell: /root/register-host.sh
+  changed_when: false
