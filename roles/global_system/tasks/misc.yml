@@ -44,3 +44,15 @@
   ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
   changed_when: false
   become: true
+- name: Misc | Copy DNS Registration Script
+  ansible.builtin.copy:
+    src: register-host.sh
+    dest: /root/register-host.sh
+    mode: '0755'
+    owner: root
+    group: root
+- name: Misc | Create DNS Registration Cron Job
+  ansible.builtin.cron:
+    name: "DNS Registration"
+    special_time: reboot
+    job: "/root/register-host.sh"
