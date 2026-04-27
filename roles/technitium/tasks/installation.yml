@@ -1,0 +1,22 @@
+- name: Technitium | Installation | Copy Install Script
+  ansible.builtin.copy:
+    src: install.sh
+    dest: "/home/{{ ansible_user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Technitium | Installation | Install Server
+  ansible.builtin.shell: "/home/{{ ansible_user }}/install.sh"
+  register: installer
+
+- name: Technitium | Installation | Ouput Installtion Script Logs
+  ansible.builtin.debug:
+    msg: "{{ installer.stdout }}"
+
+- name: Technitium | Installation | Configure UFW Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  when: ansible_facts['distribution'] == "Ubuntu"
+  with_items: "{{ allowed_ports }}"
