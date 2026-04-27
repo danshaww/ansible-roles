@@ -179,8 +179,9 @@ fi
 
 if [ -f "/etc/systemd/system/dns.service" ]
 then
-    echo "Restarting systemd service..."
-    systemctl restart dns.service >> $installLog 2>&1
+    # echo "Restarting systemd service..."
+    # systemctl restart dns.service >> $installLog 2>&1
+    echo "Service already installed."
 else
     mkdir -p $dnsLog
     
