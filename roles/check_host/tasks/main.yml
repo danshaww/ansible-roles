@@ -5,5 +5,5 @@
   ignore_errors: true
 - name: Group reachable hosts
   ansible.builtin.group_by:
-    key: "{{ 'activehosts' if (connection_result is succeeded and condition) else 'unreachable' }}"
+    key: "{{ 'activehosts' if connection_result is succeeded else 'unreachable' }}"
   changed_when: false
