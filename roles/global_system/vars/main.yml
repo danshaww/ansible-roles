@@ -51,4 +51,3 @@ system_packages:
     - qemu-guest-agent
     - tar
     - shadow
-    - bind-tools
