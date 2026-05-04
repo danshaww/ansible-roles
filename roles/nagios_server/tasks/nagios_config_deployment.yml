@@ -27,6 +27,8 @@
     state: absent
   become: true
   with_items: "{{ current_objects.stdout_lines | difference(required_objects.stdout_lines) }}"
+  notify:
+    - Restart Nagios
 
 - name: Check Nagios Config
   ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
