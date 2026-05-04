@@ -3,12 +3,9 @@
     timeout: 5
   register: connection_result
   ignore_errors: true
-  # failed_when: false
+  failed_when: false
 - name: Group reachable hosts
   ansible.builtin.group_by:
-    key: "{{ 'activehosts' if (connection_result is succeeded and condition) else 'unreachable' }}"
+    key: "{{ 'activehosts' if (connection_result.exception is not defined and condition) else 'unreachable' }}"
   changed_when: false
-  # failed_when: false
-- name: Output connection_result (TEMP)
-  debug:
-    msg: "{{ connection_result }}"
+  failed_when: false
