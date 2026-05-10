@@ -43,7 +43,8 @@
     project_name: "{{ item.item }}"
     project_src: /var/lib/docker/compose/{{ item.item }}
     remove_orphans: true
-    build: never
+    build: "{{ docker_build }}"
+    pull: "{{ docker_pull }}"
     state: present
   become: true
   with_items: "{{ compose.results }}"
