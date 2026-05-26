@@ -19,4 +19,4 @@ docker_packages:
   - docker-buildx-plugin
   - docker-compose-plugin
 docker_build: never
-docker_pull: never
+docker_pull: missing
