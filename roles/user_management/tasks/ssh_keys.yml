@@ -58,7 +58,7 @@
     user: "{{ item.0.username }}"
     key: "{{ item.1 }}"
     exclusive: "{{ item.0.ssh_manage_keys | default(false) }}"
-  when:  item.state | default('present') == 'present'
+  when:  item.0.state | default('present') == 'present'
   loop: "{{ users | subelements('ssh_authorized_keys', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.username }}"
