@@ -18,6 +18,7 @@
     password: "{{ (item.password | password_hash('sha512')) | default('!') }}"
     append: "{{ item.append | default(true) }}"
     groups: users
+    state: "{{ item.state | default('present')}}"
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
@@ -28,6 +29,7 @@
     name: "{{ item.username }}"
     groups: users
     append: true
+    state: "{{ item.state | default('present')}}"
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
@@ -39,6 +41,7 @@
     line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
     create: true
     mode: 0644
+    state: "{{ item.state | default('present')}}"
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
@@ -55,10 +58,10 @@
 - name: Create Home Directory Dirs
   ansible.builtin.file:
     path: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}/{{ item.1.dir }}"
-    state: directory
     mode: "{{ item.1.mode }}"
     owner: "{{ item.0.username }}"
     group: "{{ item.0.username }}"
+    state: "{{ item.state | default('directory')}}"
   loop: "{{ users | product(static_dirs) | list }}"
   loop_control:
     label: "{{ item.0.username }} - {{ item.1 }}"
@@ -70,6 +73,7 @@
     mode: 0644
     owner: "{{ item.0.username }}"
     group: "{{ item.0.username }}"
+  when: "{{ item.state | default('present') == 'present'}}"
   loop: "{{ users | subelements('home_dir_files', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.username }} - {{ item.1.src }}"

@@ -1,5 +1,5 @@
 - name: Set SSH Private Key
-  when: item.ssh_private_key is defined
+  when: item.ssh_private_key is defined and (item.state | default('present') == 'present')
   ansible.builtin.copy:
     content: "{{ item.ssh_private_key }}"
     dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa"
@@ -21,7 +21,7 @@
     label: "{{ item.username }}"
 
 - name: Set SSH Public Key
-  when: item.ssh_public_key is defined
+  when: item.ssh_public_key is defined and (item.state | default('present') == 'present')
   ansible.builtin.copy:
     content: "{{ item.ssh_public_key }}"
     dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/id_rsa.pub"
@@ -42,7 +42,7 @@
     label: "{{ item.username }}"
 
 - name: Populate SSH Config file
-  when: item.ssh_config is defined
+  when: item.ssh_config is defined and (item.state | default('present') == 'present')
   ansible.builtin.copy:
     content: "{{ item.ssh_config }}"
     dest: "{% if item.username != 'root' %}{{ home_path }}{% endif %}/{{ item.username }}/.ssh/config"
@@ -58,6 +58,7 @@
     user: "{{ item.0.username }}"
     key: "{{ item.1 }}"
     exclusive: "{{ item.0.ssh_manage_keys | default(false) }}"
+  when:  item.state | default('present') == 'present'
   loop: "{{ users | subelements('ssh_authorized_keys', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.username }}"
