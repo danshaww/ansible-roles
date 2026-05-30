@@ -1,5 +1,5 @@
 static_dirs:
-  - dir: /
+  - dir: ""
     mode: 0644
   - dir: /.ssh
     mode: 0700
