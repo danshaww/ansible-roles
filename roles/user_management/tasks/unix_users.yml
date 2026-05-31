@@ -44,7 +44,7 @@
     label: "{{ item.username }}"
 
 - name: Remove sudoers files
-  when: not item.sudoers is defined
+  when: ( not item.sudoers is defined ) or ( item.state == 'absent' )
   ansible.builtin.file:
     path: "/etc/sudoers.d/{{ item.username }}"
     state: absent
