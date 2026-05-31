@@ -14,3 +14,4 @@ global_system_server_packages: []
 global_system_nfs: null
 global_system_checkmk_hosts: []
 global_system_checkmk_install: true
+enable_cloud_init: true
