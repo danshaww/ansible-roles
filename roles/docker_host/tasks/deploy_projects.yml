@@ -29,7 +29,7 @@
 
 - name: Docker | Configuration | Set ACL for persistent volumes
   ansible.builtin.shell: | # Using shell to skip NFS mounts
-    find /var/lib/docker/volumes -xdev ! -type s -print0 | xargs -0 setfacl -m g:docker:r 2>&1 | grep -v "Operation not supported" || true
+    find /var/lib/docker/volumes -xdev ! -type s -print0 | xargs -0 setfacl -m g:docker:rx 2>&1 | grep -v "Operation not supported" || true
   changed_when: false
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
