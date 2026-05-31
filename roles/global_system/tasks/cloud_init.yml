@@ -3,7 +3,6 @@
     src: cloud.cfg
     dest: /etc/cloud/cloud.cfg
     mode: 0644
-  when: ansible_facts.virtualization_type == "kvm"
   notify: Restart Cloud Init
 
 - name: Global_System | Cloud Init | Prevent SSH Host Key Deletion
@@ -14,11 +13,9 @@
     mode: 0644
     create: true
     state: present
-  when: ansible_facts.virtualization_type == "kvm"
   notify: Restart Cloud Init
 
 - name: Global_System | Cloud Init | Remove sudoers File
   ansible.builtin.file:
     path: /etc/sudoers.d/90-cloud-init-users
     state: absent
-  when: ansible_facts.virtualization_type == "kvm"

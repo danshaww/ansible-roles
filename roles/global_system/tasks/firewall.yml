@@ -1,11 +1,8 @@
-- name: Global_System | UFW Configuration
-  when: ansible_facts.distribution == "Ubuntu"
-  block:
-    - name: Global_System | UFW | Enable and set default deny rule
-      community.general.ufw:
-        state: enabled
-        policy: deny
-    - name: Global_System | UFW | Allow SSH
-      community.general.ufw:
-        rule: allow
-        port: '22'
+- name: Global_System | UFW | Enable and set default deny rule
+  community.general.ufw:
+    state: enabled
+    policy: deny
+- name: Global_System | UFW | Allow SSH
+  community.general.ufw:
+    rule: allow
+    port: '22'
