@@ -6,8 +6,10 @@
   notify: Restart SSH
 - name: Global_System | SSH | Prevent SSH Host Key Deletion
   ansible.builtin.lineinfile:
-    path: /etc/cloud/cloud.cfg
+    path: /etc/cloud/cloud.cfg.d/deletekeys.cfg
     regexp: 'ssh_deletekeys:'
     line: 'ssh_deletekeys: false'
+    mode: 0644
+    create: true
     state: present
-  when: ansible_facts.distribution == "Ubuntu" and ansible_facts.virtualization_type == "kvm"
+  when: ansible_facts.virtualization_type == "kvm"

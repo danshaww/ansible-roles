@@ -21,3 +21,7 @@
 - name: Global_System | DNS Tasks
   ansible.builtin.include_tasks: dns.yml
   when: enable_dns
+
+- name: Global_System | Cloud Init Tasks
+  ansible.builtin.include_tasks: cloud_init.yml
+  when: enable_cloud_init

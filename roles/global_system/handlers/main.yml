@@ -12,3 +12,8 @@
     name: rsyslog
     state: restarted
   become: true
+- name: Restart Cloud Init
+  ansible.builtin.service:
+    name: cloud-init
+    state: restarted
+  become: true
