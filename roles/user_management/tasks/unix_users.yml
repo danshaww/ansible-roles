@@ -3,7 +3,7 @@
   ansible.builtin.group:
     name: "{{ item.username }}"
     state: present
-    gid: "{{ item.gid | default(item.uid) }}"
+    gid: "{{ item.gid | default(item.uid | default(4096)) }}"
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
@@ -12,7 +12,7 @@
   ansible.builtin.user:
     name: "{{ item.username }}"
     comment: "{{ item.username }}"
-    uid: "{{ item.uid }}"
+    uid: "{{ item.uid | default(4096) }}"
     shell: "{{ item.shell | default('/bin/bash')}}"
     group: "{{ item.group | default(item.username) }}"
     password: "{{ (item.password | password_hash('sha512')) | default('!') }}"
