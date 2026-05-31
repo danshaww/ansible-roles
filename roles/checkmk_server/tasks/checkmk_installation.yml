@@ -33,7 +33,7 @@
     rule: allow
     port: "{{ item }}"
   with_items: "{{ firewall_ports }}"
-  when: ansible_facts['distribution'] == "Ubuntu"
+  when: ansible_facts.packages['ufw'] is defined
 
 - name: CheckMK Server | Create Local Backup Directory
   ansible.builtin.file:

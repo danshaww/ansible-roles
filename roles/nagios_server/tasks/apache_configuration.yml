@@ -61,7 +61,7 @@
   community.general.ufw:
     rule: allow
     port: '443'
-  when: (ansible_facts['distribution'] == "Ubuntu")
+  when: ansible_facts.packages['ufw'] is defined
 
 - name: Restart Apache Service
   ansible.builtin.service:

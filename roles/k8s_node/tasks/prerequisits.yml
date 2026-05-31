@@ -47,3 +47,4 @@
     rule: allow
     port: "{{ item }}"
   with_items: "{{ allowed_ports }}"
+  when: ansible_facts.packages['ufw'] is defined

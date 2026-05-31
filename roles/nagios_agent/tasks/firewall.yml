@@ -2,4 +2,4 @@
   community.general.ufw:
     rule: allow
     port: '5666'
-  when: enable_nagios_config and ansible_facts.distribution == "Ubuntu"
+  when: ansible_facts.packages['ufw'] is defined

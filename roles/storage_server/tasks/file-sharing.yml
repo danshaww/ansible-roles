@@ -7,7 +7,7 @@
     - '111'
     - '2049'
   become: true
-  when: ansible_facts['distribution'] == "Ubuntu"
+  when: ansible_facts.packages['ufw'] is defined
 
 - name: File Sharing - Copy Samba Configuration file
   ansible.builtin.copy:

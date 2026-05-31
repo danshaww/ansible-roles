@@ -29,4 +29,4 @@
     rule: allow
     port: '443'
   become: true
-  when: (ansible_facts['distribution'] == "Ubuntu")
+  when: ansible_facts.packages['ufw'] is defined

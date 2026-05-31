@@ -3,6 +3,7 @@
     rule: allow
     port: "{{ item }}"
   with_items: "{{ unifi_os_firewall_ports }}"
+  when: ansible_facts.packages['ufw'] is defined
 
 - name: APT Package Installation
   ansible.builtin.apt:
