@@ -28,13 +28,9 @@
   with_items: "{{ applications.stdout_lines }}"
 
 - name: Docker | Configuration | Set ACL for persistent volumes
-  ansible.posix.acl:
-    path: /var/lib/docker/volumes
-    entity: docker
-    etype: group
-    permissions: r
-    state: present
-    recursive: true
+  ansible.builtin.shell: | # Using shell to skip NFS mounts
+    find /var/lib/docker/volumes -xdev | xargs setfacl -m g:docker:r
+  changed_when: false
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
