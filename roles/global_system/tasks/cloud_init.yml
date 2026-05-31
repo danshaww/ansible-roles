@@ -3,7 +3,6 @@
     src: cloud.cfg
     dest: /etc/cloud/cloud.cfg
     mode: 0644
-    state: present
   when: ansible_facts.virtualization_type == "kvm"
   notify: Restart Cloud Init
 
