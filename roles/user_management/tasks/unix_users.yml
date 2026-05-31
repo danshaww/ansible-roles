@@ -39,7 +39,15 @@
     dest: "/etc/sudoers.d/{{ item.username }}"
     src: sudoers.j2
     mode: 0644
-    state: "{{ 'absent' if item.sudoers is not defined else item.state | default('present') }}"
+  with_items: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Remove sudoers files
+  when: not item.sudoers is defined
+  ansible.builtin.file:
+    path: "/etc/sudoers.d/{{ item.username }}"
+    state: absent
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
