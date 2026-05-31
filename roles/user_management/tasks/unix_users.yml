@@ -40,6 +40,7 @@
     src: sudoers.j2
     mode: 0644
   with_items: "{{ users }}"
+  when: item.sudoers is defined
   loop_control:
     label: "{{ item.username }}"
 
