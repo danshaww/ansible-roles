@@ -9,7 +9,7 @@ users:
   - username: example
     group: # Defaults to username
     password: password
-    uid: 1055
+    uid: 1055 # defaults to 4096
     gid: 1055 # Defaults to UID value
     home: # Defaults to /home/{username}
     shell: # Defaults to /bin/bash
