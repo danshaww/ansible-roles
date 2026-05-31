@@ -13,7 +13,8 @@ users:
     gid: 1055 # Defaults to UID value
     home: # Defaults to /home/{username}
     shell: # Defaults to /bin/bash
-    allow_sudo: false
+    sudoers: # if not defined, sudoers file be deleted or not created
+      - ALL=(ALL) ALL
     ssh_private_key:
     ssh_public_key:
     ssh_authorized_keys:
@@ -21,3 +22,4 @@ users:
     home_dir_files:
       - src: ../config/.bashrc
         dest: .bashrc
+    state: # set to absent to delete users and remove home directory

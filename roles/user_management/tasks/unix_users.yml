@@ -34,23 +34,12 @@
   loop_control:
     label: "{{ item.username }}"
 
-- name: Allow sudo without password
-  when: item.allow_sudo | default(false)
-  ansible.builtin.lineinfile:
-    path: "/etc/sudoers.d/{{ item.username }}"
-    line: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
-    create: true
+- name: Configure sudoers
+  ansible.builtin.template:
+    dest: "/etc/sudoers.d/{{ item.username }}"
+    src: sudoers.j2
     mode: 0644
-    state: "{{ item.state | default('present')}}"
-  with_items: "{{ users }}"
-  loop_control:
-    label: "{{ item.username }}"
-
-- name: Remove no longer required sudoers file
-  when: not (item.allow_sudo | default(false))
-  ansible.builtin.file:
-    path: "/etc/sudoers.d/{{ item.username }}"
-    state: absent
+    state: "{{ 'absent' if item.sudoers is not defined else item.state | default('present') }}"
   with_items: "{{ users }}"
   loop_control:
     label: "{{ item.username }}"
