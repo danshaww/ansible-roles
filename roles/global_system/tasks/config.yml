@@ -12,6 +12,8 @@
     - item.dest is defined
     - item.mode is defined
     - not item.template | default(false)
+  loop_control:
+    label: "{{ item.src | default('') }} | {{ item.dest | default('') }}"
 
 - name: Global_System | Config | Template Files
   ansible.builtin.copy:
@@ -27,6 +29,8 @@
     - item.dest is defined
     - item.mode is defined
     - item.template | default(false)
+  loop_control:
+    label: "{{ item.src | default('') }} | {{ item.dest | default('') }}"
 
 - name: Global_System | Config | Delete Files
   ansible.builtin.file:
@@ -37,6 +41,8 @@
   when:
     - item.dest is defined
     - item.delete | default(false)
+  loop_control:
+    label: "{{ item.dest | default('') }}"
 
 - name: Global_System | Config | Reload Service
   ansible.builtin.systemd:
@@ -48,6 +54,8 @@
   when:
     - item.changed
     - item.item.svc_reload is defined
+  loop_control:
+    label: "{{ item.svc_reload | default('') }}"
 
 - name: Global_System | Config | Reload Service
   ansible.builtin.systemd:
@@ -59,3 +67,5 @@
   when:
     - item.changed
     - item.item.svc_restart is defined
+  loop_control:
+    label: "{{ item.svc_restart | default('') }}"
