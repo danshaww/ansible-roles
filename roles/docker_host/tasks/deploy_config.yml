@@ -22,11 +22,11 @@
   with_items: "{{ docker_users }}"
 
 - name: Docker | Installation | Populate daemon.json
-  ansible.builtin.template:
-    src: "daemon.json.j2"
+  ansible.builtin.copy:
+    src: "daemon.json"
     dest: /etc/docker/daemon.json
     mode: '0700'
-  when: docker_syslog_server is not none
+  when: docker_enable_syslog
   notify:
     - Reload Docker
     - Restart Docker
