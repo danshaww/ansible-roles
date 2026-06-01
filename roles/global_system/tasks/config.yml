@@ -11,7 +11,7 @@
     - item.src is defined
     - item.dest is defined
     - item.mode is defined
-    - not item.template
+    - not item.template | default(false)
 
 - name: Global_System | Config | Template Files
   ansible.builtin.copy:
@@ -26,7 +26,7 @@
     - item.src is defined
     - item.dest is defined
     - item.mode is defined
-    - item.template
+    - item.template | default(false)
 
 - name: Global_System | Config | Delete Files
   ansible.builtin.file:
