@@ -13,7 +13,7 @@
     - item.mode is defined
     - not item.template | default(false)
   loop_control:
-    label: "{{ item.src | default('') }} | {{ item.dest | default('') }}"
+    label: "{{ item.name }}"
 
 - name: Global_System | Config | Template Files
   ansible.builtin.copy:
@@ -30,7 +30,7 @@
     - item.mode is defined
     - item.template | default(false)
   loop_control:
-    label: "{{ item.src | default('') }} | {{ item.dest | default('') }}"
+    label: "{{ item.name }}"
 
 - name: Global_System | Config | Delete Files
   ansible.builtin.file:
@@ -39,33 +39,36 @@
   with_items: "{{ global_system_server_config }}"
   register: delete_files
   when:
+    - not item.src is defined
     - item.dest is defined
     - item.delete | default(false)
   loop_control:
-    label: "{{ item.dest | default('') }}"
+    label: "{{ item.name }}"
 
 - name: Global_System | Config | Reload Service
   ansible.builtin.systemd:
-    name: "{{ item.item.svc_reload }}"
+    name: "{{ item.item.service_config.name }}"
     state: reloaded
     enabled: true
   with_items: "{{ copy_files.results + template_files.results }}"
   register: reload_service
   when:
     - item.changed
-    - item.item.svc_reload is defined
+    - item.item.service_config is defined
+    - item.item.service_config.reload | default(false)
   loop_control:
-    label: "{{ item.svc_reload | default('') }}"
+    label: "{{ item.item.name }}"
 
-- name: Global_System | Config | Reload Service
+- name: Global_System | Config | Restart Service
   ansible.builtin.systemd:
-    name: "{{ item.item.svc_restart }}"
+    name: "{{ item.item.service_config.name }}"
     state: restarted
     enabled: true
   with_items: "{{ copy_files.results + template_files.results }}"
   register: restart_service
   when:
     - item.changed
-    - item.item.svc_restart is defined
+    - item.item.service_config is defined
+    - item.item.service_config.restart | default(false)
   loop_control:
-    label: "{{ item.svc_restart | default('') }}"
+    label: "{{ item.item.name }}"
