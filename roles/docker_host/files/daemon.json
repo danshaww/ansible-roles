@@ -3,7 +3,7 @@
     "log-opts": {
         "syslog-facility": "daemon",
         "syslog-format": "rfc5424",
-        "tag": "{{.Name}}/{{.ID}}",
+        "tag": "{{.Name}}",
         "labels": "com.docker.compose.project,com.docker.compose.service"
     }
 }
