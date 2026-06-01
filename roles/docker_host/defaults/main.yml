@@ -20,4 +20,4 @@ docker_packages:
   - docker-compose-plugin
 docker_build: never
 docker_pull: missing
-docker_syslog_server: null
+docker_enable_syslog: false
