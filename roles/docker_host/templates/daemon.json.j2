@@ -1,7 +1,6 @@
 {
     "log-driver": "syslog",
     "log-opts": {
-        "syslog-address": "{{ docker_syslog_server }}",
         "syslog-facility": "daemon",
         {% raw %}
         "tag": "container_name/{{.Name}}"
