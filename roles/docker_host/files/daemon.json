@@ -3,6 +3,6 @@
     "log-opts": {
         "syslog-facility": "daemon",
         "labels": "docker",
-        "tag": "container_name/{{.Name}}"
+        "tag": "{{.Name}}"
     }
 }
