@@ -24,3 +24,10 @@
     state: stopped
     enabled: false
   when: ansible_os_family == "Alpine"
+
+- name: Global_System | Syslog | Disable Sudo Logging
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: '^Defaults.*syslog'
+    line: 'Defaults !syslog'
+    validate: 'visudo -cf %s'
