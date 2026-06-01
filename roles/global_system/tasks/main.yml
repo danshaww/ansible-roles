@@ -5,7 +5,7 @@
 - name: Global_System | Config
   ansible.builtin.include_tasks: config.yml
   when:
-    - enabled_config
+    - enable_config
     - global_system_server_function is not none
 
 - name: Global_System | System SSH Config
