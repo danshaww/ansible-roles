@@ -2,7 +2,8 @@
     "log-driver": "syslog",
     "log-opts": {
         "syslog-facility": "daemon",
-        "labels": "docker",
-        "tag": "{{.Name}}"
+        "syslog-format": "rfc5424",
+        "tag": "{{.Name}}/{{.ID}}",
+        "labels": "com.docker.compose.project,com.docker.compose.service"
     }
 }
