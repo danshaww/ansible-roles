@@ -2,4 +2,5 @@
   community.general.ufw:
     rule: allow
     port: '5666'
-  when: ansible_facts.packages['ufw'] is defined
+  when:
+    - "'ufw' in ansible_facts.packages"
