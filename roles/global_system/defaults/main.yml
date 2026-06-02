@@ -17,4 +17,4 @@ global_system_checkmk_hosts: []
 global_system_checkmk_install: true
 enable_cloud_init: true
 
-global_system_server_config: null
+global_system_server_config_path: changeme
