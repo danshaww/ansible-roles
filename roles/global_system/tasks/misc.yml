@@ -6,14 +6,15 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: '0644'
-  when: item.src is not none
-  with_items: "{{ templates }}"
+    mode: "{{ item.mode | 0644 }}"
+  when: global_system.templates | default(null) is not none
+  with_items: "{{ global_system.templates }}"
 
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
   register: completions
+
 - name: Global_System | Misc | Ensure bash completions path completions exists
   ansible.builtin.file:
     path: "{{ item }}"
