@@ -4,7 +4,7 @@
 
 - name: Global_System | Packages | Apt Installation
   ansible.builtin.apt:
-    name: "{{ system_packages.apt + (global_system.packages | default([])) }}"
+    name: "{{ system_packages.apt + (global_system_packages | default([])) }}"
     update_cache: true
   when: ansible_pkg_mgr == "apt"
 
@@ -17,6 +17,6 @@
 
 - name: Global_System | Packages | Apk Installation
   community.general.apk:
-    name: "{{ system_packages.apk + (global_system.packages | default([])) }}"
+    name: "{{ system_packages.apk + (global_system_packages | default([])) }}"
     update_cache: true
   when: ansible_pkg_mgr == "apk"

@@ -54,9 +54,9 @@ system_packages:
 
 templates:
   - dest: /etc/motd
-    src: "{{ global_system.motd_template_path | default(null) }}"
+    src: "{{ global_system_motd_template_path | default(null) }}"
   - dest: /etc/issue
-    src: "{{ global_system.issue_template_path | default(null) }}"
+    src: "{{ global_system_issue_template_path | default(null) }}"
 
 binaries:
   - dest: /usr/local/bin/figurine

@@ -1,13 +1,12 @@
-global_system:
-  enable_packages: true
-  enable_ssh_config: true
-  enable_firewall_config: true
-  enable_syslog_config: true
-  enable_misc_config: true
-  enable_cloud_init: true
-  syslog_config_path: null
-  cloud_config_path: null
-  ssh_config_path: null
-  templates: null
-  firewall_ports: []
-  packages: []
+global_system_enable_packages: true
+global_system_enable_ssh_config: true
+global_system_enable_firewall_config: true
+global_system_enable_syslog_config: true
+global_system_enable_misc_config: true
+global_system_enable_cloud_init: true
+global_system_syslog_config_path: null
+global_system_cloud_config_path: null
+global_system_ssh_config_path: null
+global_system_templates: null
+global_system_firewall_ports: []
+global_system_packages: []

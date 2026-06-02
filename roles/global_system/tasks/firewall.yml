@@ -7,4 +7,4 @@
     rule: allow
     port: "{{ item.port }}"
     protocol: "{{ item.protocol | default('any') }}"
-  with_items: "{{ firewall_ports + global_system.firewall_ports | default([]) }}"
+  with_items: "{{ firewall_ports + global_system_firewall_ports | default([]) }}"

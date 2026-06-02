@@ -7,8 +7,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode | default(0644) }}"
-  when: global_system.templates | default(null) is not none
-  with_items: "{{ global_system.templates }}"
+  when: global_system_templates | default(null) is not none
+  with_items: "{{ global_system_templates }}"
 
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
