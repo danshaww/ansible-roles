@@ -1,3 +1,9 @@
+- debug:
+    var: global_system.enable_packages
+
+- debug:
+    var: global_system
+
 - name: Global_System | Package Installation
   ansible.builtin.include_tasks: packages.yml
   when:
