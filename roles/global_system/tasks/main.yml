@@ -1,35 +1,35 @@
 - name: Global_System | Package Installation
   ansible.builtin.include_tasks: packages.yml
   when:
-    - global_system.enable_packages | default(true)
+    - (global_system.enable_packages | default(true))
 
 - name: Global_System | System SSH Config
   ansible.builtin.include_tasks: ssh.yml
   when:
-    - global_system.enable_ssh_config | default(true)
+    - (global_system.enable_ssh_config | default(true))
     - global_system.ssh_config_path | default(null) is not none
 
 - name: Global_System | Firewall Configuration
   ansible.builtin.include_tasks: firewall.yml
   when:
-    - global_system.enable_firewall_config | default(true)
+    - (global_system.enable_firewall_config | default(true))
     - "'ufw' in ansible_facts.packages"
 
 - name: Global_System | Syslog Config
   ansible.builtin.include_tasks: syslog.yml
   when:
-    - global_system.enable_syslog_config | default(true)
+    - (global_system.enable_syslog_config | default(true))
     - global_system.syslog_config_path | default(null) is not none
 
 
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
   when:
-    - global_system.enable_misc_config | default(true)
+    - (global_system.enable_misc_config | default(true))
 
 - name: Global_System | Cloud Init Tasks
   ansible.builtin.include_tasks: cloud_init.yml
   when:
-    - global_system.enable_cloud_init | default(true)
+    - (global_system.enable_cloud_init | default(true))
     - "'cloud-init' in ansible_facts.packages"
     - global_system.cloud_config_path | default(null) is not none
