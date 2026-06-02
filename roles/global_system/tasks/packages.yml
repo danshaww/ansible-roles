@@ -1,3 +1,7 @@
+- name: Global_System | Packages | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Global_System | Packages | Apt Installation
   ansible.builtin.apt:
     name: "{{ system_packages.apt + (global_system.packages | default([])) }}"

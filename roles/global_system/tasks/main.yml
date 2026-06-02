@@ -13,7 +13,7 @@
   ansible.builtin.include_tasks: firewall.yml
   when:
     - global_system.enable_firewall_config | default(true)
-    - ansible_facts.packages['ufw'] is defined
+    - "'ufw' in ansible_facts.packages"
 
 - name: Global_System | Syslog Config
   ansible.builtin.include_tasks: syslog.yml
@@ -31,5 +31,5 @@
   ansible.builtin.include_tasks: cloud_init.yml
   when:
     - global_system.enable_cloud_init | default(true)
-    - ansible_facts.packages['cloud-init'] is defined
+    - "'cloud-init' in ansible_facts.packages"
     - global_system.cloud_config_path | default(null) is not none
