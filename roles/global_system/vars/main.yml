@@ -1,11 +1,10 @@
 system_packages:
-  apt:
+  global:
     - sudo
     - nano
     - htop
     - git
     - net-tools
-    - dnsutils
     - rsync
     - tmux
     - rsyslog
@@ -13,44 +12,28 @@ system_packages:
     - ca-certificates
     - curl
     - gnupg
-    - fio
-    - inxi
     - smartmontools
     - acl
-    - xclip
-    - btop
     - gpg
-    - cron
-    - nfs-common
     - just
     - nagios-plugins
     - qemu-guest-agent
+  apt_only:
+    - dnsutils
+    - fio
+    - inxi
+    - xclip
+    - btop
+    - cron
+    - nfs-common
+  apk_only:
+    - bash
+    - tzdata
+    - tar
+    - shadow
   apk_repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
-  apk:
-    - bash
-    - sudo
-    - nano
-    - htop
-    - git
-    - net-tools
-    - rsync
-    - tmux
-    - rsyslog
-    - unzip
-    - ca-certificates
-    - curl
-    - gnupg
-    - smartmontools
-    - acl
-    - gpg
-    - just
-    - nagios-plugins
-    - tzdata
-    - qemu-guest-agent
-    - tar
-    - shadow
 
 templates:
   - dest: /etc/motd
