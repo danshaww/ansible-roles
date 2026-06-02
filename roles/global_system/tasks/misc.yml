@@ -4,12 +4,12 @@
 - name: Global_System | Misc | Render MOTD Template
   ansible.builtin.template:
     dest: /etc/motd
-    src: "{{ global_system_server_config_path }}/motd.j2"
+    src: "{{ global_system.config_path }}/motd.j2"
     mode: '0644'
 - name: Global_System | Misc | Render Issue Template
   ansible.builtin.template:
     dest: /etc/issue
-    src: "{{ global_system_server_config_path }}/issue.j2"
+    src: "{{ global_system.config_path }}/issue.j2"
     mode: '0644'
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:

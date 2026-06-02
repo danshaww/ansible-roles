@@ -1,20 +1,9 @@
-enable_packages: true
-enable_ssh_config: true
-enable_firewall_config: true
-enable_env_config: true
-enable_motd_config: true
-enable_syslog_config: true
-enable_misc_config: true
-enable_checkmk_agent_install: true
-enable_dns: true
-enable_config: true
-global_system_server_function: changeme
-global_system_server_location: changeme
-global_system_server_deployment_type: changeme
-global_system_server_packages: []
-global_system_nfs: null
-global_system_checkmk_hosts: []
-global_system_checkmk_install: true
-enable_cloud_init: true
-
-global_system_server_config_path: changeme
+global_system:
+  enable_packages: true
+  enable_ssh_config: true
+  enable_firewall_config: true
+  enable_syslog_config: true
+  enable_misc_config: true
+  enable_cloud_init: true
+  config_path: changeme
+  packages: []

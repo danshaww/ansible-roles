@@ -7,7 +7,7 @@
 
 - name: Global_System | Syslog | Copy Config Files
   ansible.builtin.copy:
-    src: "{{ global_system_server_config_path }}/syslog/"
+    src: "{{ global_system.config_path }}/syslog/"
     dest: /etc/
     mode: '0644'
   notify: Restart Syslog
