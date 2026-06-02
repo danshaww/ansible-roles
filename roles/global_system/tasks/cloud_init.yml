@@ -5,16 +5,6 @@
     mode: 0644
   notify: Restart Cloud Init
 
-- name: Global_System | Cloud Init | Prevent SSH Host Key Deletion
-  ansible.builtin.lineinfile:
-    path: /etc/cloud/cloud.cfg.d/deletekeys.cfg
-    regexp: 'ssh_deletekeys:'
-    line: 'ssh_deletekeys: false'
-    mode: 0644
-    create: true
-    state: present
-  notify: Restart Cloud Init
-
 - name: Global_System | Cloud Init | Remove sudoers File
   ansible.builtin.file:
     path: /etc/sudoers.d/90-cloud-init-users
