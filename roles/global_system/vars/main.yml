@@ -63,3 +63,6 @@ binaries:
     src: figurine
   - dest: /usr/bin/neofetch
     src: neofetch
+
+firewall_ports:
+  - 22

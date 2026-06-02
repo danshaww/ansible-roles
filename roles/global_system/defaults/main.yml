@@ -9,4 +9,5 @@ global_system:
   cloud_config_path: null
   ssh_config_path: null
   templates: null
+  firewall_ports: []
   packages: []
