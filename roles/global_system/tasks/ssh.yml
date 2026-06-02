@@ -1,6 +1,6 @@
 - name: Global_System | SSH | Copy Config File
-  ansible.builtin.template:
-    src: "{{ global_system.config_path }}/sshd_config.j2"
-    dest: /etc/ssh/sshd_config
+  ansible.builtin.copy:
+    src: "{{ global_system.ssh_config_path }}"
+    dest: /etc/ssh/
     mode: '0644'
   notify: Restart SSH

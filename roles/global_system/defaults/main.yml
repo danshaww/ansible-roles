@@ -5,5 +5,9 @@ global_system:
   enable_syslog_config: true
   enable_misc_config: true
   enable_cloud_init: true
-  config_path: changeme
+  syslog_config_path: null
+  cloud_config_path: null
+  ssh_config_path: null
+  issue_template_path: null
+  motd_template_path: null
   packages: []

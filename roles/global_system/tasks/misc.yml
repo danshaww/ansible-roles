@@ -1,16 +1,15 @@
 - name: Global_System | Misc | Set TimeZone
   community.general.timezone:
     name: Europe/London
-- name: Global_System | Misc | Render MOTD Template
+
+- name: Global_System | Misc | Render Templates
   ansible.builtin.template:
-    dest: /etc/motd
-    src: "{{ global_system.config_path }}/motd.j2"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     mode: '0644'
-- name: Global_System | Misc | Render Issue Template
-  ansible.builtin.template:
-    dest: /etc/issue
-    src: "{{ global_system.config_path }}/issue.j2"
-    mode: '0644'
+  when: item.src is not none
+  with_items: "{{ templates }}"
+
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
@@ -30,16 +29,14 @@
   become: true
   when: not completions.stat.exists
   changed_when: not completions.stat.exists
-- name: Global_System | Misc | Copy Figurine Binary # need to make this multi arch
+
+- name: Global_System | Misc | Copy Binaries
   ansible.builtin.copy:
-    src: figurine
-    dest: /usr/local/bin/figurine
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     mode: '0755'
-- name: Global_System | Misc | Copy Neofetch Binary # need to make this multi arch
-  ansible.builtin.copy:
-    src: neofetch
-    dest: /usr/bin/neofetch
-    mode: '0755'
+  with_items: "{{ binaries }}"
+
 - name: Global_System| Misc | Install Starship
   ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y && starship config hostname.ssh_only false
   changed_when: false

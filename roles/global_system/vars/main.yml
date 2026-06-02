@@ -51,3 +51,15 @@ system_packages:
     - qemu-guest-agent
     - tar
     - shadow
+
+templates:
+  - dest: /etc/motd
+    src: "{{ global_system.motd_template_path | default(null) }}"
+  - dest: /etc/issue
+    src: "{{ global_system.issue_template_path | default(null) }}"
+
+binaries:
+  - dest: /usr/local/bin/figurine
+    src: figurine
+  - dest: /usr/bin/neofetch
+    src: neofetch
