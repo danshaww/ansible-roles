@@ -1,6 +1,6 @@
 - name: Global_System | Cloud Init | Copy Config File
   ansible.builtin.copy:
-    src: "{{ global_system.config_path }}/cloud/"
+    src: "{{ global_system.config_path }}/cloud"
     dest: /etc/cloud/
     mode: 0644
   notify: Restart Cloud Init
