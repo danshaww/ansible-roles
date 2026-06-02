@@ -1,14 +1,11 @@
-- name: Nagios Agent
-  when: enable_nagios_config
-  block:
-    - name: Nagios Agent | Installation
-      ansible.builtin.include_tasks: install.yml
-      when: enable_install
+- name: Nagios Agent | Installation
+  ansible.builtin.include_tasks: install.yml
+  when: enable_install
 
-    - name: Nagios Agent | Config Deployment
-      ansible.builtin.include_tasks: config.yml
-      when: enable_config
+- name: Nagios Agent | Config Deployment
+  ansible.builtin.include_tasks: config.yml
+  when: enable_config
 
-    - name: Nagios Agent | Firewall Config
-      ansible.builtin.include_tasks: firewall.yml
-      when: enable_firewall
+- name: Nagios Agent | Firewall Config
+  ansible.builtin.include_tasks: firewall.yml
+  when: enable_firewall
