@@ -3,21 +3,8 @@ docker_configure: false
 docker_update_socket: false
 docker_config_path: changeme
 docker_enable_auth: false
-docker_management_group: null
-docker_github_auth:
-  enabled: false
-  pat: changeme
-docker_gitea_auth:
-  enabled: false
-  pat: changeme
-docker_users:
-  - dan
-docker_packages:
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
-  - docker-buildx-plugin
-  - docker-compose-plugin
+docker_users: changeme
 docker_build: never
 docker_pull: missing
 docker_enable_syslog: false
+docker_compose_projects: null

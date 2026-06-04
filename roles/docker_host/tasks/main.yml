@@ -8,8 +8,12 @@
 
 - name: Docker | Include Configuration Tasks (Deploy)
   ansible.builtin.include_tasks: deploy_projects.yml
-  when: docker_configure
+  when:
+    - docker_configure
+    - docker_compose_projects is not none
 
 - name: Docker | Include Configuration Tasks (Destroy)
   ansible.builtin.include_tasks: destroy_projects.yml
-  when: docker_configure
+  when:
+    - docker_configure
+    - docker_compose_projects is not none
