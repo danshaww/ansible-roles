@@ -34,7 +34,8 @@
     mode: '0700'
   with_items: "{{ docker_compose_projects }}"
   become: true
-  register: compose
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
