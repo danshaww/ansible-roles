@@ -11,7 +11,7 @@
     label: "{{ item.1.src }} -> {{ item.0.name }}_{{ item.1.volume }}"
 
 - debug:
-    msg: volume_data_copy.results
+    msg: "{{ volume_data_copy.results }}"
 
 - name: Docker | Volume Data | Restart Containers
   ansible.builtin.shell: "docker restart {{ item.item.item.restart_container }}"
