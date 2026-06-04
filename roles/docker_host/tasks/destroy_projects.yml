@@ -8,6 +8,7 @@
   ansible.builtin.shell: "docker compose -p {{ item }} down"
   with_items: "{{ currentapplications | difference(applications) }}"
   become: true
+  # Add conditional logic to remove volumes here?
 
 - name: Docker | Configuration | Destroy Projects | Remove non-required projects
   ansible.builtin.file:
@@ -15,4 +16,3 @@
     state: absent
   become: true
   with_items: "{{ currentapplications | difference(applications) }}"
-  # Add conditional logic to remove volumes here?

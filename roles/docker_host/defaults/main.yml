@@ -8,3 +8,4 @@ docker_build: never
 docker_pull: missing
 docker_enable_syslog: false
 docker_compose_projects: null
+docker_compose_default_path: null

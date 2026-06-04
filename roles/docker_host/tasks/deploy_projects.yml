@@ -27,25 +27,25 @@
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
-    src: "{{ docker_config_path }}/compose/{{ item }}.yml.j2"
-    dest: /var/lib/docker/compose/{{ item }}/compose.yml
+    src: "{{ item.project_path | default(docker_compose_default_path) }}/{{ item.name }}.yml.j2"
+    dest: /var/lib/docker/compose/{{ item.name }}/compose.yml
     owner: root
     group: docker
     mode: '0700'
-  with_items: "{{ applications }}"
+  with_items: "{{ docker_compose_projects }}"
   become: true
   register: compose
 
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
-    project_name: "{{ item.item }}"
-    project_src: /var/lib/docker/compose/{{ item.item }}
+    project_name: "{{ item.name }}"
+    project_src: /var/lib/docker/compose/{{ item.name }}
     remove_orphans: true
     build: "{{ docker_build }}"
     pull: "{{ docker_pull }}"
     state: present
   become: true
-  with_items: "{{ compose.results }}"
+  with_items: "{{ docker_compose_projects }}"
 #  when: item.changed
   loop_control:
-    label: "{{ item.item }}"
+    label: "{{ item.name }}"
