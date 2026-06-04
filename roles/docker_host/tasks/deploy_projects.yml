@@ -27,7 +27,7 @@
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
-    src: "{{ item.project_path | default(docker_compose_default_path) }}/{{ item.name }}.yml.j2"
+    src: "{{ item.project_path | default(docker_compose_default_path + '/' + item.name + '.yml.j2') }}"
     dest: /var/lib/docker/compose/{{ item.name }}/compose.yml
     owner: root
     group: docker
@@ -47,6 +47,5 @@
     state: present
   become: true
   with_items: "{{ docker_compose_projects }}"
-#  when: item.changed
   loop_control:
     label: "{{ item.name }}"
