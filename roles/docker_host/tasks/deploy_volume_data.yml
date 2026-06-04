@@ -18,6 +18,6 @@
   with_items: "{{ volume_data_copy.results }}"
   when:
     - item.item[1].restart_container is defined
-    - item.item.changed
+    - item.changed
   loop_control:
     label: "{{ item.item[1].restart_container }}"
