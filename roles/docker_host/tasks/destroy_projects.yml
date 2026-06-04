@@ -6,13 +6,13 @@
 
 - name: Docker | Configuration | Destroy Projects | Stop non-required projects
   ansible.builtin.shell: "docker compose -p {{ item }} down"
-  with_items: "{{ currentapplications | difference(applications) }}"
+  with_items: "{{ currentapplications.stdout_lines | difference(applications) }}"
   become: true
-  # Add conditional logic to remove volumes here?
+
 
 - name: Docker | Configuration | Destroy Projects | Remove non-required projects
   ansible.builtin.file:
     path: "/var/lib/docker/compose/{{ item }}"
     state: absent
   become: true
-  with_items: "{{ currentapplications | difference(applications) }}"
+  with_items: "{{ currentapplications.stdout_lines | difference(applications) }}"
