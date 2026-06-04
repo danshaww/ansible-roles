@@ -1,6 +1,5 @@
 docker_install: true
 docker_configure: false
-docker_update_socket: false
 docker_config_path: null
 docker_enable_auth: false
 docker_users: changeme
