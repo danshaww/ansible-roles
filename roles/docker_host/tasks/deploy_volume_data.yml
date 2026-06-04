@@ -2,7 +2,7 @@
   ansible.builtin.copy:
     src: "{{ docker_volume_data_path }}/{{ item.0.name }}/{{ item.1.volume}}/{{ item.1.src }}"
     dest: "_data/{{ item.1.dest | default('/') }}"
-    mode: "{{ item.1.mode | default(0644) }}"
+    mode: "{{ item.1.mode | default('0644') }}"
     owner: "{{ item.1.owner | default(1000) }}"
     group: "{{ item.1.group | default(1000) }}"
   loop: "{{ docker_compose_projects | subelements('volume_data', skip_missing=True) }}"
