@@ -10,11 +10,14 @@
   loop_control:
     label: "{{ item.1.src }} -> {{ item.0.name }}_{{ item.1.volume }}"
 
+- debug:
+    msg: volume_data_copy.results
+
 - name: Docker | Volume Data | Restart Containers
-  ansible.builtin.shell: "docker restart {{ item.item.restart_container }}"
+  ansible.builtin.shell: "docker restart {{ item.item.item.restart_container }}"
   with_items: "{{ volume_data_copy.results }}"
   when:
-    - item.item.restart_container is defined
-    - item.item.changed
+    - item.item.item.restart_container is defined
+    - item.item.item.changed
   loop_control:
-    label: "{{ item.item.restart_container }}"
+    label: "{{ item.item.item.restart_container }}"
