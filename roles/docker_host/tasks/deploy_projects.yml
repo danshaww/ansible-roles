@@ -8,7 +8,7 @@
   become: true
   with_items:
     - "{{ docker_base_path }}"
-    - "{{ docker_compose_default_path }}"
+    - "{{ docker_base_path }}/compose"
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
