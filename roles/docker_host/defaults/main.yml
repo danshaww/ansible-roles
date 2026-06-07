@@ -9,3 +9,5 @@ docker_enable_syslog: false
 docker_compose_projects: null
 docker_compose_default_path: null
 docker_volume_data_path: null
+docker_volume_set_acl: true
+docker_base_path: /var/lib/docker

@@ -12,7 +12,7 @@
 
 - name: Docker | Configuration | Destroy Projects | Remove non-required projects
   ansible.builtin.file:
-    path: "/var/lib/docker/compose/{{ item }}"
+    path: "{{ docker_base_path }}/compose/{{ item }}"
     state: absent
   become: true
   with_items: "{{ currentapplications.stdout_lines | difference(applications) }}"

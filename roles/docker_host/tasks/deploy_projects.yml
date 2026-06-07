@@ -7,12 +7,12 @@
     state: directory
   become: true
   with_items:
-    - /var/lib/docker/compose
-    - /var/lib/docker
+    - "{{ docker_base_path }}"
+    - "{{ docker_compose_default_path }}"
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
-    path: "/var/lib/docker/compose/{{ item }}"
+    path: "{{ docker_base_path }}/compose/{{ item }}"
     owner: root
     group: docker
     mode: '0750'
@@ -22,13 +22,14 @@
 
 - name: Docker | Configuration | Set ACL for persistent volumes
   ansible.builtin.shell: | # Using shell to skip NFS mounts
-    find /var/lib/docker/volumes -xdev -type d ! -type s -print0 | xargs -0 setfacl -d -m g:docker:rx 2>&1 | grep -vE "Operation not supported|No such file or directory" || true
+    find {{ docker_base_path }}/volumes -xdev -type d ! -type s -print0 | xargs -0 setfacl -d -m g:docker:rx 2>&1 | grep -vE "Operation not supported|No such file or directory" || true
   changed_when: false
+  when: docker_volume_set_acl
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ item.project_path | default(docker_compose_default_path + '/' + item.name + '.yml.j2') }}"
-    dest: /var/lib/docker/compose/{{ item.name }}/compose.yml
+    dest: "{{ docker_base_path }}/compose/{{ item.name }}/compose.yml"
     owner: root
     group: docker
     mode: '0700'
@@ -40,7 +41,7 @@
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.name }}"
-    project_src: /var/lib/docker/compose/{{ item.name }}
+    project_src: "{{ docker_base_path }}/compose/{{ item.name }}"
     remove_orphans: true
     build: "{{ docker_build }}"
     pull: "{{ docker_pull }}"

@@ -18,3 +18,5 @@ docker_compose_projects: # Compose project definition (remove to skip)
         restart_container: # Container to restart upon changes detected (remove to skip)
 docker_compose_default_path: # Path to directory containing compose file templates
 docker_volume_data_path: # Path to directory containing volume data if required
+docker_volume_set_acl: # Use to disable ACL configuration (true by default)
+docker_base_path: # Use to override /var/lib/docker
