@@ -2,7 +2,7 @@
   ansible.builtin.group:
     name: docker
     state: present
-    gid: 121
+    gid: "{{ docker_group_id }}"
   become: true
 
 - name: Docker | Installation | APT | Add APT GPG Key
