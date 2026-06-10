@@ -20,6 +20,17 @@
   become: true
   with_items: "{{ applications }}"
 
+- name: Docker | Configuration | Deploy Projects | Create Volumes
+  ansible.builtin.file:
+    path: "{{ docker_base_path }}/volumes/{{ item }}"
+    owner: root
+    group: docker
+    mode: '0770'
+    state: directory
+  become: true
+  with_items: "{{ applications }}"
+  when: docker_volume_type == 'bind_mount'
+
 - name: Docker | Configuration | Set ACL for persistent volumes
   ansible.builtin.shell: | # Using shell to skip NFS mounts
     find {{ docker_base_path }}/volumes -xdev -type d ! -type s -print0 | xargs -0 setfacl -d -m g:docker:rx 2>&1 | grep -vE "Operation not supported|No such file or directory" || true

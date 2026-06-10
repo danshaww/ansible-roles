@@ -21,3 +21,4 @@ docker_volume_data_path: # Path to directory containing volume data if required
 docker_volume_set_acl: # Use to disable ACL configuration (true by default)
 docker_base_path: # Use to override /var/lib/docker
 docker_group_id: # Use to set non default group id (121)
+docker_volume_type: # either bind_mount or named_volume (default)
