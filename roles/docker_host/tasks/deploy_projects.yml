@@ -3,7 +3,7 @@
     path: "{{ item }}"
     owner: root
     group: docker
-    mode: '0750'
+    mode: '0770'
     state: directory
   become: true
   with_items:
