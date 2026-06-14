@@ -39,6 +39,6 @@
   with_items: "{{ binaries }}"
 
 - name: Global_System| Misc | Install Starship
-  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y && starship config hostname.ssh_only false
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
   changed_when: false
   become: true
