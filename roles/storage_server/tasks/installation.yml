@@ -1,5 +1,5 @@
 - name: File Sharing - Software Installation
   become: true
   ansible.builtin.apt:
-    name: "{{ packages }}" 
+    name: "{{ packages | default [] }}" 
 
