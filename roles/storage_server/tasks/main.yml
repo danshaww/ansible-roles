@@ -16,6 +16,7 @@
 
 - name: Storage Server | ZFS
   ansible.builtin.include_tasks: zfs.yml
+  become: true
   when: 
     - enable_zfs_config
     - storage_server_zfs is not none
