@@ -19,3 +19,4 @@
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: storage_server_zfs.datasets is defined
+  become: true
