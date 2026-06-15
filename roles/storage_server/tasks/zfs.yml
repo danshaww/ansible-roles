@@ -6,3 +6,16 @@
   with_items: "{{ storage_server_zfs.datasets }}"
   when: storage_server_zfs.datasets is defined
   become: true
+
+- name: Storage Server | ZFS | Configure ACL
+  ansible.posix.acl:
+    path: "/mnt/{{ item.0.name }}"
+    entity: "{{ item.1.entity }}"
+    etype: "{{ item.1.etype }}"
+    permissions: "{{ item.1.permissions }}"
+    default: "{{ item.1.default | default(true) }}"
+    state: "{{ item.1.state | default('present') }}"
+  with_subelements:
+    - "{{ storage_server_zfs.datasets }}"
+    - acl
+  when: (storage_server_zfs.datasets is defined) and (item.0.acl is defined)
