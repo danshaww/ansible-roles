@@ -1,21 +1,22 @@
-- name: Create Required Directories
-  ansible.builtin.file:
-    path: "{{ item.name }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('users') }}"
-    mode: "{{ item.mode | default('0644') }}"
-    state: directory
-  loop: "{{ filesystem.directories }}"
-  become: true
-  when: filesystem.directories is defined
+# - name: Create Required Directories
+#   ansible.builtin.file:
+#     path: "{{ item.name }}"
+#     owner: "{{ item.owner | default('root') }}"
+#     group: "{{ item.group | default('users') }}"
+#     mode: "{{ item.mode | default('0644') }}"
+#     state: directory
+#   loop: "{{ filesystem.directories }}"
+#   become: true
+#   when: filesystem.directories is defined
 
-- name: Copy Required Files & Directories
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('users') }}"
-    mode: "{{ item.mode | default('0644') }}"
-  loop: "{{ filesystem.copy_files }}"
-  become: true
-  when: filesystem.copy_files is defined
+# - name: Copy Required Files & Directories
+#   ansible.builtin.copy:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     owner: "{{ item.owner | default('root') }}"
+#     group: "{{ item.group | default('users') }}"
+#     mode: "{{ item.mode | default('0644') }}"
+#   loop: "{{ filesystem.copy_files }}"
+#   become: true
+#   when: filesystem.copy_files is defined
+
