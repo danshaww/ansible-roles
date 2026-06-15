@@ -5,6 +5,8 @@
     extra_zfs_properties: "{{ item.extra_zfs_properties | default ({}) }}"
   with_items: "{{ storage_server_zfs.datasets }}"
   when: storage_server_zfs.datasets is defined
+  loop_control:
+    label: "{{ item.name }}"
   become: true
 
 - name: Storage Server | ZFS | Configure ACL
