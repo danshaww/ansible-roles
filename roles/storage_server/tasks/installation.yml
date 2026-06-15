@@ -1,7 +1,5 @@
 - name: File Sharing - Software Installation
   become: true
   ansible.builtin.apt:
-    pkg:
-      - samba
-      - nfs-kernel-server
+    name: "{{ packages }}" 
 
