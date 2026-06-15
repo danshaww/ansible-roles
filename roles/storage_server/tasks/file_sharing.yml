@@ -1,8 +1,6 @@
-
-
-- name: File Sharing - Copy Samba Configuration file
+- name: Storage Server | File Sharing | Copy SMB Config
   ansible.builtin.copy:
-    src: "{{ file_sharing.smb_config_path }}"
+    src: "{{ storage_server_smb_config_path }}"
     dest: /etc/samba/smb.conf
     owner: root
     group: users
@@ -11,9 +9,9 @@
   become: true
   when: storage_server_smb_config_path is not none
 
-- name: File Sharing - Copy NFS Exports file
+- name: Storage Server | File Sharing | Copy NFS Config
   ansible.builtin.copy:
-    src: "{{ file_sharing.nfs_config_path }}"
+    src: "{{ storage_server_nfs_config_path }}"
     dest: /etc/exports
     owner: root
     group: users
