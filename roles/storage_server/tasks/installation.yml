@@ -2,6 +2,6 @@
   become: true
   ansible.builtin.apt:
     name: "{{ item.name }}" 
-  when: item.when
+  when: "{{ item.when }}"
   with_items: "{{ packages }}"
 
