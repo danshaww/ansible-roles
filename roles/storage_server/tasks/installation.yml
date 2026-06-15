@@ -1,4 +1,8 @@
-- name: File Sharing - Software Installation
+- name: Storage Server | Packages | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Storage Server | Packages | Install
   become: true
   ansible.builtin.apt:
     name: "{{ item.name }}" 
