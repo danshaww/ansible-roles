@@ -3,4 +3,5 @@
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
     extra_zfs_properties: "{{ item.extra_zfs_properties | default ({}) }}"
-    with_items: "{{ storage_server_zfs.datasets }}"
+  with_items: "{{ storage_server_zfs.datasets }}"
+  when: storage_server_zfs.datasets is defined
