@@ -1,8 +1,8 @@
 packages:
-  - "{% if storage_server_smb_config_path is not none %}samba{% elseif %}null{% endif %}"
-  - "{% if storage_server_nfs_config_path is not none %}nfs-kernel-server{% elseif %}null{% endif %}"
+  - "{% if storage_server_smb_config_path is not none %}samba{% else %}null{% endif %}"
+  - "{% if storage_server_nfs_config_path is not none %}nfs-kernel-server{% else %}null{% endif %}"
 
 firewall_ports:
-  - "{% if storage_server_smb_config_path is not none %}445{% elseif %}null{% endif %}"
-  - "{% if storage_server_nfs_config_path is not none %}111{% elseif %}null{% endif %}"
-  - "{% if storage_server_nfs_config_path is not none %}2049{% elseif %}null{% endif %}"
+  - "{% if storage_server_smb_config_path is not none %}445{% else %}null{% endif %}"
+  - "{% if storage_server_nfs_config_path is not none %}111{% else %}null{% endif %}"
+  - "{% if storage_server_nfs_config_path is not none %}2049{% else %}null{% endif %}"
