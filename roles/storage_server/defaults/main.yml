@@ -1,2 +1,7 @@
 storage_server_smb_config_path: null
 storage_server_nfs_config_path: null
+
+
+enable_installation: true
+enable_firewall_config: true
+enable_file_sharing: true

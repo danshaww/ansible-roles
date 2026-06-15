@@ -1,15 +1,4 @@
-- name: File Sharing - UFW Configuration
-  community.general.ufw:
-    rule: allow
-    port: "{{ item }}"
-  with_items:
-    - '445'
-    - '111'
-    - '2049'
-  become: true
-  when:
-    - "'ufw' in ansible_facts.packages"
-    - storage_server_nfs_config_path is not none or storage_server_smb_config_path is not none
+
 
 - name: File Sharing - Copy Samba Configuration file
   ansible.builtin.copy:

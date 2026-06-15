@@ -1,11 +1,20 @@
-- name: Include Installation Tasks
+- name: Storage Server | Installation
   ansible.builtin.include_tasks: installation.yml
+  when: enable_installation
 # - name: Include Filesystem Tasks
 #   ansible.builtin.include_tasks: filesystem.yml
 #   when: filesystem is defined
 # - name: Include smb_users
 #   ansible.builtin.include_tasks: smb_users.yml
 #   when: users is defined
-- name: Include File Sharing Tasks
-  ansible.builtin.include_tasks: file-sharing.yml
-  when: file_sharing is defined
+
+- name: Storage Server | Firewall
+  ansible.builtin.include_tasks: firewall.yml
+  when:
+    - enable_firewall_config
+    - "'ufw' in ansible_facts.packages"
+
+
+- name: Storage Server | File Sharing
+  ansible.builtin.include_tasks: file_sharing.yml
+  when: enable_file_sharing
