@@ -1,6 +1,12 @@
 packages:
-  - "{% if storage_server_smb_config_path is not none %}samba{% else %}null{% endif %}"
-  - "{% if storage_server_nfs_config_path is not none %}nfs-kernel-server{% else %}null{% endif %}"
+  - name: samba
+    when: storage_server_smb_config_path is not none
+  - name: nfs-kernel-server
+    when: storage_server_nfs_config_path is not none
+
+
+
+
 
 firewall_ports:
   - "{% if storage_server_smb_config_path is not none %}445{% else %}null{% endif %}"
