@@ -12,7 +12,7 @@
     path: "/mnt/{{ item.0.name }}"
     entity: "{{ item.1.entity }}"
     etype: "{{ item.1.etype }}"
-    permissions: "{% if item.1.permissions is defined %}{{ item.1.permissions }}{% else %}null{% endif %}"
+    permissions: "{% if item.1.permissions is defined %}{{ item.1.permissions }}{% else %}''{% endif %}"
     default: "{{ item.1.default | default(true) }}"
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
