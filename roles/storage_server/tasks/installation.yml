@@ -11,6 +11,7 @@
 
 - name: Storage Server | Packages | Install ZFS
   when: storage_server_zfs is not none
+  become: true
   block:
     - name: Enable contrib component for ZFS packages
       ansible.builtin.apt_repository:
