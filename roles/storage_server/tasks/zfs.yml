@@ -21,3 +21,13 @@
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: storage_server_zfs.datasets is defined
   become: true
+
+- name: Storage Server | ZFS | Remove all ACL entries (mask included)
+  ansible.builtin.command:
+    cmd: "setfacl -b {{ '-R' if item.1.recursive | default(true) else '' }} /mnt/{{ item.0.name }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.name }} | {{ item.1.entity }}"
+  when: item.1.state | default('present') == 'absent'
+  become: true
+  changed_when: true
