@@ -18,4 +18,4 @@
   with_subelements:
     - "{{ storage_server_zfs.datasets }}"
     - acl
-  when: (storage_server_zfs.datasets is defined) and (item.0.acl is defined)
+  when: (storage_server_zfs.datasets is defined) and (item.0.acl | default(null) is not none)
