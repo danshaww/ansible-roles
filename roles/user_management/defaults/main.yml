@@ -1,4 +1,5 @@
 enable_user_management: true
+enable_samba_users: false # set to true for fileservers in inventory
 home_path: /home
 
 ## Schema below, these will always be replaced
@@ -23,3 +24,5 @@ users:
       - src: ../config/.bashrc
         dest: .bashrc
     state: # set to absent to delete users and remove home directory
+    enable_samba: # default false, requires enable_samba_user on server via inventory
+

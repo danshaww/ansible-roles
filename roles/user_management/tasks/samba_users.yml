@@ -1,0 +1,21 @@
+- name: Check existing Samba users
+  command: pdbedit -L
+  register: samba_users
+  changed_when: false
+
+- name: Create Samba users
+  shell: |
+    (echo "{{ item.password }}"; echo "{{ item.password }}") | smbpasswd -a -s {{ item.username }}
+  loop: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when: item.username not in samba_users.stdout and item.enable_samba | default(false)
+  no_log: true
+
+- name: Enable Samba users
+  command: smbpasswd -e {{ item.username }}
+  loop: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when: item.username not in samba_users.stdout and item.enable_samba | default(false)
+  no_log: true
