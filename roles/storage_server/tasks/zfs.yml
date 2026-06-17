@@ -9,7 +9,17 @@
     label: "{{ item.name }}"
   become: true
 
-- name: Storage Server | ZFS | Remove ACL entries
+- name: Storage Server | ZFS | Remove access ACL entries (existing files)
+  ansible.builtin.command:
+    cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.name }} | {{ item.1.entity }}"
+  when: item.1.state | default('present') == 'absent'
+  become: true
+  changed_when: true
+
+- name: Storage Server | ZFS | Remove default ACL entries (future files)
   ansible.builtin.command:
     cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
@@ -19,17 +29,32 @@
   become: true
   changed_when: true
 
-- name: Storage Server | ZFS | Configure ACL
+- name: Storage Server | ZFS | Configure access ACL (existing files)
   ansible.posix.acl:
     path: "/mnt/{{ item.0.name }}"
     entity: "{{ item.1.entity }}"
     etype: "{{ item.1.etype }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
-    default: "{{ item.1.default | default(true) }}"
+    default: false
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: storage_server_zfs.datasets is defined
+  become: true
+
+- name: Storage Server | ZFS | Configure default ACL (future files)
+  ansible.posix.acl:
+    path: "/mnt/{{ item.0.name }}"
+    entity: "{{ item.1.entity }}"
+    etype: "{{ item.1.etype }}"
+    permissions: "{{ item.1.permissions | default(omit) }}"
+    default: true
+    state: "{{ item.1.state | default('present') }}"
+    recursive: "{{ item.1.recursive | default(true) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.name }} | {{ item.1.entity }}"
+  when: storage_server_zfs.datasets is defined and item.1.default | default(true) | bool
   become: true
