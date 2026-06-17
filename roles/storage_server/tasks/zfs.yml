@@ -9,17 +9,17 @@
     label: "{{ item.name }}"
   become: true
 
-- name: Storage Server | ZFS | Set Unix Permissions
-  ansible.builtin.file:
-    path: "/mnt/{{ item.name }}"
-    mode: "{{ item.mode | default('0770') }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-  with_items: "{{ storage_server_zfs.datasets }}"
-  when: storage_server_zfs.datasets is defined
-  loop_control:
-    label: "{{ item.name }}"
-  become: true
+# - name: Storage Server | ZFS | Set Unix Permissions
+#   ansible.builtin.file:
+#     path: "/mnt/{{ item.name }}"
+#     mode: "{{ item.mode | default('0770') }}"
+#     owner: "{{ item.owner | default('root') }}"
+#     group: "{{ item.group | default('root') }}"
+#   with_items: "{{ storage_server_zfs.datasets }}"
+#   when: storage_server_zfs.datasets is defined
+#   loop_control:
+#     label: "{{ item.name }}"
+#   become: true
 
 - name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
