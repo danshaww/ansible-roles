@@ -9,7 +9,7 @@
     label: "{{ item.name }}"
   become: true
 
-- name: Storage Server | ZFS | Remove access ACL entries (existing files)
+- name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
     cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
@@ -19,7 +19,7 @@
   become: true
   changed_when: true
 
-- name: Storage Server | ZFS | Remove default ACL entries (future files)
+- name: Storage Server | ZFS | Remove default ACL entries
   ansible.builtin.command:
     cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
@@ -29,7 +29,7 @@
   become: true
   changed_when: true
 
-- name: Storage Server | ZFS | Configure access ACL (existing files)
+- name: Storage Server | ZFS | Configure implicit ACL
   ansible.posix.acl:
     path: "/mnt/{{ item.0.name }}"
     entity: "{{ item.1.entity }}"
@@ -44,7 +44,7 @@
   when: storage_server_zfs.datasets is defined
   become: true
 
-- name: Storage Server | ZFS | Configure default ACL (future files)
+- name: Storage Server | ZFS | Configure default ACL
   ansible.posix.acl:
     path: "/mnt/{{ item.0.name }}"
     entity: "{{ item.1.entity }}"
