@@ -2,8 +2,10 @@
   ansible.builtin.service:
     name: nfs-server
     state: restarted
+  become: true
 
 - name: Restart SMB
   ansible.builtin.service:
     name: smb
     state: restarted
+  become: true
