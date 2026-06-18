@@ -83,7 +83,7 @@
 
 - name: Storage Server | ZFS | Copy Sanoid Config
   ansible.builtin.copy:
-    src: "{{ storage_server_sanoid_config_path }}"
+    src: "{{ storage_server_zfs.sanoid_config_path }}"
     dest: /etc/sanoid/sanoid.conf
     owner: root
     group: root
