@@ -1,4 +1,4 @@
-- name: Global_System | Cloud Init | Copy Config File
+- name: Global_System | Journald | Copy Config File
   ansible.builtin.copy:
     src: "{{ global_system_journald_config_path }}"
     dest: /etc/systemd/journald.conf
