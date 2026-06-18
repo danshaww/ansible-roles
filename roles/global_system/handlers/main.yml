@@ -17,3 +17,8 @@
     name: cloud-init
     state: restarted
   become: true
+- name: Restart Journald
+  ansible.builtin.service:
+    name: journald
+    state: restarted
+  become: true

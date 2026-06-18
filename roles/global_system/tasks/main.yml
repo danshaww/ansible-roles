@@ -33,3 +33,9 @@
     - global_system_enable_cloud_init | default(true)
     - "'cloud-init' in ansible_facts.packages"
     - global_system_cloud_config_path | default(null) is not none
+
+- name: Global_System | Journald Tasks
+  ansible.builtin.include_tasks: journald.yml
+  when:
+    - global_system_enable_journald | default(true)
+    - global_system_journald_config_path | default(null) is not none
