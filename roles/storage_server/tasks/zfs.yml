@@ -77,6 +77,7 @@
     state: directory
     owner: root
     group: root
+    mode: '0755'
   become: true
   when: storage_server_sanoid_config_path is not none
 
@@ -86,7 +87,7 @@
     dest: /etc/sanoid/sanoid.conf
     owner: root
     group: root
-    mode: '0755'
+    mode: '0644'
   notify: Restart Sanoid
   become: true
   when: storage_server_sanoid_config_path is not none
