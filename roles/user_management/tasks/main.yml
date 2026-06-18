@@ -1,15 +1,21 @@
-- name: Include unix_users
+- name: User Management | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: User Management | Include unix_users
   ansible.builtin.include_tasks: unix_users.yml
   when: users is defined and enable_user_management
 
-- name: Include ssh_keys
+- name: User Management | Include ssh_keys
   ansible.builtin.include_tasks: ssh_keys.yml
   when: users is defined and enable_user_management
 
-- name: Include Skel Profile Config
+- name: User Management | Include Skel Profile Config
   ansible.builtin.include_tasks: skel_profile.yml
   when: skel_profile is defined and enable_user_management
 
-- name: Include Samba User Config # disabled by default
+- name: User Management | Include Samba User Config # disabled by default
   ansible.builtin.include_tasks: samba_users.yml
-  when: enable_samba_users
+  when:
+    - enable_samba_users
+    - "'samba' in ansible_facts.packages"
