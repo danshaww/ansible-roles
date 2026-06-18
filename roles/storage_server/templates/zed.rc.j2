@@ -1,6 +1,6 @@
 # ZED configuration - managed by Ansible
 ZED_EMAIL_ADDR="{{ storage_server_zfs.zed.email }}"
-ZED_EMAIL_PROG="mail"
+ZED_EMAIL_PROG="ssmtp"
 ZED_EMAIL_OPTS="-s '@SUBJECT@' @ADDRESS@"
 
 ZED_NOTIFY_INTERVAL_SECS={{ storage_server_zfs.zed.notify_interval_secs | default(3600) }}
