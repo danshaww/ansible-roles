@@ -4,9 +4,7 @@
 # - name: Include Filesystem Tasks
 #   ansible.builtin.include_tasks: filesystem.yml
 #   when: filesystem is defined
-# - name: Include smb_users
-#   ansible.builtin.include_tasks: smb_users.yml
-#   when: users is defined
+
 
 - name: Storage Server | Firewall
   ansible.builtin.include_tasks: firewall.yml

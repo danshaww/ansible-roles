@@ -9,3 +9,10 @@
     name: smb
     state: restarted
   become: true
+
+- name: Restart Sanoid
+  ansible.builtin.service:
+    name: sanoid
+    state: restarted
+    enabled: true
+  become: true

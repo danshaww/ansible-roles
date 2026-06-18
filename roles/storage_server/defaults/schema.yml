@@ -1,5 +1,6 @@
 storage_server_smb_config_path: # Path to smb.conf in local deployment
 storage_server_nfs_config_path:  # Path to nfs exports in local deployment
+storage_server_sanoid_config_path: # Path to sanoid config file, sanoid install skipped if omitted
 storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
   datasets:
     - name: # dataset name

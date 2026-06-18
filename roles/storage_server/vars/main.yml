@@ -7,6 +7,8 @@ packages:
     when: storage_server_zfs is not none
   - name: nfs4-acl-tools
     when: true
+  - name: sanoid
+    when: storage_server_sanoid_config_path is not none
 
 firewall_ports:
   - port: 445
