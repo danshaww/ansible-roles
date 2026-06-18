@@ -71,6 +71,15 @@
   when: storage_server_zfs.datasets is defined and item.1.default | default(true) | bool
   become: true
 
+- name: Storage Server | ZFS | Create Sanoid Config Directory
+  ansible.builtin.file:
+    path: /etc/sanoid
+    state: directory
+    owner: root
+    group: root
+  become: true
+  when: storage_server_sanoid_config_path is not none
+
 - name: Storage Server | ZFS | Copy Sanoid Config
   ansible.builtin.copy:
     src: "{{ storage_server_sanoid_config_path }}"
