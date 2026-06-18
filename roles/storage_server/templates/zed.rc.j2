@@ -10,3 +10,7 @@ ZED_EMAIL_VERBOSE={{ storage_server_zfs.zed.email_verbose | default(1)}}
 
 ZED_USE_ENCLOSURE_LEDS=1
 ZED_SCRUB_AFTER_RESILVER=0
+
+ZED_SYSLOG_TAG="{{ zfs_zed_syslog_tag | default('zed') }}"
+ZED_SYSLOG_PRIORITY="{{ zfs_zed_syslog_priority | default('daemon.notice') }}"
+ZED_SYSLOG_VERBOSE={{ zfs_zed_syslog_verbose | default(0) }}
