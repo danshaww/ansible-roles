@@ -2,6 +2,11 @@ storage_server_smb_config_path: # Path to smb.conf in local deployment
 storage_server_nfs_config_path:  # Path to nfs exports in local deployment
 storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
   sanoid_config_path: # Path to sanoid config file, sanoid install skipped if omitted
+  zed:
+    email: zfs@example.com
+    verbose: 1
+    notify_interval_secs: 3600
+    notify_verbose: 0
   datasets:
     - name: # dataset name
       extra_zfs_properties: # All ZFS options

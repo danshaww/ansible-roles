@@ -91,3 +91,14 @@
   notify: Restart Sanoid
   become: true
   when: storage_server_zfs.sanoid_config_path is not none
+
+- name: Storage Server | ZFS | Configure zed.rc
+  ansible.builtin.template:
+    src: zed.rc.j2
+    dest: /etc/zfs/zed.d/zed.rc
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart zed
+  become: true
+  when: storage_server_zfs.zed is not none | default(null)
