@@ -1,6 +1,5 @@
 storage_server_smb_config_path: null
 storage_server_nfs_config_path: null
-storage_server_sanoid_config_path: null
 storage_server_zfs: null
 
 enable_installation: true
