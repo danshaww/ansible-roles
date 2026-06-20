@@ -7,6 +7,7 @@
     job: "{{ item.job }}"
   become: true
   with_items: "{{ cron_jobs }}"
+  when: cron_jobs is not none
 
 - name: Cron Management | Set MailFrom
   ansible.builtin.cron:
