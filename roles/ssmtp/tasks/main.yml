@@ -1,0 +1,20 @@
+- name: SSMTP | Package Installation
+  ansible.builtin.apt:
+    pkg:
+      - ssmtp
+
+- name: SSMTP | Populate Config
+  ansible.builtin.template:
+    dest: /etc/ssmtp/ssmtp.conf
+    src: ssmtp.conf.j2
+    owner: root
+    group: mail
+    mode: '0644'
+
+- name: SSMTP | Populate Revaliases
+  ansible.builtin.template:
+    src: revaliases.j2
+    dest: /etc/ssmtp/revaliases
+    owner: root
+    group: mail
+    mode: '0640'

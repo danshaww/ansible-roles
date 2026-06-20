@@ -1,0 +1,6 @@
+ssmtp:
+  server:
+  user:
+  password:
+  domain:
+  sender:
