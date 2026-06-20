@@ -1,6 +1,7 @@
 - name: User Management | Gather Package Facts
   ansible.builtin.package_facts:
     manager: auto
+  when: global_system_enable_packages | default(true)
 
 - name: User Management | Include unix_users
   ansible.builtin.include_tasks: unix_users.yml
