@@ -13,12 +13,12 @@
   ansible.builtin.cron:
     env: true
     name: MAILFROM
-    job: "{{ cron_alerting.mail_from }}"
+    job: "{{ cron_mail_from }}"
   when: cron_mail_from is not none
 
 - name: Cron Management | Set MailTo
   ansible.builtin.cron:
     env: true
     name: MAILTO
-    job: "{{ cron_alerting.mail_to }}"
+    job: "{{ cron_mail_to }}"
   when: cron_mail_to is not none
