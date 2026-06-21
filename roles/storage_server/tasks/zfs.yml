@@ -25,7 +25,7 @@
 
 - name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
-    cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
+    cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/'item.0.name)}}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
@@ -35,7 +35,7 @@
 
 - name: Storage Server | ZFS | Remove default ACL entries
   ansible.builtin.command:
-    cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} /mnt/{{ item.0.name }}"
+    cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/'item.0.name)}}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
@@ -45,7 +45,7 @@
 
 - name: Storage Server | ZFS | Configure implicit ACL
   ansible.posix.acl:
-    path: "/mnt/{{ item.0.name }}"
+    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/'item.0.name)}}"
     entity: "{{ item.1.entity }}"
     etype: "{{ item.1.etype }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
@@ -60,7 +60,7 @@
 
 - name: Storage Server | ZFS | Configure default ACL
   ansible.posix.acl:
-    path: "/mnt/{{ item.0.name }}"
+    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/'item.0.name)}}"
     entity: "{{ item.1.entity }}"
     etype: "{{ item.1.etype }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
