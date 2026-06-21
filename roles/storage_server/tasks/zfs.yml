@@ -101,4 +101,4 @@
     mode: "0600"
   notify: Restart zed
   become: true
-  when: storage_server_zfs.zed is not none | default(null)
+  when: storage_server_zfs.zed is defined
