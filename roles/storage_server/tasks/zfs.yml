@@ -11,12 +11,14 @@
 
 - name: Storage Server | ZFS | Set Unix Permissions
   ansible.builtin.file:
-    path: "{{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name) }}"
+    path: "/mnt/{{ item.name }}"
     mode: "{{ item.mode | default('0770') }}"
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
   with_items: "{{ storage_server_zfs.datasets }}"
-  when: storage_server_zfs.datasets is defined
+  when:
+    - storage_server_zfs.datasets is defined
+    - not item.extra_zfs_properties.mountpoint is defined
   loop_control:
     label: "{{ item.name }}"
   become: true
