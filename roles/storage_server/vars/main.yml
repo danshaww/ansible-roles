@@ -10,9 +10,9 @@ packages:
   - name: sanoid
     when: storage_server_zfs is not none
   - name: mailutils
-    when: storage_server_zfs.zed is not none | default(null)
+    when: storage_server_zfs.zed is defined
   - name: postfix
-    when: storage_server_zfs.zed is not none | default(null)
+    when: storage_server_zfs.zed is defined
 
 firewall_ports:
   - port: 445
