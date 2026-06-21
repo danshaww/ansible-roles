@@ -1,0 +1,69 @@
+- name: Storage Server | Permissions | Set Unix Permissions
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode | default('0770') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+  with_items: "{{ storage_server_permissions }}"
+  when:
+    - item.mode is defined or item.owner is defined or item.group is defined
+  loop_control:
+    label: "{{ item.path }}"
+  become: true
+
+- name: Storage Server | Permissions | Remove implicit ACL entries
+  ansible.builtin.command:
+    cmd: "setfacl -R -x {{ item.etype | first }}:{{ item.entity }} {{ item.path }}"
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }} | {{ item.entity }}"
+  when:
+    - item.state | default('present') == 'absent'
+  become: true
+  changed_when: true
+
+- name: Storage Server | Permissions | Remove default ACL entries
+  ansible.builtin.command:
+    cmd: "setfacl -R -x d:{{ item.etype | first }}:{{ item.entity }} {{ item.path }}"
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }} | {{ item.entity }}"
+  when:
+    - item.state | default('present') == 'absent'
+  become: true
+  changed_when: true
+
+- name: Storage Server | Permissions | Configure implicit ACL
+  ansible.posix.acl:
+    path: "{{ item.path }}"
+    entity: "{{ item.entity }}"
+    etype: "{{ item.etype | default('group') }}"
+    permissions: "{{ item.permissions | default(omit) }}"
+    default: false
+    state: "{{ item.state | default('present') }}"
+    recursive: "{{ item.recursive | default(true) }}"
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }} | {{ item.entity }}"
+  when:
+    - item.entity is defined
+    - item.permissions is defined
+  become: true
+
+- name: Storage Server | Permissions | Configure default ACL
+  ansible.posix.acl:
+    path: "{{ item.path }}"
+    entity: "{{ item.entity }}"
+    etype: "{{ item.etype | default('group') }}"
+    permissions: "{{ item.permissions | default(omit) }}"
+    default: true
+    state: "{{ item.state | default('present') }}"
+    recursive: "{{ item.recursive | default(true) }}"
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }} | {{ item.entity }}"
+  when:
+    - item.entity is defined
+    - item.permissions is defined
+    - item.default | default(true)
+  become: true

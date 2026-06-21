@@ -20,78 +20,15 @@
 
 - name: Storage Server | ZFS | Create Datasets
   community.general.zfs:
-    name: "{{ item.name }}"
-    state: "{{ item.state | default('present') }}"
-    extra_zfs_properties: "{{ item.extra_zfs_properties | default ({}) }}"
-  with_items: "{{ storage_server_zfs.datasets }}"
-  when: storage_server_zfs.datasets is defined
-  loop_control:
-    label: "{{ item.name }}"
-  become: true
-
-- name: Storage Server | ZFS | Set Unix Permissions
-  ansible.builtin.file:
-    path: "/mnt/{{ item.name }}"
-    mode: "{{ item.mode | default('0770') }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-  with_items: "{{ storage_server_zfs.datasets }}"
-  when:
-    - storage_server_zfs.datasets is defined
-    - not item.extra_zfs_properties.mountpoint is defined
-  loop_control:
-    label: "{{ item.name }}"
-  become: true
-
-- name: Storage Server | ZFS | Remove implicit ACL entries
-  ansible.builtin.command:
-    cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: item.1.state | default('present') == 'absent'
-  become: true
-  changed_when: true
-
-- name: Storage Server | ZFS | Remove default ACL entries
-  ansible.builtin.command:
-    cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: item.1.state | default('present') == 'absent'
-  become: true
-  changed_when: true
-
-- name: Storage Server | ZFS | Configure implicit ACL
-  ansible.posix.acl:
-    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity }}"
-    etype: "{{ item.1.etype | default('group') }}"
-    permissions: "{{ item.1.permissions | default(omit) }}"
-    default: false
+    name: "{{ item.0.name }}/{{ item.1.name }}"
     state: "{{ item.1.state | default('present') }}"
-    recursive: "{{ item.1.recursive | default(true) }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+    extra_zfs_properties: "{{ item.1.extra_zfs_properties | default ({}) }}"
+  when: item.0.datasets is defined
+  loop: "{{ storage_server_zfs.pools | subelements('datasets', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: storage_server_zfs.datasets is defined
+    label: "{{ item.0.name }} | {{ item.1.name }}"
   become: true
 
-- name: Storage Server | ZFS | Configure default ACL
-  ansible.posix.acl:
-    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity }}"
-    etype: "{{ item.1.etype | default('group') }}"
-    permissions: "{{ item.1.permissions | default(omit) }}"
-    default: true
-    state: "{{ item.1.state | default('present') }}"
-    recursive: "{{ item.1.recursive | default(true) }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: storage_server_zfs.datasets is defined and item.1.default | default(true) | bool
-  become: true
 
 - name: Storage Server | ZFS | Create Sanoid Config Directory
   ansible.builtin.file:
