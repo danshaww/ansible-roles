@@ -1,7 +1,7 @@
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
     name: "{{ item.name }}"
-    vdevs: "{{ item.vdevs }}"
+    vdevs: "{{ item.vdevs | default(omit) }}"
     altroot: "{{ item.altroot | default(omit) }}"
     disable_new_features: "{{ item.disable_new_features | default(false) }}"
     filesystem_properties: "{{ item.filesystem_properties | default({}) }}"
