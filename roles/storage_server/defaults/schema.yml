@@ -28,7 +28,7 @@ storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
       state: # set to absent to delete dataset
       acl: # omit for no ACL (inherited only)
         entity: # entity (user/group)
-        etype: # entity type
+        etype: # entity type (default is group)
         permissions: # Leave blank for removal
         default: # Create default ACL (default = true)
         state: # set to absent for ACL removal (default = present)

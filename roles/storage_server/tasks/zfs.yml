@@ -65,7 +65,7 @@
   ansible.posix.acl:
     path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
     entity: "{{ item.1.entity }}"
-    etype: "{{ item.1.etype }}"
+    etype: "{{ item.1.etype | default('group') }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
     default: false
     state: "{{ item.1.state | default('present') }}"
@@ -80,7 +80,7 @@
   ansible.posix.acl:
     path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
     entity: "{{ item.1.entity }}"
-    etype: "{{ item.1.etype }}"
+    etype: "{{ item.1.etype | default('group') }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
     default: true
     state: "{{ item.1.state | default('present') }}"
