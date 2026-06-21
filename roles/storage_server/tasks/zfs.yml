@@ -1,3 +1,21 @@
+- name: Storage Server | ZFS | Create Pools
+  community.general.zpool:
+    name: "{{ item.name }}"
+    vdevs: "{{ item.vdevs }}"
+    altroot: "{{ item.altroot | default(omit) }}"
+    disable_new_features: "{{ item.disable_new_features | default(false) }}"
+    filesystem_properties: "{{ item.filesystem_properties | default({}) }}"
+    force: "{{ item.force | default(false) }}"
+    mountpoint: "{{ item.mountpoint | default(omit) }}"
+    pool_properties: "{{ item.pool_properties | default({}) }}"
+    state: "{{ item.state | default('present') }}"
+    temp_name: "{{ item.temp_name | default(omit) }}"
+  with_items: "{{ storage_server_zfs.pools }}"
+  when: storage_server_zfs.pools is defined
+  loop_control:
+    label: "{{ item.name }}"
+  become: true
+
 - name: Storage Server | ZFS | Create Datasets
   community.general.zfs:
     name: "{{ item.name }}"

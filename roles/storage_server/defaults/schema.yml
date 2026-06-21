@@ -7,6 +7,21 @@ storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
     verbose: 1
     notify_interval_secs: 3600
     notify_verbose: 0
+  pools:
+    - name: # Pool Name
+      vdevs: # Dictionary of vdevs
+        - type: mirror
+          disks:
+            - /dev/sda
+            - /dev/sdb
+      altroot: # Alternate root for mounting filesystems.
+      disable_new_features: # disable new ZFS feature flags when creating
+      filesystem_properties: # Dictionary of ZFS filesystem properties to set on the root dataset
+      force: # Force Operations
+      mountpoint: # Root dataset mount point
+      pool_properties: # Dictionary of ZFS pool properties to set
+      state: # set to absent to remove
+      temp_name: # Temporary name used during pool creation.
   datasets:
     - name: # dataset name
       extra_zfs_properties: # All ZFS options
