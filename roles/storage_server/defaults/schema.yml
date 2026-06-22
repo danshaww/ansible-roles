@@ -40,7 +40,7 @@ storage_server_permissions:
     default: # ACL as default (default=true)
     state: # default is present
 
-filesystem:
+storage_server_filesystem:
   directories:
     - name: /etc/directory
       mode: '0770' # This option is default

@@ -1,10 +1,12 @@
 - name: Storage Server | Installation
   ansible.builtin.include_tasks: installation.yml
   when: enable_installation
-# - name: Include Filesystem Tasks
-#   ansible.builtin.include_tasks: filesystem.yml
-#   when: filesystem is defined
 
+- name: Include Filesystem Tasks
+  ansible.builtin.include_tasks: filesystem.yml
+  when:
+    - storage_server_filesystem is not none
+    - enable_filesystem_tasks
 
 - name: Storage Server | Firewall
   ansible.builtin.include_tasks: firewall.yml
