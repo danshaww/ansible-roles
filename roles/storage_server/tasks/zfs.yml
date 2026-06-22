@@ -61,3 +61,12 @@
   notify: Restart zed
   become: true
   when: storage_server_zfs.zed is defined
+
+- name: Storage Server | ZFS | Configure Sanoid systemd timer
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}true{% else %}false"
+    state: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}started{% else %}stopped"
+  loop:
+    - sanoid.timer
+    - sanoid-prune.timer
