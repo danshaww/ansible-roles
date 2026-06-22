@@ -71,3 +71,4 @@
     - sanoid.timer
     - sanoid.service
     - sanoid-prune.service
+  become: true
