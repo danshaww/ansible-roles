@@ -16,7 +16,7 @@
     cmd: "setfacl -R -x {{ item.etype | first }}:{{ item.entity }} {{ item.path }}"
   loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.path }} | {{ item.entity }}"
+    label: "{{ item.path }} | {{ item.entity | default('') }}"
   when:
     - item.state | default('present') == 'absent'
   become: true
@@ -27,7 +27,7 @@
     cmd: "setfacl -R -x d:{{ item.etype | first }}:{{ item.entity }} {{ item.path }}"
   loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.path }} | {{ item.entity }}"
+    label: "{{ item.path }} | {{ item.entity | default('') }}"
   when:
     - item.state | default('present') == 'absent'
   become: true
@@ -44,7 +44,7 @@
     recursive: "{{ item.recursive | default(true) }}"
   loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.path }} | {{ item.entity }}"
+    label: "{{ item.path }} | {{ item.entity | default('') }}"
   when:
     - item.entity is defined
     - item.permissions is defined
@@ -61,7 +61,7 @@
     recursive: "{{ item.recursive | default(true) }}"
   loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.path }} | {{ item.entity | default('')}}"
+    label: "{{ item.path }} | {{ item.entity | default('') }}"
   when:
     - item.entity is defined
     - item.permissions is defined
