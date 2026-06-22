@@ -69,4 +69,5 @@
     state: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}started{% else %}stopped{% endif %}"
   loop:
     - sanoid.timer
-    - sanoid-prune.timer
+    - sanoid.service
+    - sanoid-prune.service
