@@ -65,8 +65,8 @@
 - name: Storage Server | ZFS | Configure Sanoid systemd timer
   ansible.builtin.systemd:
     name: "{{ item }}"
-    enabled: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}true{% else %}false"
-    state: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}started{% else %}stopped"
+    enabled: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}true{% else %}false{% endif %}"
+    state: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}started{% else %}stopped{% endif %}"
   loop:
     - sanoid.timer
     - sanoid-prune.timer
