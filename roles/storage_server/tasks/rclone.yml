@@ -10,7 +10,7 @@
 - name: Storage Server | Rclone | Generate Config File
   ansible.builtin.template:
     src: "{{ storage_server_rclone_config_path }}"
-    dest: /root/.config/rclone/rclone.conf
+    dest: "{{ storage_server_rclone_config_dest | default('/root/.config/rclone/rclone.conf') }}"
     owner: root
     group: root
     mode: "0600"
