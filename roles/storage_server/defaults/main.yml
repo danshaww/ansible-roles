@@ -11,3 +11,4 @@ enable_firewall_config: true
 enable_file_sharing: true
 enable_zfs_config: true
 enable_filesystem_tasks: true
+enable_rclone: true
