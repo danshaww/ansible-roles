@@ -5,6 +5,7 @@
     owner: root
     group: root
     mode: "0700"
+  become: true
 
 - name: Storage Server | Rclone | Generate Config File
   ansible.builtin.template:
@@ -14,3 +15,4 @@
     group: root
     mode: "0600"
   no_log: true
+  become: true
