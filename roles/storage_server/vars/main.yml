@@ -13,6 +13,8 @@ packages:
     when: storage_server_zfs.zed is defined
   - name: postfix
     when: storage_server_zfs.zed is defined
+  - name: rclone
+    when: storage_server_rclone_config_path is not none
 
 firewall_ports:
   - port: 445

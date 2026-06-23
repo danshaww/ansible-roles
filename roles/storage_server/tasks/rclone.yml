@@ -1,0 +1,16 @@
+- name: Storage Server | Rclone | Create Directory
+  ansible.builtin.file:
+    path: /etc/rclone
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Storage Server | Rclone | Generate Config File
+  ansible.builtin.template:
+    src: "{{ storage_server_rclone_config_path }}"
+    dest: /etc/rclone/rclone.conf
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true

@@ -1,5 +1,6 @@
 storage_server_smb_config_path: # Path to smb.conf in local deployment
 storage_server_nfs_config_path:  # Path to nfs exports in local deployment
+storage_server_rclone_config_path: # Path to rclone config in local deployment (J2 Template)
 storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
   sanoid_config_path: # Path to sanoid config file, sanoid install skipped if omitted
   sanoid_enable_timer: # Enable systemd timer for sanoid (disabled by default)
