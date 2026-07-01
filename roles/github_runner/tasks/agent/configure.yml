@@ -41,13 +41,18 @@
   become: true
   become_user: "{{ github_runner_username }}"
 
+- name : Check for existing service
+  ansible.builtin.stat:
+    path: "{{ github_runner_path }}/.service"
+  register: service_file
+
 - name: Install Service
   ansible.builtin.command: ./svc.sh install
   args:
     chdir: "{{ github_runner_path }}"
     creates: "{{ github_runner_path }}/.service"
   become: true
-  when: runner_conf.changed
+  when: not service_file.stat.exists
 - name: Start Service
   ansible.builtin.service:
     name: actions.runner.{{ github_runner_org | replace('/', '.') }}.{{ github_runner_name }}.service
