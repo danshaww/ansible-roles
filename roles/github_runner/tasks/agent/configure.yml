@@ -52,6 +52,8 @@
     chdir: "{{ github_runner_path }}"
     creates: "{{ github_runner_path }}/.service"
   become: true
+  become_user: "{{ github_runner_username }}"
+  become_method: sudo
   when: not service_file.stat.exists
 - name: Start Service
   ansible.builtin.service:
