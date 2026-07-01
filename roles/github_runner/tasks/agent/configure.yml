@@ -13,19 +13,19 @@
 
 - name: Check for existing archive
   ansible.builtin.stat:
-    path: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    path: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
   register: runner_archive
 - name: Download GitHub Actions Runner
   ansible.builtin.get_url:
-    url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
-    dest: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    url: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+    dest: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
     mode: '0644'
   when: not runner_archive.stat.exists
   become: true
   become_user: "{{ github_runner_username }}"
 - name: Extract Archive
   ansible.builtin.unarchive:
-    src: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    src: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
     dest: "{{ github_runner_path }}"
     remote_src: true
   when: not runner_archive.stat.exists
