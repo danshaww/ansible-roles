@@ -5,53 +5,53 @@
     update_cache: true
 - name: Act Configuration | Create runner directory
   ansible.builtin.file:
-    path: "{{ github_actions_runner_path }}"
+    path: "{{ github_runner_path }}"
     state: directory
     mode: '0775'
-    owner: "{{ github_actions_username }}"
-    group: "{{ github_actions_username }}"
+    owner: "{{ github_runner_username }}"
+    group: "{{ github_runner_username }}"
 
 - name: Check for existing archive
   ansible.builtin.stat:
-    path: "{{ github_actions_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    path: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
   register: runner_archive
 - name: Download GitHub Actions Runner
   ansible.builtin.get_url:
     url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
-    dest: "{{ github_actions_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
     mode: '0644'
   when: not runner_archive.stat.exists
   become: true
-  become_user: "{{ github_actions_username }}"
+  become_user: "{{ github_runner_username }}"
 - name: Extract Archive
   ansible.builtin.unarchive:
-    src: "{{ github_actions_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
-    dest: "{{ github_actions_runner_path }}"
+    src: "{{ github_runner_path }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+    dest: "{{ github_runner_path }}"
     remote_src: true
   when: not runner_archive.stat.exists
   become: true
-  become_user: "{{ github_actions_username }}"
+  become_user: "{{ github_runner_username }}"
 
 - name: Configure GitHub Actions Runner
-  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_actions_org }} --token {{ github_actions_token }} --name {{ github_actions_runner_name }} --labels {{ github_actions_runner_labels }} --runnergroup Default --work _work"
+  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_runner_org }} --token {{ github_runner_token }} --name {{ github_runner_name }} --labels {{ github_runner_labels }} --runnergroup Default --work _work"
   args:
-    chdir: "{{ github_actions_runner_path }}"
-    creates: "{{ github_actions_runner_path }}/.runner"
+    chdir: "{{ github_runner_path }}"
+    creates: "{{ github_runner_path }}/.runner"
   register: runner_conf
   become: true
-  become_user: "{{ github_actions_username }}"
+  become_user: "{{ github_runner_username }}"
 
 - name: Install Service
   ansible.builtin.command: ./svc.sh install
   args:
-    chdir: "{{ github_actions_runner_path }}"
-    creates: "{{ github_actions_runner_path }}/.service"
+    chdir: "{{ github_runner_path }}"
+    creates: "{{ github_runner_path }}/.service"
   become: true
-  become_user: "{{ github_actions_username }}"
+  become_user: "{{ github_runner_username }}"
   when: runner_conf.changed
 - name: Start Service
   ansible.builtin.service:
-    name: actions.runner.{{ github_actions_org | replace('/', '.') }}.{{ github_actions_runner_name }}.service
+    name: actions.runner.{{ github_runner_org | replace('/', '.') }}.{{ github_runner_name }}.service
     state: started
     enabled: true
   become: true

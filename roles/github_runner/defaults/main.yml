@@ -1,18 +1,18 @@
-username: null
-github_token: changeme
-github_org: changeme
-site: changeme
-runner_version: "2.321.0"
-runner_name: "{{ inventory_hostname }}"
-runner_labels: "self-hosted,linux,{{ site }}"
-runner_path: "/home/{{ username }}/actions-runner"
+# username: null
+# github_token: changeme
+# github_org: changeme
+# site: changeme
+# runner_version: "2.321.0"
+# runner_name: "{{ inventory_hostname }}"
+# runner_labels: "self-hosted,linux,{{ site }}"
+# runner_path: "/home/{{ username }}/actions-runner"
 
 
-github_actions_username: null
-github_actions_token: changeme
-github_actions_org: changeme
-github_actions_site: changeme
-github_actions_runner_version: "2.335.1"
-github_actions_runner_name: "{{ inventory_hostname }}"
-github_actions_runner_labels: "self-hosted,linux,{{ site }}"
-github_actions_runner_path: "/home/{{ github_actions_username }}/actions-runner"
+github_runner_username: null
+github_runner_token: changeme
+github_runner_org: changeme
+github_runner_site: changeme
+github_runner_version: "2.335.1"
+github_runner_name: "{{ inventory_hostname }}"
+github_runner_labels: "self-hosted,linux,{{ site }}"
+github_runner_path: "/home/{{ github_actions_username }}/actions-runner"
