@@ -33,7 +33,7 @@
   become_user: "{{ github_actions_username }}"
 
 - name: Configure GitHub Actions Runner
-  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_actions_org }} --token {{ github_token }} --name {{ github_actions_runner_name }} --labels {{ runner_labels }} --runnergroup Default --work _work"
+  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_actions_org }} --token {{ github_actions_token }} --name {{ github_actions_runner_name }} --labels {{ github_actions_runner_labels }} --runnergroup Default --work _work"
   args:
     chdir: "{{ github_actions_runner_path }}"
     creates: "{{ github_actions_runner_path }}/.runner"
