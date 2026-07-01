@@ -15,4 +15,4 @@ github_runner_site: changeme
 github_runner_version: "2.335.1"
 github_runner_name: "{{ inventory_hostname }}"
 github_runner_labels: "self-hosted,linux,{{ site }}"
-github_runner_path: "/home/{{ github_actions_username }}/actions-runner"
+github_runner_path: "/home/{{ github_runner_username }}/actions-runner"
