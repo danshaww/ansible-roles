@@ -85,9 +85,12 @@
 #   become: true
 #   ignore_errors: true
 
-- name: Add Nagios user to users group
+- name: Add Nagios user to groups
   ansible.builtin.user:
     name: nagios
-    groups: users
+    groups: "{{ item }}"
     append: true
   no_log: true
+  with_items:
+    - users
+    - disk
