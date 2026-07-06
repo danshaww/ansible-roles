@@ -18,6 +18,7 @@ system_packages:
     - just
     - nagios-plugins
     - qemu-guest-agent
+    - ncdu
   apt_only:
     - dnsutils
     - fio
