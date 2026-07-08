@@ -1,3 +1,7 @@
+- name: Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Turn off swap
   command: swapoff -a
   when: ansible_swaptotal_mb > 0
@@ -47,4 +51,5 @@
     rule: allow
     port: "{{ item }}"
   with_items: "{{ allowed_ports }}"
-  when: ansible_facts.packages['ufw'] is defined
+  when:
+    - "'ufw' in ansible_facts.packages"
