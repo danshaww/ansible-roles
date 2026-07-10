@@ -9,7 +9,8 @@
 
 
 github_runner_username: null
-github_runner_token: changeme
+# github_runner_token: changeme
+github_runner_pat: changeme
 github_runner_org: changeme
 github_runner_site: changeme
 github_runner_version: "2.335.1"

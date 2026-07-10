@@ -32,8 +32,28 @@
   become: true
   become_user: "{{ github_runner_username }}"
 
+- name: Check for existing runner instance
+  ansible.builtin.stat:
+    path: "{{ github_runner_path }}/.runner"
+  register: runner
+  become: true
+  become_user: "{{ github_runner_username }}"
+
+- name: Genereate GitHub Actions Runner Token
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/{{ github_runner_org }}/actions/runners/registration-token"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ github_runner_pat }}"
+      Accept: "application/vnd.github+json"
+      X-GitHub-Api-Version: "2022-11-28"
+    status_code: 201
+  register: runner_token_response
+  no_log: true
+  when: not runner.stat.exists
+
 - name: Configure GitHub Actions Runner
-  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_runner_org }} --token {{ github_runner_token }} --name {{ github_runner_name }} --labels {{ github_runner_labels }} --runnergroup Default --work _work"
+  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_runner_org }} --token {{ runner_token_response.json.token }} --name {{ github_runner_name }} --labels {{ github_runner_labels }} --runnergroup Default --work _work"
   args:
     chdir: "{{ github_runner_path }}"
     creates: "{{ github_runner_path }}/.runner"
