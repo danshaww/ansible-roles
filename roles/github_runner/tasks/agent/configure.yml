@@ -39,9 +39,9 @@
   become: true
   become_user: "{{ github_runner_username }}"
 
-- name: Genereate GitHub Actions Runner Token
+- name: Generate GitHub Actions Runner Token
   ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ github_runner_org }}/actions/runners/registration-token"
+    url: "https://api.github.com/orgs/{{ github_runner_org }}/actions/runners/registration-token"
     method: POST
     headers:
       Authorization: "Bearer {{ github_runner_pat }}"
@@ -60,6 +60,7 @@
   register: runner_conf
   become: true
   become_user: "{{ github_runner_username }}"
+  when: not runner.stat.exists
 
 - name : Check for existing service
   ansible.builtin.stat:
