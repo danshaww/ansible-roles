@@ -72,11 +72,12 @@
   ansible.builtin.include_tasks: zfs_permissions.yml
   loop: "{{ storage_server_zfs.pools | default([]) | subelements('datasets', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.name }}"
+    loop_var: pool_dataset
+    label: "{{ pool_dataset.0.name }} | {{ pool_dataset.1.name }}"
   vars:
-    dataset_path: "{{ item.1.extra_zfs_properties.mountpoint | default((item.0.mountpoint | default('/mnt/' + item.0.name)) ~ '/' ~ item.1.name) }}"
-    dataset_permissions: "{{ item.1.permissions | default([]) }}"
+    dataset_path: "{{ pool_dataset.1.extra_zfs_properties.mountpoint | default((pool_dataset.0.mountpoint | default('/mnt/' + pool_dataset.0.name)) ~ '/' ~ pool_dataset.1.name) }}"
+    dataset_permissions: "{{ pool_dataset.1.permissions | default([]) }}"
   when:
     - storage_server_zfs is not none
-    - item.1.permissions is defined
-    - (item.1.permissions | default([]) | length) > 0
+    - pool_dataset.1.permissions is defined
+    - (pool_dataset.1.permissions | default([]) | length) > 0

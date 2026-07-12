@@ -1,71 +1,76 @@
 - name: Storage Server | Permissions | Dataset | Set Unix Permissions
   ansible.builtin.file:
-    path: "{{ item.path | default(dataset_path) }}"
-    mode: "{{ item.mode | default('0770') }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
+    path: "{{ permission.path | default(dataset_path) }}"
+    mode: "{{ permission.mode | default('0770') }}"
+    owner: "{{ permission.owner | default('root') }}"
+    group: "{{ permission.group | default('root') }}"
   loop: "{{ dataset_permissions }}"
   loop_control:
-    label: "{{ item.path | default(dataset_path) }} | {{ item.entity | default('') }}"
+    loop_var: permission
+    label: "{{ permission.path | default(dataset_path) }} | {{ permission.entity | default('') }}"
   when:
-    - item.mode is defined or item.owner is defined or item.group is defined
+    - permission.mode is defined or permission.owner is defined or permission.group is defined
   become: true
 
 - name: Storage Server | Permissions | Dataset | Remove implicit ACL entries
   ansible.builtin.command:
-    cmd: "setfacl -R -x {{ item.etype | first }}:{{ item.entity }} {{ item.path | default(dataset_path) }}"
+    cmd: "setfacl -R -x {{ permission.etype | first }}:{{ permission.entity }} {{ permission.path | default(dataset_path) }}"
   loop: "{{ dataset_permissions }}"
   loop_control:
-    label: "{{ item.path | default(dataset_path) }} | {{ item.entity | default('') }}"
+    loop_var: permission
+    label: "{{ permission.path | default(dataset_path) }} | {{ permission.entity | default('') }}"
   when:
-    - item.entity is defined
-    - item.state | default('present') == 'absent'
+    - permission.entity is defined
+    - permission.state | default('present') == 'absent'
   become: true
   changed_when: true
 
 - name: Storage Server | Permissions | Dataset | Remove default ACL entries
   ansible.builtin.command:
-    cmd: "setfacl -R -x d:{{ item.etype | first }}:{{ item.entity }} {{ item.path | default(dataset_path) }}"
+    cmd: "setfacl -R -x d:{{ permission.etype | first }}:{{ permission.entity }} {{ permission.path | default(dataset_path) }}"
   loop: "{{ dataset_permissions }}"
   loop_control:
-    label: "{{ item.path | default(dataset_path) }} | {{ item.entity | default('') }}"
+    loop_var: permission
+    label: "{{ permission.path | default(dataset_path) }} | {{ permission.entity | default('') }}"
   when:
-    - item.entity is defined
-    - item.state | default('present') == 'absent'
+    - permission.entity is defined
+    - permission.state | default('present') == 'absent'
   become: true
   changed_when: true
 
 - name: Storage Server | Permissions | Dataset | Configure implicit ACL
   ansible.posix.acl:
-    path: "{{ item.path | default(dataset_path) }}"
-    entity: "{{ item.entity }}"
-    etype: "{{ item.etype | default('group') }}"
-    permissions: "{{ item.permissions | default(omit) }}"
+    path: "{{ permission.path | default(dataset_path) }}"
+    entity: "{{ permission.entity }}"
+    etype: "{{ permission.etype | default('group') }}"
+    permissions: "{{ permission.permissions | default(omit) }}"
     default: false
-    state: "{{ item.state | default('present') }}"
-    recursive: "{{ item.recursive | default(true) }}"
+    state: "{{ permission.state | default('present') }}"
+    recursive: "{{ permission.recursive | default(true) }}"
   loop: "{{ dataset_permissions }}"
   loop_control:
-    label: "{{ item.path | default(dataset_path) }} | {{ item.entity | default('') }}"
+    loop_var: permission
+    label: "{{ permission.path | default(dataset_path) }} | {{ permission.entity | default('') }}"
   when:
-    - item.entity is defined
-    - item.permissions is defined
+    - permission.entity is defined
+    - permission.permissions is defined
   become: true
 
 - name: Storage Server | Permissions | Dataset | Configure default ACL
   ansible.posix.acl:
-    path: "{{ item.path | default(dataset_path) }}"
-    entity: "{{ item.entity }}"
-    etype: "{{ item.etype | default('group') }}"
-    permissions: "{{ item.permissions | default(omit) }}"
+    path: "{{ permission.path | default(dataset_path) }}"
+    entity: "{{ permission.entity }}"
+    etype: "{{ permission.etype | default('group') }}"
+    permissions: "{{ permission.permissions | default(omit) }}"
     default: true
-    state: "{{ item.state | default('present') }}"
-    recursive: "{{ item.recursive | default(true) }}"
+    state: "{{ permission.state | default('present') }}"
+    recursive: "{{ permission.recursive | default(true) }}"
   loop: "{{ dataset_permissions }}"
   loop_control:
-    label: "{{ item.path | default(dataset_path) }} | {{ item.entity | default('') }}"
+    loop_var: permission
+    label: "{{ permission.path | default(dataset_path) }} | {{ permission.entity | default('') }}"
   when:
-    - item.entity is defined
-    - item.permissions is defined
-    - item.default | default(true)
+    - permission.entity is defined
+    - permission.permissions is defined
+    - permission.default | default(true)
   become: true
