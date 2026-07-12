@@ -4,7 +4,7 @@
     mode: "{{ item.mode | default('0770') }}"
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
-  with_items: "{{ storage_server_permissions }}"
+  loop: "{{ storage_server_permissions }}"
   when:
     - item.mode is defined or item.owner is defined or item.group is defined
   loop_control:
@@ -67,3 +67,16 @@
     - item.permissions is defined
     - item.default | default(true)
   become: true
+
+- name: Storage Server | Permissions | Dataset | Apply dataset-scoped permissions
+  ansible.builtin.include_tasks: zfs_permissions.yml
+  loop: "{{ storage_server_zfs.pools | default([]) | subelements('datasets', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.name }} | {{ item.1.name }}"
+  vars:
+    dataset_path: "{{ item.1.extra_zfs_properties.mountpoint | default((item.0.mountpoint | default('/mnt/' + item.0.name)) ~ '/' ~ item.1.name) }}"
+    dataset_permissions: "{{ item.1.permissions | default([]) }}"
+  when:
+    - storage_server_zfs is not none
+    - item.1.permissions is defined
+    - (item.1.permissions | default([]) | length) > 0
