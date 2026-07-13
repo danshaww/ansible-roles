@@ -23,7 +23,7 @@
     name: "{{ item.0.key }}/{{ item.1.key }}"
     state: "{{ item.1.value.state | default('present') }}"
     extra_zfs_properties: "{{ item.1.value.extra_zfs_properties | default ({}) }}"
-  when: item.0.value.datasets is defined
+  when: item.0.datasets is defined
   loop: "{{ storage_server_zfs.pools | dict2items | subelements('value.datasets | dict2items', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.key }} | {{ item.1.key }}"
