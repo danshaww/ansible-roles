@@ -6,7 +6,7 @@
     disable_new_features: "{{ item.value.disable_new_features | default(false) }}"
     filesystem_properties: "{{ item.value.filesystem_properties | default({}) }}"
     force: "{{ item.value.force | default(false) }}"
-    mountpoint: "{{ item.value.mountpoint | default('/mnt/' + item.name) }}"
+    mountpoint: "{{ item.value.mountpoint | default('/mnt/' + item.key) }}"
     pool_properties: "{{ item.value.pool_properties | default({}) }}"
     state: "{{ item.value.state | default('present') }}"
     temp_name: "{{ item.value.temp_name | default(omit) }}"
@@ -20,13 +20,13 @@
 
 - name: Storage Server | ZFS | Create Datasets
   community.general.zfs:
-    name: "{{ item.0.name }}/{{ item.1.name }}"
-    state: "{{ item.1.state | default('present') }}"
-    extra_zfs_properties: "{{ item.1.extra_zfs_properties | default ({}) }}"
-  when: item.0.datasets is defined
-  loop: "{{ storage_server_zfs.pools | subelements('datasets', skip_missing=True) }}"
+    name: "{{ item.0.key }}/{{ item.1.key }}"
+    state: "{{ item.1.value.state | default('present') }}"
+    extra_zfs_properties: "{{ item.1.value.extra_zfs_properties | default ({}) }}"
+  when: item.0.value.datasets is defined
+  loop: "{{ storage_server_zfs.pools | items2dict | subelements('datasets', skip_missing=True) | items2dict }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.name }}"
+    label: "{{ item.0.key }} | {{ item.1.key }}"
   become: true
 
 
