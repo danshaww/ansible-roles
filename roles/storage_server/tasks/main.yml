@@ -20,6 +20,12 @@
     - enable_zfs_config
     - storage_server_zfs is not none
 
+- name: Storage Server | ZFS Rbac
+  ansible.builtin.include_tasks: rbac.yml
+  when: 
+    - enable_zfs_config
+    - storage_server_zfs is not none
+
 # - name: Storage Server | Permissions
 #   ansible.builtin.include_tasks: permissions.yml
 #   when:
