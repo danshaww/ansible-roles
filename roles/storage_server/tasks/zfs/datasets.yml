@@ -12,6 +12,7 @@
 - name: Storage Server | ZFS | Configure ACLs for Dataset
   include_tasks: zfs/rbac.yml
   loop: "{{ pool_item.value.datasets | dict2items }}"
+  when: dataset_item.permissions is defined
   loop_control:
     loop_var: dataset_item
     label: "{{ pool_item.key }}/{{ dataset_item.key }}"
