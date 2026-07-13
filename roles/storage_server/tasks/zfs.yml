@@ -1,6 +1,6 @@
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
-    name: "{{ item.name }}"
+    name: "{{ item.key }}"
     vdevs: "{{ item.vdevs }}"
     altroot: "{{ item.altroot | default(omit) }}"
     disable_new_features: "{{ item.disable_new_features | default(false) }}"
@@ -10,10 +10,10 @@
     pool_properties: "{{ item.pool_properties | default({}) }}"
     state: "{{ item.state | default('present') }}"
     temp_name: "{{ item.temp_name | default(omit) }}"
-  with_items: "{{ storage_server_zfs.pools }}"
   when:
     - storage_server_zfs.pools is defined
     - item.vdevs is defined
+  loop: "{{ storage_server_zfs.pools | dict2items }}"
   loop_control:
     label: "{{ item.name }}"
   become: true
