@@ -6,6 +6,8 @@
     owner: "{{ dataset_item.value.owner | default('root') }}"
     group: "{{ dataset_item.value.group | default('root') }}"
   become: true
+  when:
+    - not item.extra_zfs_properties.mountpoint is defined
 
 - name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
@@ -44,6 +46,8 @@
   loop_control:
     label: "{{ dataset_item.key }} | {{ item.entity }}"
   become: true
+  when:
+    - item.entity is defined
 
 - name: Storage Server | ZFS | Configure default ACL
   ansible.posix.acl:
@@ -57,5 +61,7 @@
   loop: "{{ dataset_item.value.permissions | default([]) }}"
   loop_control:
     label: "{{ dataset_item.key }} | {{ item.entity }}"
-  when: item.default | default(true) | bool
+  when:
+    - item.default | default(true) | bool
+    - item.entity is defined
   become: true
