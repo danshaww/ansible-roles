@@ -5,7 +5,6 @@
     mode: "{{ dataset_item.value.mode | default('0770') }}"
     owner: "{{ dataset_item.value.owner | default('root') }}"
     group: "{{ dataset_item.value.group | default('root') }}"
-  when: not dataset_item.value.extra_zfs_properties.mountpoint is defined
   become: true
 
 - name: Storage Server | ZFS | Remove implicit ACL entries
