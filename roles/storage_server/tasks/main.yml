@@ -14,8 +14,14 @@
     - enable_firewall_config
     - "'ufw' in ansible_facts.packages"
 
-- name: Storage Server | ZFS
-  ansible.builtin.include_tasks: zfs.yml
+- name: Storage Server | ZFS Pools
+  ansible.builtin.include_tasks: zfs/pools.yml
+  when: 
+    - enable_zfs_config
+    - storage_server_zfs is not none
+
+- name: Storage Server | ZFS Utils
+  ansible.builtin.include_tasks: zfs/utils.yml
   when: 
     - enable_zfs_config
     - storage_server_zfs is not none

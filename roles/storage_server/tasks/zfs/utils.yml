@@ -1,0 +1,42 @@
+- name: Storage Server | ZFS | Create Sanoid Config Directory
+  ansible.builtin.file:
+    path: /etc/sanoid
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  when: storage_server_zfs.sanoid_config_path is not none
+
+- name: Storage Server | ZFS | Copy Sanoid Config
+  ansible.builtin.copy:
+    src: "{{ storage_server_zfs.sanoid_config_path }}"
+    dest: /etc/sanoid/sanoid.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Sanoid
+  become: true
+  when: storage_server_zfs.sanoid_config_path is not none
+
+- name: Storage Server | ZFS | Configure zed.rc
+  ansible.builtin.template:
+    src: zed.rc.j2
+    dest: /etc/zfs/zed.d/zed.rc
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart zed
+  become: true
+  when: storage_server_zfs.zed is defined
+
+- name: Storage Server | ZFS | Configure Sanoid systemd timer
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}true{% else %}false{% endif %}"
+    state: "{% if storage_server_zfs.sanoid_enable_timer | default (false) %}started{% else %}stopped{% endif %}"
+  loop:
+    - sanoid.timer
+    - sanoid.service
+    - sanoid-prune.service
+  become: true

@@ -1,0 +1,10 @@
+# File is included via pools.yml
+- name: Storage Server | ZFS | Create Dataset
+  community.general.zfs:
+    name: "{{ pool_item.key }}/{{ item.key }}"
+    state: "{{ item.value.state | default('present') }}"
+    extra_zfs_properties: "{{ item.value.extra_zfs_properties | default({}) }}"
+  loop: "{{ pool_item.value.datasets | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  become: true
