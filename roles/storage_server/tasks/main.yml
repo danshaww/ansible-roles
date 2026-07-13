@@ -27,11 +27,11 @@
     - storage_server_zfs is not none
 
 
-# - name: Storage Server | Permissions
-#   ansible.builtin.include_tasks: permissions.yml
-#   when:
-#     - enable_permissions
-#     - storage_server_permissions is not none
+- name: Storage Server | Permissions
+  ansible.builtin.include_tasks: permissions.yml
+  when:
+    - enable_permissions
+    - storage_server_permissions is not none
 
 - name: Storage Server | File Sharing
   ansible.builtin.include_tasks: file_sharing.yml
