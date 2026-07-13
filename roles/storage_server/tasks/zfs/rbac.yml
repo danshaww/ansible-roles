@@ -16,7 +16,7 @@
       {{ dataset_item.value.extra_zfs_properties.mountpoint | default('/mnt/' + pool_item.key + '/' + dataset_item.key) }}
   loop: "{{ dataset_item.value.permissions | default([]) }}"
   loop_control:
-    label: "{{ dataset_item.key }} | {{ item.entity }}"
+    label: "{{ dataset_item.key }} | {{ item.entity | default('') }}"
   when: item.state | default('present') == 'absent'
   become: true
   changed_when: true
@@ -28,7 +28,7 @@
       {{ dataset_item.value.extra_zfs_properties.mountpoint | default('/mnt/' + pool_item.key + '/' + dataset_item.key) }}
   loop: "{{ dataset_item.value.permissions | default([]) }}"
   loop_control:
-    label: "{{ dataset_item.key }} | {{ item.entity }}"
+    label: "{{ dataset_item.key }} | {{ item.entity | default('') }}"
   when: item.state | default('present') == 'absent'
   become: true
   changed_when: true
@@ -44,7 +44,7 @@
     recursive: "{{ item.recursive | default(true) }}"
   loop: "{{ dataset_item.value.permissions | default([]) }}"
   loop_control:
-    label: "{{ dataset_item.key }} | {{ item.entity }}"
+    label: "{{ dataset_item.key }} | {{ item.entity | default('') }}"
   become: true
   when:
     - item.entity is defined
@@ -60,7 +60,7 @@
     recursive: "{{ item.recursive | default(true) }}"
   loop: "{{ dataset_item.value.permissions | default([]) }}"
   loop_control:
-    label: "{{ dataset_item.key }} | {{ item.entity }}"
+    label: "{{ dataset_item.key }} | {{ item.entity | default('') }}"
   when:
     - item.default | default(true) | bool
     - item.entity is defined
