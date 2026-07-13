@@ -15,7 +15,7 @@
     - item.vdevs is defined
   loop: "{{ storage_server_zfs.pools | dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
   become: true
 
 - name: Storage Server | ZFS | Create Datasets
