@@ -2,27 +2,19 @@
   ansible.builtin.set_fact:
     pools: "{{ storage_server_zfs.pools | dict2items }}"
 
+- name: Storage Server | ZFS | Initialize flattened dataset list
+  ansible.builtin.set_fact:
+    datasets: []
+
 - name: Storage Server | ZFS | Build flattened dataset list
   ansible.builtin.set_fact:
-    datasets: >-
-      {{ ([
-          item.value | combine({
-            'pool_name': pool.key,
-            'name': item.key
-          })
-          for pool in storage_server_zfs.pools | dict2items
-          for item in pool.value.datasets | default({}) | dict2items
-        ]) | default([]) }}
+    datasets: "{{ datasets + [ pool_dataset.1.value | combine({ 'pool_name': pool_dataset.0.key, 'name': pool_dataset.1.key }) ] }}"
+  loop: "{{ storage_server_zfs.pools | dict2items | subelements('datasets', skip_missing=True) }}"
+  loop_control:
+    loop_var: pool_dataset
+    label: "{{ pool_dataset.0.key }}/{{ pool_dataset.1.key }}"
   when:
     - storage_server_zfs.pools is defined
-
-- name: Output Pools
-  debug:
-    message: "{{ pools }}"
-
-- name: Output Datasets
-  debug:
-    message: "{{ datasets }}"
 
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
