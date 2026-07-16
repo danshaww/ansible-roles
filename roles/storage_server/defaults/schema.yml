@@ -11,7 +11,7 @@ storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
     notify_interval_secs: 3600
     notify_verbose: 0
   pools:
-    - name: # Pool Name
+    data: # Pool name
       vdevs: # Dictionary of vdevs
         - type: mirror
           disks:
@@ -26,7 +26,7 @@ storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
       state: # set to absent to remove
       temp_name: # Temporary name used during pool creation.
       datasets:
-        - name: # dataset name (ommiting pool name)
+        test: # dataset name (ommiting pool name)
           extra_zfs_properties: # All ZFS options
           state: # set to absent to delete dataset
           permissions: # Optional dataset-scoped permissions, applied to the dataset mount point
