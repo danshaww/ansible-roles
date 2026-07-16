@@ -4,11 +4,11 @@
 
 - name: Storage Server | Permissions | Create reuqired ACL's
   ansible.posix.acl:
-    path: "{{ item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.key)}}"
+    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
     entity: "{{ item.1.entity }}"
     etype: "{{ item.1.etype | default('group') }}"
     permissions: "{{ item.1.permissions }}"
     default: "{{ item.1.default | default(true) }}"
     state: "{{ item.1.state | default('present') }}"
     use_nfsv4_acls: true
-  loop: "{{ (storage_server_zfs.datasets | dict2items) | subelements('permissions', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
