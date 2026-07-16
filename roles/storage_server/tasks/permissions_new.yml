@@ -1,0 +1,17 @@
+- name: Get current NFSv4 ACL
+  ansible.builtin.command:
+    cmd: "nfs4_getfacl {{ item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.value.name)}}"
+  register: _nfsv4_acl_current
+  changed_when: false
+  loop: "{{ storage_server_zfs.datasets | dict2items | subelements('permissions', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.value.name)}}"
+
+- name: Replace NFSv4 ACL where it differs from desired state
+  ansible.builtin.command:
+    cmd: >-
+      nfs4_setfacl -s "{{ item.item.0.value.entries | to_nfs4_acl_spec }}" {{ item.item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.item.0.value.name)}}
+  loop: "{{ _nfsv4_acl_current.results }}"
+  loop_control:
+    label: "{{ item.item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.item.0.value.name)}}"
+  when: (item.stdout | normalize_nfs4_acl) != (item.item.1.value.entries | to_nfs4_acl_spec)

@@ -1,29 +1,3 @@
-- name: Storage Server | ZFS | Build variables
-  ansible.builtin.set_fact:
-    pools: "{{ storage_server_zfs.pools | dict2items }}"
-
-- name: Storage Server | ZFS | Initialize flattened dataset list
-  ansible.builtin.set_fact:
-    datasets: []
-
-- name: Storage Server | ZFS | Build flattened dataset list
-  ansible.builtin.set_fact:
-    datasets: "{{ datasets + [ pool_dataset.1.value | combine({ 'pool_name': pool_dataset.0.key, 'name': pool_dataset.1.key }) ] }}"
-  loop: "{{ storage_server_zfs.pools | dict2items | subelements('datasets', skip_missing=True) }}"
-  loop_control:
-    loop_var: pool_dataset
-    label: "{{ pool_dataset.0.key }}/{{ pool_dataset.1.key }}"
-  when:
-    - storage_server_zfs.pools is defined
-
-- name: Output Pools
-  debug:
-    msg: "{{ pools }}"
-
-- name: Output Datasets
-  debug:
-    msg: "{{ datasets }}"
-
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
     name: "{{ item.key }}"
@@ -39,21 +13,17 @@
   when:
     - storage_server_zfs.pools is defined
     - item.value.vdevs is defined
-  loop: "{{ pools }}"
+  loop: "{{ storage_server_zfs.pools | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
   become: true
 
-
-
-
-
-# - name: Storage Server | ZFS | Create Dataset
-#   community.general.zfs:
-#     name: "{{ item.pool_name }}/{{ item.key }}"
-#     state: "{{ item.value.state | default('present') }}"
-#     extra_zfs_properties: "{{ item.value.extra_zfs_properties | default({}) }}"
-#   loop: "{{ datasets }}"
-#   loop_control:
-#     label: "{{ item.key }}"
-#   become: true
+- name: Storage Server | ZFS | Create Datasets
+  community.general.zfs:
+    name: "{{ item.key }}"
+    state: "{{ item.value.state | default('present') }}"
+    extra_zfs_properties: "{{ item.value.extra_zfs_properties | default({}) }}"
+  loop: "{{ storage_server_zfs.datasets | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  become: true
