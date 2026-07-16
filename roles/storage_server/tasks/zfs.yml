@@ -6,7 +6,7 @@
     disable_new_features: "{{ item.disable_new_features | default(false) }}"
     filesystem_properties: "{{ item.filesystem_properties | default({}) }}"
     force: "{{ item.force | default(false) }}"
-    mountpoint: "{{ item.mountpoint | default('/mnt/' + item.key) }}"
+    mountpoint: "{{ item.mountpoint | default('/mnt/' + item.name) }}"
     pool_properties: "{{ item.pool_properties | default({}) }}"
     state: "{{ item.state | default('present') }}"
     temp_name: "{{ item.temp_name | default(omit) }}"
