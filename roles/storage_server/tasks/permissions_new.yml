@@ -1,3 +1,7 @@
+- name: test
+  debug:
+    msg: "{{ storage_server_zfs.datasets | dict2items }}"
+
 - name: Storage Server | Permissions | Create reuqired ACL's
   ansible.posix.acl:
     path: "{{ item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.key)}}"
