@@ -16,6 +16,14 @@
   when:
     - storage_server_zfs.pools is defined
 
+- name: Output Pools
+  debug:
+    msg: "{{ pools }}"
+
+- name: Output Datasets
+  debug:
+    msg: "{{ datasets }}"
+
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
     name: "{{ item.key }}"
