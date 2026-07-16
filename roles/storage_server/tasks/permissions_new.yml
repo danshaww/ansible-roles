@@ -10,7 +10,7 @@
 - name: Replace NFSv4 ACL where it differs from desired state
   ansible.builtin.command:
     cmd: >-
-      nfs4_setfacl -s "{{ item.item.0.value.entries | to_nfs4_acl_spec }}" {{ item.item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.item.0.value.name)}}
+      nfs4_setfacl -s "{{ (item.item.0.value.entries + default_acl) | to_nfs4_acl_spec }}" {{ item.item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.item.0.value.name)}}
   loop: "{{ _nfsv4_acl_current.results }}"
   loop_control:
     label: "{{ item.item.0.value.extra_zfs_properties.mountpoint | default('/mnt/' + item.item.0.value.name)}}"
