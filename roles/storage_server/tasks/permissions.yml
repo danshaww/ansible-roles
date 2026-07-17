@@ -16,7 +16,7 @@
 - name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
     cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('permissions'', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: item.1.state | default('present') == 'absent'
@@ -26,7 +26,7 @@
 - name: Storage Server | ZFS | Remove default ACL entries
   ansible.builtin.command:
     cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('permissions'', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: item.1.state | default('present') == 'absent'
@@ -42,7 +42,7 @@
     default: false
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('permissions'', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: storage_server_zfs.datasets is defined
@@ -57,7 +57,7 @@
     default: true
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('permissions'', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
   when: storage_server_zfs.datasets is defined and item.1.default | default(true) | bool
