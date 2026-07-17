@@ -18,7 +18,7 @@
     cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
+    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when: item.1.state | default('present') == 'absent'
   become: true
   changed_when: true
@@ -28,7 +28,7 @@
     cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
+    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when: item.1.state | default('present') == 'absent'
   become: true
   changed_when: true
@@ -44,7 +44,7 @@
     recursive: "{{ item.1.recursive | default(true) }}"
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
+    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when:
     - storage_server_zfs.datasets is defined
     - item.1.entity is defined
@@ -61,7 +61,7 @@
     recursive: "{{ item.1.recursive | default(true) }}"
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity }}"
+    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when:
     - storage_server_zfs.datasets is defined
     - item.1.default | default(true) | bool
