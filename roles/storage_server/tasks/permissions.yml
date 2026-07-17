@@ -10,7 +10,7 @@
     - storage_server_zfs.datasets is defined
     - not item.0.extra_zfs_properties.mountpoint is defined
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.0.name }}"
   become: true
 
 - name: Storage Server | ZFS | Remove implicit ACL entries
