@@ -45,7 +45,9 @@
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: storage_server_zfs.datasets is defined
+  when:
+    - storage_server_zfs.datasets is defined
+    - item.1.entity is defined
   become: true
 
 - name: Storage Server | ZFS | Configure default ACL
@@ -60,5 +62,8 @@
   loop: "{{ storage_server_zfs.datasets | subelements('permissions', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity }}"
-  when: storage_server_zfs.datasets is defined and item.1.default | default(true) | bool
+  when:
+    - storage_server_zfs.datasets is defined
+    - item.1.default | default(true) | bool
+    - item.1.entity is defined
   become: true
