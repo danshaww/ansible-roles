@@ -24,12 +24,6 @@
   ansible.builtin.include_tasks: permissions.yml
   when:
     - enable_permissions
-    - storage_server_permissions is not none
-
-- name: Storage Server | Permissions New
-  ansible.builtin.include_tasks: permissions_new.yml
-  when:
-    - enable_permissions
     # - storage_server_permissions is not none
 
 - name: Storage Server | File Sharing
