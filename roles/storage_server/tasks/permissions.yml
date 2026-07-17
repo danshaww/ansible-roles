@@ -5,7 +5,7 @@
     mode: "{{ item.unix_permissions.mode | default('0770') }}"
     owner: "{{ item.unix_permissions.owner | default('root') }}"
     group: "{{ item.unix_permissions.group | default('root') }}"
-  loop: "{{ storage_server_zfs.datasets}}"
+  loop: "{{ storage_server_zfs.datasets }}"
   when:
     - storage_server_zfs.datasets is defined
     - not item.extra_zfs_properties.mountpoint is defined
@@ -16,7 +16,7 @@
 - name: Storage Server | ZFS | Remove implicit ACL entries
   ansible.builtin.command:
     cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl') }}"
+  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when: item.1.state | default('present') == 'absent'
