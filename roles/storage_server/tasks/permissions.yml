@@ -47,7 +47,7 @@
     label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
   when:
     - storage_server_zfs.datasets is defined
-    - item.1.state == 'present'
+    - item.1.state == 'present' | default('present')
     - item.1.entity is defined
   become: true
 
@@ -66,6 +66,6 @@
   when:
     - storage_server_zfs.datasets is defined
     - item.1.default | default(true) | bool
-    - item.1.state == 'present'
+    - item.1.state == 'present' | default('present')
     - item.1.entity is defined
   become: true
