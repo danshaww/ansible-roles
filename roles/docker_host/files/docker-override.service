@@ -1,0 +1,9 @@
+[Unit]
+Description=Correct docker permissions after service restart
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=chmod 770 /var/lib/docker && chmod 770 /var/lib/docker/volumes
+RemainAfterExit=yes

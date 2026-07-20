@@ -33,3 +33,15 @@
     dest: /usr/local/bin/ctop
     mode: '0755'
   become: true
+
+- name: Docker | Installation | Create override service
+  ansible.builtin.copy:
+    src: docker-override.service
+    dest: /lib/systemd/system/docker-override.service
+    mode: 0644
+    owner: root
+    group: root
+  become: true
+  notify:
+    - Reload Docker
+    - Restart Docker
