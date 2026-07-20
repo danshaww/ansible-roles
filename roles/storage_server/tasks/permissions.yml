@@ -9,6 +9,7 @@
   when:
     - storage_server_zfs.datasets is defined
     - not item.extra_zfs_properties.mountpoint is defined
+    - not (item.unix_permissions.ignore | default(false))
   loop_control:
     label: "{{ item.name }}"
   become: true
