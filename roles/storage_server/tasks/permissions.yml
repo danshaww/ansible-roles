@@ -1,7 +1,7 @@
 
 - name: Storage Server | ZFS | Set Unix Permissions
   ansible.builtin.file:
-    path: "/mnt/{{ item.name }}"
+    path: "{{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name)}}"
     mode: "{{ item.unix_permissions.mode | default('0770') }}"
     owner: "{{ item.unix_permissions.owner | default('root') }}"
     group: "{{ item.unix_permissions.group | default('root') }}"
