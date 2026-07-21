@@ -1,0 +1,4 @@
+ssmtp_packages:
+  - ssmtp
+  - postfix
+  - mailutils

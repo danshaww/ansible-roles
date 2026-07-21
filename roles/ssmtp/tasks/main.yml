@@ -1,6 +1,16 @@
+- name: SSMTP | Preseed postfix debconf answers
+  ansible.builtin.debconf:
+    name: postfix
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: "{{ item.vtype }}"
+  loop:
+    - { question: "postfix/main_mailer_type", value: "Internet Site", vtype: "select" }
+    - { question: "postfix/mailname", value: "{{ ansible_fqdn }}", vtype: "string" }
+
 - name: SSMTP | Package Installation
   ansible.builtin.apt:
-    name: ssmtp
+    name: "{{ packages }}"
 
 - name: SSMTP | Populate Config
   ansible.builtin.template:
