@@ -34,14 +34,37 @@
     mode: '0755'
   become: true
 
-- name: Docker | Installation | Create override service
+- name: Deploy docker ACL restore script
   ansible.builtin.copy:
-    src: docker-override.service
-    dest: /lib/systemd/system/docker-override.service
-    mode: 0644
+    dest: /usr/local/sbin/docker-acl-fix.sh
+    mode: '0750'
     owner: root
     group: root
-  become: true
+    content: |
+      #!/bin/sh
+      # Re-widens the ACL mask on /var/lib/docker after dockerd
+      # resets the directory to 710 on every start, which otherwise
+      # caps named user/group ACL entries.
+      setfacl -m m::rwx /var/lib/docker
+  notify: docker acl fix applied
+
+- name: Create docker.service systemd drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Deploy docker.service ExecStartPost override
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/docker.service.d/99-acl-fix.conf
+    mode: '0644'
+    owner: root
+    group: root
+    content: |
+      [Service]
+      ExecStartPost=/usr/local/sbin/docker-acl-fix.sh
   notify:
     - Reload Docker
     - Restart Docker
