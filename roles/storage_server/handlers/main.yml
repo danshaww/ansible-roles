@@ -10,13 +10,6 @@
     state: restarted
   become: true
 
-- name: Restart Sanoid
-  ansible.builtin.service:
-    name: sanoid
-    state: restarted
-    enabled: true
-  become: true
-
 - name: Restart zed
   ansible.builtin.systemd:
     name: zfs-zed
