@@ -46,7 +46,6 @@
       # resets the directory to 710 on every start, which otherwise
       # caps named user/group ACL entries.
       setfacl -m m::rwx /var/lib/docker
-  notify: docker acl fix applied
 
 - name: Create docker.service systemd drop-in directory
   ansible.builtin.file:
