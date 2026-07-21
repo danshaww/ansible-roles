@@ -65,5 +65,5 @@
       [Service]
       ExecStartPost=/usr/local/sbin/docker-acl-fix.sh
   notify:
-    - Reload Docker
+    - Reload Systemd
     - Restart Docker
