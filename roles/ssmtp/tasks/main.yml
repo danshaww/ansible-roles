@@ -10,7 +10,7 @@
 
 - name: SSMTP | Package Installation
   ansible.builtin.apt:
-    name: "{{ packages }}"
+    name: "{{ ssmtp_packages }}"
 
 - name: SSMTP | Populate Config
   ansible.builtin.template:
