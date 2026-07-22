@@ -6,19 +6,19 @@
     minute: "{{ item.minute }}"
     job: "{{ item.job }}"
   become: true
-  with_items: "{{ cron_jobs }}"
-  when: cron_jobs is not none
+  with_items: "{{ cron_management_jobs }}"
+  when: cron_management_jobs is not none
 
 - name: Cron Management | Set MailFrom
   ansible.builtin.cron:
     env: true
     name: MAILFROM
-    job: "{{ cron_mail_from }}"
-  when: cron_mail_from is not none
+    job: "{{ cron_management_mail_from }}"
+  when: cron_management_mail_from is not none
 
 - name: Cron Management | Set MailTo
   ansible.builtin.cron:
     env: true
     name: MAILTO
-    job: "{{ cron_mail_to }}"
-  when: cron_mail_to is not none
+    job: "{{ cron_management_mail_to }}"
+  when: cron_management_mail_to is not none

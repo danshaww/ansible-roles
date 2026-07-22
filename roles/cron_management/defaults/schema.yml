@@ -1,9 +1,9 @@
-cron_jobs:
+cron_management_jobs:
   - name: example job
     day: '*'
     hour: '23'
     minute: '30'
     job: "/bin/bash /srv/scripts/script.sh"
 
-cron_mail_from: null
-cron_mail_to: null
+cron_management_mail_from: null
+cron_management_mail_to: null
