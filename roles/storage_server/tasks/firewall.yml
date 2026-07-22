@@ -2,6 +2,6 @@
   community.general.ufw:
     rule: allow
     port: "{{ item.port }}"
-  with_items: "{{ firewall_ports }}"
+  with_items: "{{ storage_server_firewall_ports }}"
   become: true
   when: "{{ item.when }}"

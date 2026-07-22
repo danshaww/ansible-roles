@@ -1,4 +1,4 @@
-packages:
+storage_server_packages:
   - name: samba
     when: storage_server_smb_config_path is not none
   - name: nfs-kernel-server
@@ -9,21 +9,13 @@ packages:
     when: true
   - name: sanoid
     when: storage_server_zfs is not none
-  # - name: mailutils
-  #   when: storage_server_zfs.zed is defined
-  # - name: postfix
-  #   when: storage_server_zfs.zed is defined
   - name: rclone
     when: storage_server_rclone_config_path is not none
 
-firewall_ports:
+storage_server_firewall_ports:
   - port: 445
     when: storage_server_smb_config_path is not none
   - port: 111
     when: storage_server_nfs_config_path is not none
   - port: 2049
     when: storage_server_nfs_config_path is not none
-
-# default_acl:
-#   - A::OWNER@:rwaDxtTnNcCy
-#   - A:g:GROUP@:tcy

@@ -5,45 +5,6 @@
 - name: Storage Server | Packages | Install
   become: true
   ansible.builtin.apt:
-    name: "{{ item.name }}" 
+    name: "{{ item.name }}"
   when: "{{ item.when }}"
-  with_items: "{{ packages }}"
-
-# - name: Storage Server | Packages | Install ZFS
-#   when: storage_server_zfs is not none
-#   become: true
-#   block:
-#     - name: Enable contrib component for ZFS packages
-#       ansible.builtin.apt_repository:
-#         repo: "deb http://deb.debian.org/debian {{ ansible_distribution_release }} main contrib"
-#         state: present
-#         filename: "debian-contrib"
-#         update_cache: true
-
-#     - name: Install matching kernel headers for the running kernel
-#       ansible.builtin.apt:
-#         name: "linux-headers-{{ ansible_kernel }}"
-#         state: present
-
-#     - name: Install ZFS userland and DKMS module
-#       ansible.builtin.apt:
-#         name:
-#           - zfsutils-linux
-#           - zfs-dkms
-#           - zfs-zed
-#         state: present
-#       register: zfs_install
-
-#     - name: Load zfs kernel module
-#       community.general.modprobe:
-#         name: zfs
-#         state: present
-#       register: zfs_modprobe
-#       failed_when: false  # see note below on first-install reboot
-
-#     - name: Persist zfs module load at boot
-#       ansible.builtin.lineinfile:
-#         path: /etc/modules-load.d/zfs.conf
-#         line: zfs
-#         create: true
-#         mode: "0644"
+  with_items: "{{ storage_server_packages }}"
