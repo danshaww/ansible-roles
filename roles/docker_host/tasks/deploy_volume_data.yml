@@ -9,6 +9,20 @@
   register: volume_data_copy
   loop_control:
     label: "{{ item.1.src }} -> {{ item.0.name }}_{{ item.1.volume }}"
+  when: not item.1.template | default(false)
+
+- name: Docker | Volume Data | Template Files
+  ansible.builtin.template:
+    src: "{{ docker_volume_data_path }}/{{ item.0.name }}/{{ item.1.volume}}/{{ item.1.src }}"
+    dest: "{{ docker_base_path }}/volumes/{{ item.0.name }}_{{ item.1.volume}}/_data/{{ item.1.dest | default('') }}/{{ (item.1.src | splitext)[0] }}"
+    mode: "{{ item.1.mode | default('0644') }}"
+    owner: "{{ item.1.owner | default(1000) }}"
+    group: "{{ item.1.group | default(1000) }}"
+  loop: "{{ docker_compose_projects | subelements('volume_data', skip_missing=True) }}"
+  register: volume_data_copy
+  loop_control:
+    label: "{{ item.1.src }} -> {{ item.0.name }}_{{ item.1.volume }}"
+  when: item.1.template | default(false)
 
 - name: Docker | Volume Data | Restart Containers
   ansible.builtin.shell: "docker restart {{ item.item[1].restart_container }}"
