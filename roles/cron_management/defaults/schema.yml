@@ -3,6 +3,7 @@ cron_management_jobs:
     day: '*'
     hour: '23'
     minute: '30'
+    special_time: reboot
     job: "/bin/bash /srv/scripts/script.sh"
 
 cron_management_mail_from: null
