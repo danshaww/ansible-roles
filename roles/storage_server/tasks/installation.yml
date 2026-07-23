@@ -5,6 +5,4 @@
 - name: Storage Server | Packages | Install
   become: true
   ansible.builtin.apt:
-    name: "{{ item.name }}"
-  when: "{{ item.when }}"
-  with_items: "{{ storage_server_packages }}"
+    name: "{{ storage_server_packages }}"

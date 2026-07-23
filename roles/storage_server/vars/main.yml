@@ -1,16 +1,10 @@
 storage_server_packages:
-  - name: samba
-    when: storage_server_smb_config_path is not none
-  - name: nfs-kernel-server
-    when: storage_server_nfs_config_path is not none
-  - name: zfsutils-linux
-    when: storage_server_zfs is not none
-  - name: nfs4-acl-tools
-    when: true
-  - name: sanoid
-    when: storage_server_zfs is not none
-  - name: rclone
-    when: storage_server_rclone_config_path is not none
+  - samba
+  - nfs-kernel-server
+  - zfsutils-linux
+  - nfs4-acl-tools
+  - sanoid
+  - rclone
 
 storage_server_firewall_ports:
   - port: 445
