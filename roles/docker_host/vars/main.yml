@@ -1,8 +1,8 @@
-packages:
+docker_host_packages:
   - docker-ce
   - docker-ce-cli
   - containerd.io
   - docker-buildx-plugin
   - docker-compose-plugin
 
-applications: "{{ docker_compose_projects | map(attribute='name') | list }}"
+docker_host_applications: "{{ docker_compose_projects | map(attribute='name') | list }}"

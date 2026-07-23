@@ -18,7 +18,7 @@
     mode: '0750'
     state: directory
   become: true
-  with_items: "{{ applications }}"
+  with_items: "{{ docker_host_applications }}"
 
 - name: Docker | Configuration | Deploy Projects | Create Volumes
   ansible.builtin.file:
@@ -28,7 +28,7 @@
     mode: '0770'
     state: directory
   become: true
-  with_items: "{{ applications }}"
+  with_items: "{{ docker_host_applications }}"
   when: docker_volume_type == 'bind_mount'
 
 - name: Docker | Configuration | Set ACL for persistent volumes

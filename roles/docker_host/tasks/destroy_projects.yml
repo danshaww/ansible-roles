@@ -6,7 +6,7 @@
 
 - name: Docker | Configuration | Destroy Projects | Stop non-required projects
   ansible.builtin.shell: "docker compose -p {{ item }} down"
-  with_items: "{{ currentapplications.stdout_lines | difference(applications) }}"
+  with_items: "{{ currentapplications.stdout_lines | difference(docker_host_applications) }}"
   become: true
 
 
@@ -15,4 +15,4 @@
     path: "{{ docker_base_path }}/compose/{{ item }}"
     state: absent
   become: true
-  with_items: "{{ currentapplications.stdout_lines | difference(applications) }}"
+  with_items: "{{ currentapplications.stdout_lines | difference(docker_host_applications) }}"
