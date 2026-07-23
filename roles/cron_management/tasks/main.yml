@@ -1,10 +1,11 @@
 - name: Cron Management | Create Jobs
   ansible.builtin.cron:
     name: "{{ item.name }}"
-    day: "{{ item.day }}"
-    hour: "{{ item.hour }}"
-    minute: "{{ item.minute }}"
+    day: "{{ item.day | default(omit) }}"
+    hour: "{{ item.hour | default(omit) }}"
+    minute: "{{ item.minute | default(omit) }}"
     job: "{{ item.job }}"
+    special_time: "{{ item.special_time | default(omit) }}"
   become: true
   with_items: "{{ cron_management_jobs }}"
   when: cron_management_jobs is not none
