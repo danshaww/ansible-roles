@@ -17,29 +17,3 @@
     name: rsyslog
     state: started
     enabled: true
-
-- name: Global_System | Syslog | Disable syslog service on Alpine
-  ansible.builtin.service:
-    name: syslog
-    state: stopped
-    enabled: false
-  when: ansible_os_family == "Alpine"
-
-# - name: Global_System | Syslog | Disable Sudo Logging
-#   ansible.builtin.lineinfile:
-#     path: /etc/sudoers
-#     regexp: '^Defaults.*syslog'
-#     line: 'Defaults !syslog'
-#     validate: 'visudo -cf %s'
-
-# - name: Global_System | Syslog | Disable Sudo PAM Logging
-#   ansible.builtin.replace:
-#     path: /etc/pam.d/sudo
-#     regexp: '^(session\s+\S+\s+pam_unix\.so(?!.*silent).*)$'
-#     replace: '\1 silent'
-
-# - name: Global_System | Syslog | Disable Sudo PAM Logging
-#   ansible.builtin.replace:
-#     path: /etc/pam.d/sudo
-#     regexp: '^(session\s+\S+\s+pam_unix\.so.*)$'
-#     replace: '# \1'

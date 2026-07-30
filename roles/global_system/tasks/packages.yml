@@ -4,19 +4,6 @@
 
 - name: Global_System | Packages | Apt Installation
   ansible.builtin.apt:
-    name: "{{ system_packages.global + system_packages.apt_only + (global_system_packages | default([])) }}"
+    name: "{{ system_packages + (global_system_packages | default([])) }}"
     update_cache: true
   when: ansible_pkg_mgr == "apt"
-
-- name: Global_System | Packages | Apk Repository Configuration
-  ansible.builtin.lineinfile:
-    path: /etc/apk/repositories
-    line: "{{ item }}"
-  when: ansible_pkg_mgr == "apk"
-  with_items: "{{ system_packages.apk_repositories }}"
-
-- name: Global_System | Packages | Apk Installation
-  community.general.apk:
-    name: "{{ system_packages.global + system_packages.apk + (global_system_packages | default([])) }}"
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
