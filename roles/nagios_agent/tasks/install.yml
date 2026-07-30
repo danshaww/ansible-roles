@@ -4,15 +4,10 @@
   register: nrpe_bin
   changed_when: false
 
-- name: Install Build tools (APT)
+- name: Install Build tools
   ansible.builtin.apt:
-    name: "{{ packages.apt }}"
+    name: "{{ nagios_agent_packages }}"
   when: ansible_pkg_mgr == "apt"
-
-- name: Install Build tools (APK)
-  community.general.apk:
-    name: "{{ packages.apk }}"
-  when: ansible_pkg_mgr == "apk"
 
 - name: Install NRPE from source
   when:
@@ -54,15 +49,6 @@
         chdir: "/tmp/nrpe-4.1.3"
       when: ansible_os_family == "Debian"
 
-    - name: Add Service (Alpine)
-      ansible.builtin.copy:
-        src: nrpe-init-alpine
-        dest: /etc/init.d/nrpe
-        owner: root
-        group: root
-        mode: 0755
-      when: ansible_os_family == "Alpine"
-
 - name: Configure Service
   ansible.builtin.service:
     name: nrpe
@@ -76,14 +62,6 @@
     owner: root
     group: root
     mode: 0755
-
-# - name: Stop & Disable xinetd
-#   ansible.builtin.service:
-#     name: xinetd
-#     state: stopped
-#     enabled: false
-#   become: true
-#   ignore_errors: true
 
 - name: Add Nagios user to groups
   ansible.builtin.user:
