@@ -16,7 +16,6 @@
     recursive: "{{ item.recurse | default(true) }}"
     delete: "{{ item.delete | default(false) }}"
     mode: push
-  delegate_to: localhost
   loop: "{{ storage_server_filesystem.copy_files }}"
   become: true
   when:
