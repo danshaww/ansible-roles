@@ -19,6 +19,7 @@
   register: rsync_result
   changed_when: rsync_result.stdout_lines | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
+  delegate_to: localhost
   become: true
   when:
     - storage_server_filesystem.copy_files is defined
