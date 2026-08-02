@@ -25,6 +25,7 @@ system_packages:
   - btop
   - cron
   - nfs-common
+  - duf
 
 templates:
   - dest: /etc/motd
