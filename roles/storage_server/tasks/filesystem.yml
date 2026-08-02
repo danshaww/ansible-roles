@@ -10,12 +10,14 @@
 #   when: filesystem.directories is defined
 
 - name: Storage Server | Filesystem | Sync Required Files & Directories
-  ansible.posix.synchronize:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    recursive: "{{ item.recurse | default(true) }}"
-    delete: "{{ item.delete | default(false) }}"
-    mode: push
+  ansible.builtin.shell: >
+    rsync -a --delete -i
+    -e "ssh -o StrictHostKeyChecking=accept-new"
+    {{ playbook_dir }}/{{ item.src }}/
+    {{ ansible_user }}@{{ ansible_host | default(inventory_hostname) }}:{{ item.dst }}
+    --rsync-path="sudo rsync"
+  register: rsync_result
+  changed_when: rsync_result.stdout_lines | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
   become: true
   when:
@@ -32,4 +34,3 @@
   become: true
   when:
     - storage_server_filesystem.copy_files is defined
-
