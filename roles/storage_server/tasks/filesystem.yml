@@ -11,7 +11,7 @@
 
 - name: Storage Server | Filesystem | Resolve rsync target credentials
   ansible.builtin.set_fact:
-    rsync_target_password: "{{ secrets.credentials.ansible_password }}"
+    rsync_target_password: "{{ ansible_password }}"
     rsync_target_user: "{{ ansible_user }}"
   # no_log: true
 
