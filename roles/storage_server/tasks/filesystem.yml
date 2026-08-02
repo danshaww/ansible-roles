@@ -14,7 +14,7 @@
     rsync -a --delete -i
     -e "ssh -o StrictHostKeyChecking=accept-new"
     {{ playbook_dir }}/{{ item.src }}/
-    {{ ansible_user }}@{{ ansible_host | default(inventory_hostname) }}:{{ item.dst }}
+    {{ ansible_user }}@{{ ansible_host | default(inventory_hostname) }}:{{ item.dest }}
     --rsync-path="sudo rsync"
   register: rsync_result
   changed_when: rsync_result.stdout_lines | length > 0
