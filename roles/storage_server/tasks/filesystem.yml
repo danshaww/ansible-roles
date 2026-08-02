@@ -9,13 +9,13 @@
 #   become: true
 #   when: filesystem.directories is defined
 
-- name: Storage Server | Filesystem | Sync Required Files & Directories
-  vars:
-    ansible_connection: local
-    ansible_password: ""
-    ansible_become_password: ""
+- name: Storage Server | Filesystem | Resolve rsync target credentials
+  ansible.builtin.set_fact:
     rsync_target_password: "{{ hostvars[inventory_hostname]['ansible_password'] }}"
     rsync_target_user: "{{ hostvars[inventory_hostname]['ansible_user'] }}"
+  no_log: true
+
+- name: Storage Server | Filesystem | Sync Required Files & Directories
   ansible.builtin.shell: >
     sshpass -p '{{ rsync_target_password }}'
     rsync -a --delete -i
