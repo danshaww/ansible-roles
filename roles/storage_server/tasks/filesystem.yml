@@ -13,7 +13,7 @@
   ansible.builtin.set_fact:
     rsync_target_password: "{{ secrets.credentials.ansible_password }}"
     rsync_target_user: "{{ ansible_user }}"
-  no_log: true
+  # no_log: true
 
 - name: Storage Server | Filesystem | Sync Required Files & Directories
   ansible.builtin.shell: >
