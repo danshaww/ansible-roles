@@ -11,6 +11,7 @@
 
 - name: Storage Server | Filesystem | Sync Required Files & Directories
   ansible.builtin.shell: >
+    sshpass -p '{{ hostvars[inventory_hostname]['ansible_password'] }}'
     rsync -a --delete -i
     -e "ssh -o StrictHostKeyChecking=accept-new"
     {{ playbook_dir }}/{{ item.src }}/
@@ -20,6 +21,7 @@
   changed_when: rsync_result.stdout_lines | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
   delegate_to: localhost
+  no_log: true
   when:
     - storage_server_filesystem.copy_files is defined
 
