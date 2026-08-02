@@ -10,12 +10,15 @@
 #   when: filesystem.directories is defined
 
 - name: Storage Server | Filesystem | Sync Required Files & Directories
+  vars:
+    rsync_target_password: "{{ hostvars[inventory_hostname]['ansible_password'] }}"
+    rsync_target_user: "{{ hostvars[inventory_hostname]['ansible_user'] }}"
   ansible.builtin.shell: >
-    sshpass -p '{{ hostvars[inventory_hostname]['ansible_password'] }}'
+    sshpass -p '{{ rsync_target_password }}'
     rsync -a --delete -i
     -e "ssh -o StrictHostKeyChecking=accept-new"
     {{ playbook_dir }}/{{ item.src }}/
-    {{ hostvars[inventory_hostname]['ansible_user'] }}@{{ inventory_hostname }}:{{ item.dest }}
+    {{ rsync_target_user }}@{{ inventory_hostname }}:{{ item.dest }}
     --rsync-path="sudo rsync"
   register: rsync_result
   changed_when: rsync_result.stdout_lines | length > 0
