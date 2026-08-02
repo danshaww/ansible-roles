@@ -25,7 +25,11 @@
     {{ rsync_target_user }}@{{ inventory_hostname }}:{{ item.dest }}
     --rsync-path="sudo rsync"
   register: rsync_result
-  changed_when: rsync_result.stdout_lines | length > 0
+  changed_when: >
+    rsync_result.stdout_lines
+    | select('match', '^[<>ch].f')
+    | list
+    | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
   delegate_to: localhost
   no_log: true
