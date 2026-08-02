@@ -19,6 +19,7 @@
   ansible.builtin.shell: >
     sshpass -p '{{ rsync_target_password }}'
     rsync -a --delete -i
+    --no-perms --no-owner --no-group --no-times
     -e "ssh -o StrictHostKeyChecking=accept-new"
     {{ playbook_dir }}/{{ item.src }}/
     {{ rsync_target_user }}@{{ inventory_hostname }}:{{ item.dest }}
