@@ -28,25 +28,34 @@
 #   when:
 #     - storage_server_filesystem.copy_files is defined
 
-# - name: Storage Server | Filesystem | Ensure permissions for synced paths
-#   ansible.builtin.file:
-#     path: "{{ item.dest }}"
-#     owner: "{{ item.owner | default('root') }}"
-#     group: "{{ item.group | default('root') }}"
-#     mode: "{{ item.mode | default('0644') }}"
-#     recurse: "{{ item.recurse | default(true) }}"
-#   loop: "{{ storage_server_filesystem.copy_files }}"
-#   become: true
-#   when:
-#     - storage_server_filesystem.copy_files is defined
-
 - name: Storage Server | Filesystem | Copy Required Files & Directories
-  ansible.builtin.copy:
+  ansible.posix.synchronize:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0644') }}"
+    recursive: "{{ item.recurse | default(true) }}"
   loop: "{{ storage_server_filesystem.copy_files }}"
   become: true
   when: storage_server_filesystem.copy_files is defined
+
+- name: Storage Server | Filesystem | Ensure permissions for synced paths
+  ansible.builtin.file:
+    path: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+    recurse: "{{ item.recurse | default(true) }}"
+  loop: "{{ storage_server_filesystem.copy_files }}"
+  become: true
+  when:
+    - storage_server_filesystem.copy_files is defined
+
+# - name: Storage Server | Filesystem | Copy Required Files & Directories
+#   ansible.builtin.copy:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     owner: "{{ item.owner | default('root') }}"
+#     group: "{{ item.group | default('root') }}"
+#     mode: "{{ item.mode | default('0644') }}"
+#   loop: "{{ storage_server_filesystem.copy_files }}"
+#   become: true
+#   when: storage_server_filesystem.copy_files is defined
