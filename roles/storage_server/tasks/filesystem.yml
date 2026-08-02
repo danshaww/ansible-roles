@@ -14,13 +14,12 @@
     rsync -a --delete -i
     -e "ssh -o StrictHostKeyChecking=accept-new"
     {{ playbook_dir }}/{{ item.src }}/
-    {{ ansible_user }}@{{ ansible_host | default(inventory_hostname) }}:{{ item.dest }}
+    {{ hostvars[inventory_hostname]['ansible_user'] }}@{{ inventory_hostname }}:{{ item.dest }}
     --rsync-path="sudo rsync"
   register: rsync_result
   changed_when: rsync_result.stdout_lines | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
   delegate_to: localhost
-  become: true
   when:
     - storage_server_filesystem.copy_files is defined
 
