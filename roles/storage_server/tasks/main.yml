@@ -35,3 +35,8 @@
   when:
     - enable_rclone
     - storage_server_rclone_config_path is not none
+
+- name: Storage Server | Include builtin cron jobs
+  ansible.builtin.include_tasks: cron_jobs.yml
+  when:
+    - enable_builtin_cron_jobs
