@@ -71,3 +71,13 @@
   notify: Restart zed
   become: true
   when: storage_server_zfs.zed is defined
+
+- name: Storage Server | ZFS | Configure Scrub Cron Job
+  ansible.builtin.cron:
+    name: Weekly ZFS Scrub
+    weekday: 1
+    hour: 9
+    minute: 20
+    job: "/bin/bash zpool scrub {{ item.name }} 1> >(logger -p local3.info -t $APP_NAME) 2> >(tee /dev/stderr | logger -p local3.err -t $APP_NAME)"
+  become: true
+  with_items: "{{ storage_server_zfs.pools }}"
