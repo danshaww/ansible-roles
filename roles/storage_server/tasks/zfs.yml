@@ -78,6 +78,6 @@
     weekday: 1
     hour: 9
     minute: 20
-    job: "/bin/bash zpool scrub {{ item.name }} 1> >(logger -p local3.info -t zfs) 2> >(tee /dev/stderr | logger -p local3.err -t zfs)"
+    job: "/bin/bash -c 'zpool scrub {{ item.name }} 1> >(logger -p local3.info -t zfs) 2> >(tee /dev/stderr | logger -p local3.err -t zfs)'"
   become: true
   with_items: "{{ storage_server_zfs.pools }}"
