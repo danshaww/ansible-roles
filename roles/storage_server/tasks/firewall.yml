@@ -4,4 +4,4 @@
     port: "{{ item.port }}"
   with_items: "{{ storage_server_firewall_ports }}"
   become: true
-  when: "{{ item.when }}"
+  when: item.when
