@@ -5,3 +5,6 @@ galaxy_info:
   license: GPL
   galaxy_tags: []
 dependencies: []
+
+collections:
+  - community.general
