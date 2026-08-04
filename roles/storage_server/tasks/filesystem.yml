@@ -13,7 +13,7 @@
   ansible.builtin.set_fact:
     rsync_target_password: "{{ ansible_password }}"
     rsync_target_user: "{{ ansible_user }}"
-  no_log: true
+  # no_log: true
 
 - name: Storage Server | Filesystem | Sync Required Files & Directories
   ansible.builtin.shell: >
@@ -32,7 +32,7 @@
     | length > 0
   loop: "{{ storage_server_filesystem.copy_files }}"
   delegate_to: localhost
-  no_log: true
+  # no_log: true
   when:
     - storage_server_filesystem.copy_files is defined
 
