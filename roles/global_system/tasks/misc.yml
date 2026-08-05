@@ -12,10 +12,9 @@
 
 - name: Global_System | Misc | Copy Binaries
   ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: bin/
+    dest: /usr/bin/
     mode: '0755'
-  with_items: "{{ binaries }}"
 
 - name: Global_System | Misc | Install Starship
   ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y

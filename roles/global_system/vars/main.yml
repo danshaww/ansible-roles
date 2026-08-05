@@ -33,11 +33,5 @@ templates:
   - dest: /etc/issue
     src: "{{ global_system_issue_template_path | default(null) }}"
 
-binaries:
-  - dest: /usr/local/bin/figurine
-    src: figurine
-  - dest: /usr/bin/neofetch
-    src: neofetch
-
 firewall_ports:
   - port: 22
