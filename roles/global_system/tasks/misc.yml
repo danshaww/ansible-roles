@@ -12,27 +12,6 @@
 
 ## Simplify the below
 
-- name: Global_System | Misc | Check for just bash completions
-  ansible.builtin.stat:
-    path: /usr/share/bash-completion/completions/just
-  register: completions
-
-- name: Global_System | Misc | Ensure bash completions path completions exists
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - /usr/share/bash-completion
-    - /usr/share/bash-completion/completions
-
-- name: Global_System | Misc | Install just bash completions
-  ansible.builtin.shell: |
-    just --completions bash | sudo tee /usr/share/bash-completion/completions/just >> /dev/null
-    echo "complete -F _just -o bashdefault -o default j" | sudo tee -a /usr/share/bash-completion/completions/just >> /dev/null
-  become: true
-  when: not completions.stat.exists
-  changed_when: not completions.stat.exists
-
 - name: Global_System | Misc | Copy Binaries
   ansible.builtin.copy:
     src: "{{ item.src }}"
