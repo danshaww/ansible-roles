@@ -1,0 +1,28 @@
+- name: Global_System | Logging | Create rsyslog.d directory
+  ansible.builtin.file:
+    path: /etc/rsyslog.d
+    state: directory
+    owner: root
+    group: root
+
+- name: Global_System | Logging | Copy Syslog Config Files
+  ansible.builtin.copy:
+    src: "{{ global_system_syslog_config_path }}"
+    dest: /etc/
+    mode: '0644'
+  notify: Restart Syslog
+  when: global_system_syslog_config_path is not none
+
+- name: Global_System | Logging | Configure rsyslog service
+  ansible.builtin.service:
+    name: rsyslog
+    state: started
+    enabled: true
+
+- name: Global_System | Logging | Copy Journald Config File
+  ansible.builtin.copy:
+    src: "{{ global_system_journald_config_path }}"
+    dest: /etc/systemd/journald.conf
+    mode: 0644
+  notify: Restart Journald
+  when: global_system_journald_config_path is not none

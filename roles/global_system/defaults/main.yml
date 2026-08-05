@@ -1,10 +1,9 @@
 global_system_enable_packages: true
 global_system_enable_ssh_config: true
 global_system_enable_firewall_config: true
-global_system_enable_syslog_config: true
+global_system_enable_logging_config: true
 global_system_enable_misc_config: true
 global_system_enable_cloud_init: true
-global_system_enable_journald_config: true
 global_system_syslog_config_path: null
 global_system_cloud_config_path: null
 global_system_ssh_config_path: null

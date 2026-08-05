@@ -15,12 +15,10 @@
     - global_system_enable_firewall_config | default(true)
     - "'ufw' in ansible_facts.packages"
 
-- name: Global_System | Syslog Config
+- name: Global_System | Logging Config
   ansible.builtin.include_tasks: syslog.yml
   when:
-    - global_system_enable_syslog_config | default(true)
-    - global_system_syslog_config_path | default(null) is not none
-
+    - global_system_enable_logging_config | default(true)
 
 - name: Global_System | Misc Tasks
   ansible.builtin.include_tasks: misc.yml
@@ -33,9 +31,3 @@
     - global_system_enable_cloud_init | default(true)
     - "'cloud-init' in ansible_facts.packages"
     - global_system_cloud_config_path | default(null) is not none
-
-- name: Global_System | Journald Tasks
-  ansible.builtin.include_tasks: journald.yml
-  when:
-    - global_system_enable_journald | default(true)
-    - global_system_journald_config_path | default(null) is not none
