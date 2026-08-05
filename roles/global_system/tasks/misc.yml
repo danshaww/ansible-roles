@@ -10,8 +10,6 @@
   when: global_system_templates | default(null) is not none
   with_items: "{{ global_system_templates }}"
 
-## Simplify the below
-
 - name: Global_System | Misc | Copy Binaries
   ansible.builtin.copy:
     src: "{{ item.src }}"
@@ -19,9 +17,8 @@
     mode: '0755'
   with_items: "{{ binaries }}"
 
-### Make this not run every time
-
-- name: Global_System| Misc | Install Starship
+- name: Global_System | Misc | Install Starship
   ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
-  changed_when: false
+  args:
+    creates: /usr/local/bin/starship
   become: true
