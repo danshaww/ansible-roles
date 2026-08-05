@@ -10,6 +10,8 @@
   when: global_system_templates | default(null) is not none
   with_items: "{{ global_system_templates }}"
 
+## Simplify the below
+
 - name: Global_System | Misc | Check for just bash completions
   ansible.builtin.stat:
     path: /usr/share/bash-completion/completions/just
