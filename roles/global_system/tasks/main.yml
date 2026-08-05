@@ -16,7 +16,7 @@
     - "'ufw' in ansible_facts.packages"
 
 - name: Global_System | Logging Config
-  ansible.builtin.include_tasks: syslog.yml
+  ansible.builtin.include_tasks: logging.yml
   when:
     - global_system_enable_logging_config | default(true)
 
