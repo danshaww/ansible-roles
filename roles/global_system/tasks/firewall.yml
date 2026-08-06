@@ -1,10 +1,9 @@
+- name: Global_System | UFW | Allow SSH
+  community.general.ufw:
+    rule: allow
+    port: 22
+    protocol: any
 - name: Global_System | UFW | Enable and set default deny rule
   community.general.ufw:
     state: enabled
     policy: deny
-- name: Global_System | UFW | Create Rules
-  community.general.ufw:
-    rule: allow
-    port: "{{ item.port }}"
-    protocol: "{{ item.protocol | default('any') }}"
-  with_items: "{{ firewall_ports + global_system_firewall_ports | default([]) }}"

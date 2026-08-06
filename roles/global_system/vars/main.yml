@@ -32,6 +32,3 @@ templates:
     src: "{{ global_system_motd_template_path | default(null) }}"
   - dest: /etc/issue
     src: "{{ global_system_issue_template_path | default(null) }}"
-
-firewall_ports:
-  - port: 22
