@@ -1,9 +1,8 @@
 - name: Unix Groups | Create Groups
-  when: item.create_group | default(true)
   ansible.builtin.group:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
-    gid: "{{ item.gid }}"
+    gid: "{{ item.gid | default(omit)}}"
   with_items: "{{ groups }}"
   loop_control:
     label: "{{ item.name }}"
