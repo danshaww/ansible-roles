@@ -31,6 +31,7 @@ user_management_groups:
   - name: example
     gid: 1092
     state: present
+    append: true
     members:
       - name: user1
       - name: user2
