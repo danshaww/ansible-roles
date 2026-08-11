@@ -6,6 +6,7 @@
     minute: "{{ item.minute | default(omit) }}"
     job: "{{ item.job }}"
     special_time: "{{ item.special_time | default(omit) }}"
+    user: "{{ item.user | default(cron_management_default_user) }}"
   become: true
   with_items: "{{ cron_management_jobs }}"
   when: cron_management_jobs is not none
@@ -15,11 +16,15 @@
     env: true
     name: MAILFROM
     job: "{{ cron_management_mail_from }}"
+    user: "{{ item.user | default(cron_management_default_user) }}"
   when: cron_management_mail_from is not none
+  become: true
 
 - name: Cron Management | Set MailTo
   ansible.builtin.cron:
     env: true
     name: MAILTO
     job: "{{ cron_management_mail_to }}"
+    user: "{{ item.user | default(cron_management_default_user) }}"
   when: cron_management_mail_to is not none
+  become: true

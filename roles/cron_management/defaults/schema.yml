@@ -5,6 +5,8 @@ cron_management_jobs:
     minute: '30'
     special_time: reboot
     job: "/bin/bash /srv/scripts/script.sh"
+    user: sa
 
 cron_management_mail_from: null
 cron_management_mail_to: null
+cron_management_default_user: sa

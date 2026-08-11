@@ -2,3 +2,4 @@
 cron_management_jobs: "{{ cron_jobs | default(null) }}"
 cron_management_mail_to: "{{ cron_mail_to | default(null) }}"
 cron_management_mail_from: "{{ cron_mail_from | default(null) }}"
+cron_management_default_user: root
