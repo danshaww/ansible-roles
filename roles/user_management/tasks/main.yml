@@ -17,7 +17,7 @@
 
 - name: User Management | Include unix_groups
   ansible.builtin.include_tasks: unix_groups.yml
-  when: groups is not none and enable_group_management
+  when: user_management_groups is not none and enable_group_management
 
 - name: User Management | Include Samba User Config
   ansible.builtin.include_tasks: samba_users.yml
