@@ -7,15 +7,15 @@
     state: directory
   become: true
 
-- name: Docker | Configuration | Deploy Projects | Create Directories
-  ansible.builtin.file:
-    path: "{{ docker_base_path }}/compose/{{ item }}"
-    owner: root
-    group: root
-    mode: '0755'
-    state: directory
-  become: true
-  with_items: "{{ docker_host_applications }}"
+# - name: Docker | Configuration | Deploy Projects | Create Directories
+#   ansible.builtin.file:
+#     path: "{{ docker_base_path }}/compose/{{ item }}"
+#     owner: root
+#     group: root
+#     mode: '0755'
+#     state: directory
+#   become: true
+#   with_items: "{{ docker_host_applications }}"
 
 - name: Docker | Configuration | Deploy Projects | Create Volumes
   ansible.builtin.file:
@@ -31,7 +31,7 @@
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ item.project_path | default(docker_compose_default_path + '/' + item.name + '.yml.j2') }}"
-    dest: "{{ docker_base_path }}/compose/{{ item.name }}/compose.yml"
+    dest: "{{ docker_base_path }}/compose/{{ item.name }}.yml"
     owner: root
     group: root
     mode: '0600'
@@ -43,7 +43,7 @@
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.name }}"
-    project_src: "{{ docker_base_path }}/compose/{{ item.name }}"
+    definition: "{{ docker_base_path }}/compose/{{ item.name }}.yml"
     remove_orphans: true
     build: "{{ docker_build }}"
     pull: "{{ docker_pull }}"
