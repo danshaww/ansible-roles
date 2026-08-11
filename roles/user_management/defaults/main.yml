@@ -26,3 +26,4 @@ users:
     state: # set to absent to delete users and remove home directory
     enable_samba: # default false, requires enable_samba_user on server via inventory
 
+# TODO: Add generic group membership configuration to facilitate stripping it out of Docker role
