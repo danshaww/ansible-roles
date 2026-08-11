@@ -1,21 +1,18 @@
-- name: Docker | Configuration | Deploy Projects | Create Directories
+- name: Docker | Configuration | Deploy Projects | Create Compose Directory
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ docker_base_path }}/compose"
     owner: root
-    group: docker
-    mode: '0770'
+    group: root
+    mode: '0755'
     state: directory
   become: true
-  with_items:
-    - "{{ docker_base_path }}"
-    - "{{ docker_base_path }}/compose"
 
 - name: Docker | Configuration | Deploy Projects | Create Directories
   ansible.builtin.file:
     path: "{{ docker_base_path }}/compose/{{ item }}"
     owner: root
-    group: docker
-    mode: '0750'
+    group: root
+    mode: '0755'
     state: directory
   become: true
   with_items: "{{ docker_host_applications }}"
@@ -31,19 +28,13 @@
   with_items: "{{ docker_host_applications }}"
   when: docker_volume_type == 'bind_mount'
 
-- name: Docker | Configuration | Set ACL for persistent volumes
-  ansible.builtin.shell: | # Using shell to skip NFS mounts
-    find {{ docker_base_path }}/volumes -xdev -type d ! -type s -print0 | xargs -0 setfacl -d -m g:docker:rx 2>&1 | grep -vE "Operation not supported|No such file or directory" || true
-  changed_when: false
-  when: docker_volume_set_acl
-
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
     src: "{{ item.project_path | default(docker_compose_default_path + '/' + item.name + '.yml.j2') }}"
     dest: "{{ docker_base_path }}/compose/{{ item.name }}/compose.yml"
     owner: root
-    group: docker
-    mode: '0700'
+    group: root
+    mode: '0600'
   with_items: "{{ docker_compose_projects }}"
   become: true
   loop_control:
