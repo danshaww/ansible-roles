@@ -29,7 +29,7 @@ users:
 
 groups:
   - name: example
-    id: 1092
+    gid: 1092
     state: present
     members:
       - name: user1
