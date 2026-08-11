@@ -43,7 +43,8 @@
 - name: Docker | Configuration | Deploy Projects | Start Compose Projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.name }}"
-    definition: "{{ docker_base_path }}/compose/{{ item.name }}.yml"
+    project_src: "{{ docker_base_path }}/compose"
+    files: "{{ item.name }}.yml"
     remove_orphans: true
     build: "{{ docker_build }}"
     pull: "{{ docker_pull }}"
