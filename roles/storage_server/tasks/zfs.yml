@@ -73,7 +73,7 @@
 
 - name: Storage Server | ZFS | Configure Scrub Cron Job
   ansible.builtin.cron:
-    name: Weekly ZFS Scrub
+    name: Weekly ZFS Scrub "{{ item.name }}"
     weekday: 1
     hour: 23
     minute: 0
