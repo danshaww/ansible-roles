@@ -42,6 +42,7 @@
     default: false
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
+    recalculate_mask: "{{ item.1.recalculate_mask | default('default') }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
@@ -60,6 +61,7 @@
     default: true
     state: "{{ item.1.state | default('present') }}"
     recursive: "{{ item.1.recursive | default(true) }}"
+    recalculate_mask: "{{ item.1.recalculate_mask | default('default') }}"
   loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
   loop_control:
     label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
