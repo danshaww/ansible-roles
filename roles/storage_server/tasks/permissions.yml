@@ -48,7 +48,7 @@
   when:
     - storage_server_zfs.datasets is defined
     - item.1.state | default('present') == 'present'
-    - item.1.entity is defined
+    - item.1.permissions is defined
   become: true
 
 - name: Storage Server | ZFS | Configure default ACL
@@ -67,5 +67,5 @@
     - storage_server_zfs.datasets is defined
     - item.1.default | default(true) | bool
     - item.1.state | default('present') == 'present'
-    - item.1.entity is defined
+    - item.1.permissions is defined
   become: true
