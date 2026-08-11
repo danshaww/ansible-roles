@@ -7,16 +7,6 @@
     state: directory
   become: true
 
-# - name: Docker | Configuration | Deploy Projects | Create Directories
-#   ansible.builtin.file:
-#     path: "{{ docker_base_path }}/compose/{{ item }}"
-#     owner: root
-#     group: root
-#     mode: '0755'
-#     state: directory
-#   become: true
-#   with_items: "{{ docker_host_applications }}"
-
 - name: Docker | Configuration | Deploy Projects | Create Volumes
   ansible.builtin.file:
     path: "{{ docker_base_path }}/volumes/{{ item }}"
