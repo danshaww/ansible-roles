@@ -1,0 +1,36 @@
+enable_user_management: true
+enable_group_management: true
+enable_samba_users: false # set to true for fileservers in inventory
+home_path: /home
+
+## Schema below, these will always be replaced
+skel_profile:
+  files: []
+
+users:
+  - username: example
+    group: # Defaults to username
+    password: password
+    uid: 1055 # defaults to 4096
+    gid: 1055 # Defaults to UID value
+    home: # Defaults to /home/{username}
+    shell: # Defaults to /bin/bash
+    sudoers: # if not defined, sudoers file be deleted or not created
+      - ALL=(ALL) ALL
+    ssh_private_key:
+    ssh_public_key:
+    ssh_authorized_keys:
+    ssh_manage_keys: false # remove authorized keys not in Ansible config
+    home_dir_files:
+      - src: ../config/.bashrc
+        dest: .bashrc
+    state: # set to absent to delete users and remove home directory
+    enable_samba: # default false, requires enable_samba_user on server via inventory
+
+groups:
+  - name: example
+    id: 1092
+    state: present
+    members:
+      - name: user1
+      - name: user2

@@ -5,17 +5,21 @@
 
 - name: User Management | Include unix_users
   ansible.builtin.include_tasks: unix_users.yml
-  when: users is defined and enable_user_management
+  when: users is not none and enable_user_management
 
 - name: User Management | Include ssh_keys
   ansible.builtin.include_tasks: ssh_keys.yml
-  when: users is defined and enable_user_management
+  when: users is not none and enable_user_management
 
 - name: User Management | Include Skel Profile Config
   ansible.builtin.include_tasks: skel_profile.yml
-  when: skel_profile is defined and enable_user_management
+  when: skel_profile is not none and enable_user_management
 
-- name: User Management | Include Samba User Config # disabled by default
+- name: User Management | Include unix_groups
+  ansible.builtin.include_tasks: unix_groups.yml
+  when: groups is not none and enable_group_management
+
+- name: User Management | Include Samba User Config
   ansible.builtin.include_tasks: samba_users.yml
   when:
     - enable_samba_users
