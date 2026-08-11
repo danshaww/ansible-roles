@@ -36,7 +36,7 @@
 - name: Storage Server | ZFS | Configure implicit ACL
   ansible.posix.acl:
     path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity }}"
+    entity: "{{ item.1.entity | default(omit) }}"
     etype: "{{ item.1.etype | default('group') }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
     default: false
@@ -54,7 +54,7 @@
 - name: Storage Server | ZFS | Configure default ACL
   ansible.posix.acl:
     path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity }}"
+    entity: "{{ item.1.entity | default(omit) }}"
     etype: "{{ item.1.etype | default('group') }}"
     permissions: "{{ item.1.permissions | default(omit) }}"
     default: true
