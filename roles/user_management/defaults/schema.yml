@@ -27,7 +27,7 @@ users:
     state: # set to absent to delete users and remove home directory
     enable_samba: # default false, requires enable_samba_user on server via inventory
 
-user_management_groups:
+groups:
   - name: example
     gid: 1092
     state: present
