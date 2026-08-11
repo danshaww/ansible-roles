@@ -2,7 +2,6 @@ docker_install: # Install Docker?
 docker_configure: # Configure Docker? (Deploy compose projects and daemon config)
 docker_config_path: # Path to config.json configuration for root user
 docker_enable_auth: # Configure github & gitea authentication
-docker_users: # Users to add to docker group
 docker_build: # Default value for docker build argument when running compose up -d
 docker_pull: # Default value for docker pull argument when running compose up -d
 docker_enable_syslog: # Enable sending container logs to syslog

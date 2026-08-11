@@ -1,10 +1,3 @@
-- name: Docker | Installation | Create Group
-  ansible.builtin.group:
-    name: docker
-    state: present
-    gid: "{{ docker_group_id }}"
-  become: true
-
 - name: Docker | Installation | APT | Add APT GPG Key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
