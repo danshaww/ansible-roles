@@ -54,7 +54,6 @@
     enabled: false
     state: stopped
   with_items:
-    - sanoid.service
     - sanoid-prune.service
     - sanoid.timer
   become: true
