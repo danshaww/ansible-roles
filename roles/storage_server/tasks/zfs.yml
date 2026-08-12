@@ -1,3 +1,10 @@
+- name: Storage Server | ZFS | Install
+  become: true
+  ansible.builtin.apt:
+    name:
+      - zfsutils-linux
+      - sanoid
+
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
     name: "{{ item.name }}"

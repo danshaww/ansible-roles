@@ -1,7 +1,0 @@
-- name: Storage Server | Firewall | Configure UFW
-  community.general.ufw:
-    rule: allow
-    port: "{{ item.port }}"
-  with_items: "{{ storage_server_firewall_ports }}"
-  become: true
-  when: item.when

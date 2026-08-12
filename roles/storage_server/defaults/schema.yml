@@ -29,12 +29,9 @@ storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
     - name: test # dataset name (ommiting pool name)
       extra_zfs_properties: # All ZFS options
       state: # set to absent to delete dataset
-      acl: # Optional dataset-scoped acl, applied to the dataset mount point
-        - entity: # ACL entity if required
-          etype: # ACL entity type if required (default=group)
-          permissions: # ACL permissions if required
-          default: # ACL as default (default=true)
-          state: # State of ACL (default=present)
+      acl: # Optional dataset-scoped acl, applied to the dataset mount point, idempotent - ACL's not listed will be removed
+        - u:userhere:rwx
+        - g:yourgroup:rx
       unix_permissions:
         - mode: # Mode to set if required (default 770)
           owner: # Owner to set if required (default root)

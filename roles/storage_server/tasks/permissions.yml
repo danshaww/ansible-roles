@@ -13,61 +13,56 @@
     label: "{{ item.name }}"
   become: true
 
-- name: Storage Server | ZFS | Remove implicit ACL entries
-  ansible.builtin.command:
-    cmd: "setfacl -R -x {{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
-  when: item.1.state | default('present') == 'absent'
-  become: true
-  changed_when: true
+- name: Storage Server | ZFS | Configure ACL
+  ansible.builtin.shell: |
+    set -euo pipefail
+    MOUNT="{{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name) }}"
 
-- name: Storage Server | ZFS | Remove default ACL entries
-  ansible.builtin.command:
-    cmd: "setfacl -R -x d:{{ item.1.etype | first }}:{{ item.1.entity }} {{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
-  when: item.1.state | default('present') == 'absent'
-  become: true
-  changed_when: true
+    normalize() { echo "$1" | sed -e 's/^u:/user:/' -e 's/^g:/group:/'; }
 
-- name: Storage Server | ZFS | Configure implicit ACL
-  ansible.posix.acl:
-    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity | default(omit) }}"
-    etype: "{{ item.1.etype | default('group') }}"
-    permissions: "{{ item.1.permissions | default(omit) }}"
-    default: false
-    state: "{{ item.1.state | default('present') }}"
-    recursive: "{{ item.1.recursive | default(true) }}"
-    recalculate_mask: "{{ item.1.recalculate_mask | default('default') }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
+    # Desired type:name keys, derived from ansible config
+    DESIRED_KEYS=""
+    {% for entry in item.acl %}
+    DESIRED_KEYS="$DESIRED_KEYS $(normalize '{{ entry }}' | cut -d: -f1-2)"
+    {% endfor %}
+
+    # Current named user/group entries actually on disk (access ACL, top-level representative)
+    CURRENT_KEYS=$(getfacl -p --access "$MOUNT" | awk -F: '($1=="user" || $1=="group") && $2!="" {print $1":"$2}')
+
+    for key in $CURRENT_KEYS; do
+      case " $DESIRED_KEYS " in
+        *" $key "*) : ;;   # still wanted, leave alone
+        *)
+          echo "Removing stale ACL entry: $key"
+          setfacl -R -x "$key" "$MOUNT" || true
+          setfacl -R -x "d:$key" "$MOUNT" || true
+          ;;
+      esac
+    done
+
+    # Apply/refresh desired entries — untouched entries stay as-is
+    setfacl -R -m "{{ item.acl | join(',') }},d:{{ item.acl | join(',d:') }}" "$MOUNT"
+  args:
+    executable: /bin/bash
   when:
     - storage_server_zfs.datasets is defined
-    - item.1.state | default('present') == 'present'
-    - item.1.permissions is defined
+    - item.acl is defined
+    - item.acl != []
   become: true
-
-- name: Storage Server | ZFS | Configure default ACL
-  ansible.posix.acl:
-    path: "{{ item.0.extra_zfs_properties.mountpoint | default('/mnt/' + item.0.name)}}"
-    entity: "{{ item.1.entity | default(omit) }}"
-    etype: "{{ item.1.etype | default('group') }}"
-    permissions: "{{ item.1.permissions | default(omit) }}"
-    default: true
-    state: "{{ item.1.state | default('present') }}"
-    recursive: "{{ item.1.recursive | default(true) }}"
-    recalculate_mask: "{{ item.1.recalculate_mask | default('default') }}"
-  loop: "{{ storage_server_zfs.datasets | subelements('acl', skip_missing=True) }}"
+  loop: "{{ storage_server_zfs.datasets }}"
   loop_control:
-    label: "{{ item.0.name }} | {{ item.1.entity | default('') }}"
+    label: "{{ item.name }}"
+  changed_when: false
+
+- name: Storage Server | ZFS | Stip ACL
+  ansible.builtin.shell: |
+    setfacl -R -b {{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name)}}
   when:
     - storage_server_zfs.datasets is defined
-    - item.1.default | default(true) | bool
-    - item.1.state | default('present') == 'present'
-    - item.1.permissions is defined
+    - item.acl is defined
+    - item.acl == []
   become: true
+  loop: "{{ storage_server_zfs.datasets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: false
