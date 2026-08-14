@@ -8,6 +8,11 @@ docker_enable_syslog: # Enable sending container logs to syslog
 docker_compose_projects: # Compose project definition (remove to skip)
   - name: # Compose project name (must match j2 compose project template filename)
     project_path: # Custom project specific path to j2 compose template
+    volume_config:
+      owner: # Defaults to root
+      group: # Defaults to root
+      mode: # Defaults to 0770
+      enabled: # Defaults to true
     volume_data: # Configuration to be deployed into volumes (remove to skip)
       - volume: # Volume to deploy into
         src: # Source file to place into the volume (directory structure must be {project name}/{volume name}/{file})
@@ -20,4 +25,4 @@ docker_compose_projects: # Compose project definition (remove to skip)
 docker_compose_default_path: # Path to directory containing compose file templates
 docker_volume_data_path: # Path to directory containing volume data if required
 docker_base_path: # Use to override /var/lib/docker
-docker_volume_type: # either bind_mount or named_volume (default)
+docker_bind_volume_path: # Location to create bind mount volume directories

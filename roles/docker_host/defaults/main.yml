@@ -10,4 +10,4 @@ docker_compose_default_path: null
 docker_volume_data_path: null
 docker_volume_set_acl: true
 docker_base_path: /var/lib/docker
-docker_volume_type: named_volume
+docker_bind_volume_path: null

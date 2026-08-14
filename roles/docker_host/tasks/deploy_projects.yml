@@ -7,16 +7,18 @@
     state: directory
   become: true
 
-- name: Docker | Configuration | Deploy Projects | Create Volumes
+- name: Docker | Configuration | Deploy Projects | Create Bind Mount Volumes
   ansible.builtin.file:
-    path: "{{ docker_base_path }}/volumes/{{ item }}"
-    owner: root
-    group: docker
-    mode: '0770'
+    path: "{{ docker_bind_volume_path }}/{{ item.name }}"
+    owner: "{{ item.volume_config.owner | default('root') }}"
+    group: "{{ item.volume_config.group | default('root') }}"
+    mode: "{{ item.volume_config.mode | default('0770') }}"
     state: directory
   become: true
-  with_items: "{{ docker_host_applications }}"
-  when: docker_volume_type == 'bind_mount'
+  with_items: "{{ docker_compose_projects }}"
+  when:
+    - docker_bind_volume_path is not none
+    - item.volume_config.enabled | default(true)
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
