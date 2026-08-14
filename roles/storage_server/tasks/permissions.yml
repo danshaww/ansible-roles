@@ -1,22 +1,20 @@
 
 - name: Storage Server | ZFS | Set Unix Permissions
   ansible.builtin.file:
-    path: "{{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name)}}"
-    mode: "{{ item.unix_permissions.mode | default('0770') }}"
-    owner: "{{ item.unix_permissions.owner | default('root') }}"
-    group: "{{ item.unix_permissions.group | default('root') }}"
-  loop: "{{ storage_server_zfs.datasets }}"
-  when:
-    - storage_server_zfs.datasets is defined
-    - not (item.unix_permissions.ignore | default(false))
+    path: "{{ item.path }}"
+    mode: "{{ item.mode | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+  loop: "{{ storage_server_permissions }}"
+  when: item.mode is defined or item.owner is defined or item.group is defined
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.path }}"
   become: true
 
 - name: Storage Server | ZFS | Configure ACL
   ansible.builtin.shell: |
     set -euo pipefail
-    MOUNT="{{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name) }}"
+    MOUNT="{{ item.path }}"
 
     normalize() { echo "$1" | sed -e 's/^u:/user:/' -e 's/^g:/group:/'; }
 
@@ -45,24 +43,22 @@
   args:
     executable: /bin/bash
   when:
-    - storage_server_zfs.datasets is defined
     - item.acl is defined
     - item.acl != []
   become: true
-  loop: "{{ storage_server_zfs.datasets }}"
+  loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.path }}"
   changed_when: false
 
 - name: Storage Server | ZFS | Stip ACL
   ansible.builtin.shell: |
-    setfacl -R -b {{ item.extra_zfs_properties.mountpoint | default('/mnt/' + item.name)}}
+    setfacl -R -b {{ item.path }}
   when:
-    - storage_server_zfs.datasets is defined
     - item.acl is defined
     - item.acl == []
   become: true
-  loop: "{{ storage_server_zfs.datasets }}"
+  loop: "{{ storage_server_permissions }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.path }}"
   changed_when: false

@@ -12,7 +12,7 @@
   ansible.builtin.include_tasks: permissions.yml
   when:
     - enable_permissions
-    # - storage_server_permissions is not none
+    - storage_server_permissions is not none
 
 - name: Include Filesystem Tasks
   ansible.builtin.include_tasks: filesystem.yml
