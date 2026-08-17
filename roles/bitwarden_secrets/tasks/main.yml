@@ -1,6 +1,67 @@
-- name: Use Password Manager
-  ansible.builtin.include_tasks: pwd_mgr.yml
-  when: mode == "pwd_mgr"
-- name: Use Secrets Manager
-  ansible.builtin.include_tasks: secrets_mgr.yml
-  when: mode == "secrets_mgr"
+- name: Get all Bitwarden projects
+  command:
+    argv:
+      - "{{ bws_cli_path }}"
+      - "project"
+      - "list"
+      - "--output"
+      - "json"
+  register: bws_projects_raw
+  changed_when: false
+  no_log: false
+- name: Build project map
+  set_fact:
+    bws_projects: >-
+      {{
+        dict(
+          (bws_projects_raw.stdout | from_json)
+          | map(attribute='name')
+          | map('regex_replace', '[^a-zA-Z0-9_]', '_')
+          | zip(
+              (bws_projects_raw.stdout | from_json)
+              | map(attribute='id')
+            )
+        )
+      }}
+  no_log: false
+- name: Initialize secrets dict
+  set_fact:
+    secrets: {}
+  no_log: false
+- name: Fetch secrets for each project
+  command:
+    argv:
+      - "{{ bws_cli_path }}"
+      - "secret"
+      - "list"
+      - "{{ item.value }}"
+      - "--output"
+      - "json"
+  register: bws_results
+  loop: "{{ bws_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  changed_when: false
+  no_log: false
+  retries: 5
+  delay: 5
+- name: Build secrets dict per project
+  set_fact:
+    secrets: >-
+      {{
+        secrets | combine({
+          item.item.key: dict(
+            (item.stdout | from_json)
+            | map(attribute='key')
+            | map('regex_replace', '[^a-zA-Z0-9_]', '_')
+            | zip(
+                (item.stdout | from_json)
+                | map(attribute='value')
+              )
+          )
+        })
+      }}
+  loop: "{{ bws_results.results }}"
+  loop_control:
+    label: "{{ item.item.key }}"
+  no_log: false

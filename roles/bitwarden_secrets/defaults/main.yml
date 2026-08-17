@@ -2,8 +2,6 @@ secrets_list:
   - secret1
   - secret2
 
-mode: secrets_mgr
-
 bws_cli_path: "bws"
 bws_flatten_secrets: true
 bws_prefix: ""
