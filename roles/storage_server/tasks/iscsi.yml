@@ -1,0 +1,35 @@
+- name: Storage Server | ISCSI | Install
+  ansible.builtin.apt:
+    name:
+      - targetcli-fb
+      - python3-rtslib-fb
+    state: present
+  become: true
+
+- name: Storage Server | ISCSI | Template LIO target config (saveconfig.json)
+  ansible.builtin.template:
+    src: "{{ storage_server_iscsi_config_path }}"
+    dest: /etc/rtslib-fb-target/saveconfig.json
+    owner: root
+    group: root
+    mode: "0600"
+    backup: true
+  notify: Restore iscsi target config
+  become: true
+
+- name: Storage Server | ISCSI | Ensure target service is enabled
+  ansible.builtin.systemd:
+    name: "target.service"
+    enabled: true
+    state: started
+  become: true
+
+- name: Storage Server | ISCSI | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "3260"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+
+- name: Storage Server | ISCSI | Flush handlers so target config is applied before any dependent tasks run
+  ansible.builtin.meta: flush_handlers

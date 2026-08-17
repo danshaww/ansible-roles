@@ -16,3 +16,17 @@
     state: restarted
     enabled: true
   become: true
+
+- name: Restore iscsi target config
+  ansible.builtin.command:
+    cmd: targetctl restore
+  args:
+    executable: /bin/bash
+  changed_when: true
+  become: true
+
+- name: Restart target service
+  ansible.builtin.systemd:
+    name: target.service
+    state: restarted
+  become: true

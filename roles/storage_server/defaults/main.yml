@@ -4,6 +4,7 @@ storage_server_zfs: null
 storage_server_permissions: null
 storage_server_filesystem: null
 storage_server_rclone_config_path: null
+storage_server_iscsi_config_path: null
 
 enable_permissions: true
 enable_installation: true
@@ -14,3 +15,4 @@ enable_zfs_config: true
 enable_filesystem_tasks: true
 enable_rclone: true
 enable_builtin_cron_jobs: true
+enable_iscsi: true

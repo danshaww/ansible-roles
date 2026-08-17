@@ -32,6 +32,12 @@
     - enable_nfs
     - storage_server_nfs_config_path is not none
 
+- name: Storage Server | ISCSI
+  ansible.builtin.include_tasks: iscsi.yml
+  when:
+    - enable_iscsi
+    - storage_server_iscsi_config_path is not none
+
 - name: Storage Server | Rclone
   ansible.builtin.include_tasks: rclone.yml
   when:
