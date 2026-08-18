@@ -5,4 +5,11 @@ nagios_agent_packages:
   - automake
   - libtool
 
-nrpe_install_media: https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-4.1.3/nrpe-4.1.3.tar.gz
+nagios_agent_install_media: https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-4.1.3/nrpe-4.1.3.tar.gz
+nagios_agent_version: 4.1.3
+
+nagios_user_groups:
+  - users
+  - disk
+
+nagios_firewall_port: '5666'

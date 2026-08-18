@@ -1,36 +1,36 @@
-- name: Check for NRPE binary
+- name: Nagios Agent | Check for NRPE binary
   ansible.builtin.stat:
     path: /usr/local/nagios/bin/nrpe
   register: nrpe_bin
   changed_when: false
 
-- name: Install Build tools
+- name: Nagios Agent | Install Build tools
   ansible.builtin.apt:
     name: "{{ nagios_agent_packages }}"
   when: ansible_pkg_mgr == "apt"
 
-- name: Install NRPE from source
+- name: Nagios Agent | Install NRPE from source
   when:
     - not nrpe_bin.stat.exists
   block:
 
-    - name: Download NRPE Source
+    - name: Nagios Agent | Download NRPE Source
       ansible.builtin.get_url:
-        url: "{{ nrpe_install_media }}"
+        url: "{{ nagios_agent_install_media }}"
         dest: /tmp
 
-    - name: Unarchive NRPE Source
+    - name: Nagios Agent | Unarchive NRPE Source
       ansible.builtin.unarchive:
-        src: /tmp/nrpe-4.1.3.tar.gz
+        src: "/tmp/nrpe-{{ nagios_agent_version }}.tar.gz"
         dest: /tmp/
         remote_src: true
 
-    - name: Comile NRPE Source
+    - name: Nagios Agent | Comile NRPE Source
       ansible.builtin.shell: ./configure --enable-command-args --enable-ssl
       args:
-        chdir: "/tmp/nrpe-4.1.3"
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
 
-    - name: Install NRPE
+    - name: Nagios Agent | Install NRPE
       ansible.builtin.shell: make "{{ item }}"
       with_items:
         - install-groups-users
@@ -39,23 +39,22 @@
         - install-plugin
         - install-config
       args:
-        chdir: "/tmp/nrpe-4.1.3"
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
 
-    - name: Add Service (APT)
+    - name: Nagios Agent | Add Service
       ansible.builtin.shell: make "{{ item }}"
       with_items:
         - install-init
       args:
-        chdir: "/tmp/nrpe-4.1.3"
-      when: ansible_os_family == "Debian"
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
 
-- name: Configure Service
+- name: Nagios Agent | Configure Service
   ansible.builtin.service:
     name: nrpe
     enabled: true
     state: started
 
-- name: Copy Scripts
+- name: Nagios Agent | Copy Scripts
   ansible.builtin.copy:
     src: plugins/
     dest: /usr/lib/nagios/plugins/
@@ -63,12 +62,17 @@
     group: root
     mode: 0755
 
-- name: Add Nagios user to groups
+- name: Nagios Agent | Add Nagios user to groups
   ansible.builtin.user:
     name: nagios
     groups: "{{ item }}"
     append: true
   no_log: true
-  with_items:
-    - users
-    - disk
+  with_items: "{{ nagios_user_groups }}"
+
+- name: Nagios Agent | Configure UFW Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ nagios_firewall_port }}"
+  when:
+    - "'ufw' in ansible_facts.packages"

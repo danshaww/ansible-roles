@@ -1,6 +1,0 @@
-- name: Nagios Agent | Configure UFW Firewall
-  community.general.ufw:
-    rule: allow
-    port: '5666'
-  when:
-    - "'ufw' in ansible_facts.packages"
