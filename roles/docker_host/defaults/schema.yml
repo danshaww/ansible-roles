@@ -12,7 +12,7 @@ docker_compose_projects: # Compose project definition (remove to skip)
       owner: # Defaults to root
       group: # Defaults to root
       mode: # Defaults to 0770
-      enabled: # Defaults to true
+    create_bind_mount_volume: # Whether to create volume directory or not (default is false)
     volume_data: # Configuration to be deployed into volumes (remove to skip)
       - volume: # Volume to deploy into
         src: # Source file to place into the volume (directory structure must be {project name}/{volume name}/{file})

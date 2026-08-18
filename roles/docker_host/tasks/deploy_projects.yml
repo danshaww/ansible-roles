@@ -18,7 +18,7 @@
   with_items: "{{ docker_compose_projects }}"
   when:
     - docker_bind_mount_volume_path is not none
-    - item.volume_config.enabled | default(true)
+    - item.create_bind_mount_volume | default(false)
 
 - name: Docker | Configuration | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
