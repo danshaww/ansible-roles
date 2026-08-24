@@ -14,15 +14,13 @@ docker_compose_projects: # Compose project definition (remove to skip)
       mode: # Defaults to 0770
     create_bind_mount_volume: # Whether to create volume directory or not (default is false)
     volume_data: # Configuration to be deployed into volumes (remove to skip)
-      - volume: # Volume to deploy into
-        src: # Source file to place into the volume (directory structure must be {project name}/{volume name}/{file})
-        dest: # Destination within the volume (leave blank for root directory of volume)
+      - src: # Source file to place into the volume (relative)
+        dest: # Destination on Docker host
         mode: # Permissions inside the volume (defaults to 0644)
         owner: # File/directory owner (defaults to 1000)
         group: # File/directory group (defaults to 1000)
         restart_container: # Container to restart upon changes detected (remove to skip)
         template: # file is jinja template (defaults to false)
 docker_compose_default_path: # Path to directory containing compose file templates
-docker_volume_data_path: # Path to directory containing volume data if required
 docker_base_path: # Use to override /var/lib/docker
 docker_bind_mount_volume_path: # Location to create bind mount volume directories
