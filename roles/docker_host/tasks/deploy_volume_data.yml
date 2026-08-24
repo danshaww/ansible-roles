@@ -1,24 +1,24 @@
 - name: Docker | Volume Data | Copy Files
   ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode | default('0644') }}"
-    owner: "{{ item.owner | default(1000) }}"
-    group: "{{ item.group | default(1000) }}"
+    src: "{{ item.1.src }}"
+    dest: "{{ item.1.dest }}"
+    mode: "{{ item.1.mode | default('0644') }}"
+    owner: "{{ item.1.owner | default(1000) }}"
+    group: "{{ item.1.group | default(1000) }}"
   loop: "{{ docker_compose_projects | subelements('volume_data', skip_missing=True) }}"
   register: volume_data_copy
-  when: not item.1.template | default(false)
+  when: not item.template | default(false)
 
 - name: Docker | Volume Data | Template Files
   ansible.builtin.template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode | default('0644') }}"
-    owner: "{{ item.owner | default(1000) }}"
-    group: "{{ item.group | default(1000) }}"
+    src: "{{ item.1.src }}"
+    dest: "{{ item.1.dest }}"
+    mode: "{{ item.1.mode | default('0644') }}"
+    owner: "{{ item.1.owner | default(1000) }}"
+    group: "{{ item.1.group | default(1000) }}"
   loop: "{{ docker_compose_projects | subelements('volume_data', skip_missing=True) }}"
   register: volume_data_copy
-  when: item.1.template | default(false)
+  when: item.template | default(false)
 
 - name: Docker | Volume Data | Restart Containers
   ansible.builtin.shell: "docker restart {{ item.item[1].restart_container }}"
