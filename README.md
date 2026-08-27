@@ -21,7 +21,7 @@ Current Ansible Roles:
 - [`isc_dhcp`](roles/isc_dhcp) — Ansible Role to install and configure ISC DHCP Server.
 - [`k8s_node`](roles/k8s_node) — Ansible Role to install and configure K8S.
 - [`letsencrypt`](roles/letsencrypt) — Ansible role to install and configure Lets Encrypt using Cloudflare DNS.
-- [`nagios_agent`](roles/nagios_agent) — Role to configure Nagios NRPE Agent
+- [`nagios_agent`](roles/nagios_agent) — Ansible Role to configure Nagios NRPE Agent
 - [`nagios_server`](roles/nagios_server) — Ansible role to install Nagios Core. This role has no dependancies on other roles.
 - [`nfs_mount`](roles/nfs_mount) — Ansible Role to mount a dict of NFS shares
 - [`nginx`](roles/nginx) — Ansible role to install NGINX.
@@ -29,6 +29,6 @@ Current Ansible Roles:
 - [`storage_server`](roles/storage_server) — Ansible role containing a range of common storage server related tasks
 - [`technitium`](roles/technitium) — Ansible Role to install technitium
 - [`unifi_os`](roles/unifi_os) — Ansible Role to install Unifi OS Server
-- [`uptime_kuma`](roles/uptime_kuma) — Role to configure an Uptime Kuma instance.
+- [`uptime_kuma`](roles/uptime_kuma) — Ansible Role to configure an Uptime Kuma instance.
 - [`user_management`](roles/user_management) — Ansible role for creating & managing users.
 - [`windows_system`](roles/windows_system) — System Configuration Role used on Windows servers.
