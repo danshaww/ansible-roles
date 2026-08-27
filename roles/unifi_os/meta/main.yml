@@ -1,7 +1,6 @@
 galaxy_info:
   author: Dan Shaw
-  description:
-    - Role to install Unifi OS Server
+  description: Ansible Role to install Unifi OS Server
   license: GPL
   min_ansible_version: "2.1"
   galaxy_tags: []

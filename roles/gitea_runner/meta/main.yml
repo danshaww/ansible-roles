@@ -1,6 +1,6 @@
 galaxy_info:
   author: Dan Shaw
-  description: Ansible role to pull secrets from Azure Key Vault
+  description: Ansible role to deploy the Gitea Action runner
   license: GPL
   min_ansible_version: "2.1"
   galaxy_tags: []

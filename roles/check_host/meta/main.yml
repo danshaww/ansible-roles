@@ -1,7 +1,6 @@
 galaxy_info:
   author: Dan Shaw
-  description:
-    - Role to check active hosts & return a dict of hosts called 'activehosts'
+  description: Ansible Role to check active hosts & return a dict of hosts called 'activehosts'
   license: GPL
   min_ansible_version: "2.1"
   galaxy_tags: []
