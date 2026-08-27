@@ -3,7 +3,6 @@
     rule: allow
     port: 22
     protocol: any
-    insert: 100
 - name: Global_System | UFW | Enable and set default deny rule
   community.general.ufw:
     state: enabled
