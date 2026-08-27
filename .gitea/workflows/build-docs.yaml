@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  mark-executable:
+  build-docs:
     runs-on: london
     steps:
       - name: Check out repository code
@@ -39,5 +39,5 @@ jobs:
             fi
           done
       - run: git add README.md
-      - run: git commit -m "Marked file as executable" || exit 0
+      - run: git commit -m "Updated README.md" || exit 0
       - run: git push
