@@ -1,0 +1,43 @@
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  mark-executable:
+    runs-on: london
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: git config --global user.email "git@epichouse.co.uk" &&  git config --global user.name "Gitea Actions"
+      - run: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          cat <<'EOF' | tee README.md
+          # Ansible Roles <img src="https://raw.githubusercontent.com/benc-uk/icon-collection/refs/heads/master/azure-docs/ansible.svg" alt="drawing" width="40" align="right"/>
+          This repository is my centralised Ansible Role collection.  
+            
+          All of my Ansible project repositories (i.e core,dev,docker etc) make use of the roles stored here.  
+          From a CI/CD perspective, the only workflows that run in this repository are stub workflows used to trigger workflows in project repositories.  
+
+          Current Ansible Roles:
+          EOF
+
+          for role in $(ls -1 roles); do
+            desc=""
+            if [ -f "roles/$role/meta/main.yml" ]; then
+              desc=$(grep -m1 'description:' "roles/$role/meta/main.yml" | sed 's/.*description:[[:space:]]*//')
+              desc="${desc%\"}"
+              desc="${desc#\"}"
+              desc="${desc%\'}"
+              desc="${desc#\'}"
+            fi
+            if [ -n "$desc" ]; then
+              echo "- [\`$role\`](roles/$role) — $desc" >> README.md
+            else
+              echo "- [\`$role\`](roles/$role)" >> README.md
+            fi
+          done
+      - run: git add README.md
+      - run: git commit -m "Marked file as executable" || exit 0
+      - run: git push
