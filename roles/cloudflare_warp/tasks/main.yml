@@ -24,7 +24,7 @@
   register: sysctl_conf
 
 - name: Reload sysctl
-  ansble.builtin.shell: sysctl --system
+  ansible.builtin.shell: sysctl --system
   become: true
   when: sysctl_conf.changed
 
