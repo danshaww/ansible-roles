@@ -24,18 +24,18 @@
   register: sysctl-conf
 
 - name: Reload sysctl
-  ansble.builtin.shell: sysctl --system
+  ansble.builtin.command: sysctl --system
   become: true
   when: sysctl-conf.changed
 
 - name: Check WARP registration status
-  ansible.builtin.shell: warp-cli registration show
+  ansible.builtin.command: warp-cli registration show
   register: warp_reg_check
   changed_when: false
   failed_when: false
 
 - name: Register WARP agent
-  ansible.builtin.shell: |
+  ansible.builtin.command: |
     warp-cli connector new {{ cloudflare_warp_tunnel_token }}
     warp-cli connect
   when: "'Unable to load registration' in warp_reg_check.stderr or warp_reg_check.rc != 0"
