@@ -28,14 +28,8 @@
   become: true
   when: sysctl_conf.changed
 
-- name: Check WARP registration status
-  ansible.builtin.shell: warp-cli registration show
-  register: warp_reg_check
-  changed_when: false
-  failed_when: false
-
 - name: Register WARP agent
   ansible.builtin.shell: |
     warp-cli --accept-tos connector new {{ cloudflare_warp_tunnel_token }}
     warp-cli connect
-  when: "'Unable to load registration' in warp_reg_check.stderr or warp_reg_check.rc != 0"
+  creates: /var/lib/cloudflare-warp/reg.json
