@@ -12,6 +12,7 @@ Current Ansible Roles:
 - [`bitwarden_secrets`](roles/bitwarden_secrets) — Ansible Role to pull all secrets from Bitwarden Secrets Manager and store them based on project.
 - [`check_host`](roles/check_host) — Ansible Role to check active hosts & return a dict of hosts called 'activehosts
 - [`checkmk_server`](roles/checkmk_server) — Ansible role to install CheckMK and perform basic configuration.
+- [`cloudflare_warp`](roles/cloudflare_warp) — Ansible role to install and configure cloudflare warp agent.
 - [`cloudflared`](roles/cloudflared) — Ansible role to install and configure cloudflared.
 - [`cron_management`](roles/cron_management) — Ansible role containing for managing cron
 - [`docker_host`](roles/docker_host) — Ansible role to install Docker & deploy docker compose projects where configured.
