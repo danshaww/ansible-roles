@@ -1,11 +1,11 @@
 - name: Add Cloudflare APT key
   ansible.builtin.apt_key:
-    url: "https://pkg.cloudflare.com/cloudflare-main.gpg"
-    keyring: /usr/share/keyrings/cloudflare-main.gpg
+    url: "https://pkg.cloudflareclient.com/pubkey.gpg"
+    keyring: /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
   become: true
 - name: Add Cloudflare APT repository
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main"
+    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ noble main"
     state: present
   become: true
 
