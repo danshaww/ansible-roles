@@ -37,3 +37,8 @@
     warp-cli connect
   args:
     creates: /var/lib/cloudflare-warp/reg.json
+
+- name: Global_System | UFW | Enable and set default deny rule
+  community.general.ufw:
+    state: disabled
+  become: true
