@@ -36,6 +36,6 @@
 
 - name: Register WARP agent
   ansible.builtin.shell: |
-    warp-cli connector --accept-tos new {{ cloudflare_warp_tunnel_token }}
+    warp-cli --accept-tos connector new {{ cloudflare_warp_tunnel_token }}
     warp-cli connect
   when: "'Unable to load registration' in warp_reg_check.stderr or warp_reg_check.rc != 0"
