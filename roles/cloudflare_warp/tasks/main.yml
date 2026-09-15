@@ -32,4 +32,5 @@
   ansible.builtin.shell: |
     warp-cli --accept-tos connector new {{ cloudflare_warp_tunnel_token }}
     warp-cli connect
-  creates: /var/lib/cloudflare-warp/reg.json
+  args:
+    creates: /var/lib/cloudflare-warp/reg.json
