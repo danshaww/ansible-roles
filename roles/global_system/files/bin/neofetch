@@ -1539,7 +1539,6 @@ get_packages() {
             }
 
             # pkginfo is also the name of a python package manager which is painfully slow.
-            # TODO: Fix this somehow.
             has pkginfo && tot pkginfo -i
 
             case $kernel_name in
