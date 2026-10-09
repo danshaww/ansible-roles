@@ -5,7 +5,7 @@ docker_enable_auth: false
 docker_build: never
 docker_pull: missing
 docker_enable_syslog: false
-docker_compose_projects: null
+docker_compose_projects: null # TODO: Updated this to be an object rather than a list
 docker_compose_default_path: null
 docker_base_path: /var/lib/docker
 docker_bind_mount_volume_path: null
