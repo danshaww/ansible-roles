@@ -14,9 +14,16 @@
   become: true
 - name: Restart Cloud Init
   ansible.builtin.service:
-    name: cloud-init
+    name: "{{ item }}"
     state: restarted
   become: true
+  loop:
+    - cloud-init-local.service
+    - cloud-init-main.service
+    - cloud-init-network.service
+    - cloud-config.service
+    - cloud-final.service
+  failed_when: false
 - name: Restart Journald
   ansible.builtin.service:
     name: systemd-journald
