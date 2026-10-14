@@ -26,6 +26,7 @@ system_packages:
   - cron
   - nfs-common
   - duf
+  - ufw
 
 templates:
   - dest: /etc/motd
