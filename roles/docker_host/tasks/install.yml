@@ -1,4 +1,4 @@
-- name: Docker | Installation | APT | Add APT GPG Key
+- name: Docker | Installation | APT | Ensure Keyring Directory
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
