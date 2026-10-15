@@ -1,0 +1,6 @@
+- name: PVE Utils | Allow PVE UI Port through UFW
+  community.general.ufw:
+    rule: allow
+    port: 8006
+    protocol: any
+  become: true

@@ -1,0 +1,14 @@
+- name: PVE Utils | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: PVE Utils | Include Firewall Tasks
+  ansible.builtin.include_tasks: firewall.yml
+  when:
+    - pve_utils_configure_firewall
+    - "'ufw' in ansible_facts.packages"
+
+- name: PVE Utils | Include Subscription Nag Tasks
+  ansible.builtin.include_tasks: subscription_nag.yml
+  when:
+    - pve_utils_configure_subscription_nag

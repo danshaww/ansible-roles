@@ -1,0 +1,8 @@
+- name: Disable Proxmox no-subscription nag
+  ansible.builtin.replace:
+    path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+    regexp: "Ext\\.Msg\\.show\\(\\{(?=[\\s\\S]{0,2000}?gettext\\('No valid subscription'\\))"
+    replace: "void({"
+    backup: true
+  notify: PVE Utils | Restart Proxmox proxy
+  become: true
