@@ -4,6 +4,7 @@
     name:
       - zfsutils-linux
       - sanoid
+      - hdparm
 
 - name: Storage Server | ZFS | Create Pools
   community.general.zpool:
