@@ -1,6 +1,6 @@
 enable_user_management: true
 enable_group_management: true
-enable_samba_users: false # set to true for fileservers in inventory
+enable_samba_users: true
 home_path: /home
 skel_profile: null
 users: null
