@@ -31,6 +31,6 @@
     state: restarted
   become: true
   failed_when: false
-  with_items:
+  loop:
     - target.service
     - targetclid.service
