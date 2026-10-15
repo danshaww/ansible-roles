@@ -27,6 +27,10 @@
 
 - name: Restart target service
   ansible.builtin.systemd:
-    name: target.service
+    name: "{{ item }}"
     state: restarted
   become: true
+  failed_when: false
+  with_items:
+    - target.service
+    - targetclid.service
