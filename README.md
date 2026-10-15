@@ -26,6 +26,7 @@ Current Ansible Roles:
 - [`nagios_server`](roles/nagios_server) — Ansible role to install Nagios Core. This role has no dependancies on other roles.
 - [`nfs_mount`](roles/nfs_mount) — Ansible Role to mount a dict of NFS shares
 - [`nginx`](roles/nginx) — Ansible role to install NGINX.
+- [`pve_utils`](roles/pve_utils) — Ansible role containing Proxmox utilities
 - [`ssmtp`](roles/ssmtp) — Ansible role containing for configuring ssmtp
 - [`storage_server`](roles/storage_server) — Ansible role containing a range of common storage server related tasks
 - [`technitium`](roles/technitium) — Ansible Role to install technitium
