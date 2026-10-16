@@ -77,5 +77,3 @@
   notify:
     - Reload Systemd
     - Restart Docker
-
-# TODO: readd docker group creation
