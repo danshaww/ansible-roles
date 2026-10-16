@@ -1,21 +1,17 @@
-- block:
+- name: User Management | Groups | Create
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    gid: "{{ item.gid | default(omit)}}"
+  loop: "{{ user_management_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
 
-  - name: User Management | Groups | Create
-    ansible.builtin.group:
-      name: "{{ item.name }}"
-      state: "{{ item.state | default('present') }}"
-      gid: "{{ item.gid | default(omit)}}"
-    loop: "{{ user_management_groups }}"
-    loop_control:
-      label: "{{ item.name }}"
-
-  - name: User Management | Groups | Add Members
-    ansible.builtin.user:
-      name: "{{ item.1.name }}"
-      groups: "{{ item.0.name }}"
-      append: "{{ item.1.append | default(true) }}"
-    loop: "{{ user_management_groups | subelements('members', skip_missing=True) }}"
-    loop_control:
-      label: "{{ item.0.name }} | {{ item.1.name | default('') }}"
-
-  become: true
+- name: User Management | Groups | Add Members
+  ansible.builtin.user:
+    name: "{{ item.1.name }}"
+    groups: "{{ item.0.name }}"
+    append: "{{ item.1.append | default(true) }}"
+  loop: "{{ user_management_groups | subelements('members', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.0.name }} | {{ item.1.name | default('') }}"
