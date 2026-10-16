@@ -1,34 +1,38 @@
-- name: User Management | Gather Package Facts
-  ansible.builtin.package_facts:
-    manager: auto
+- block:
 
-- name: User Management | Include unix_users
-  ansible.builtin.include_tasks: unix_users.yml
-  when:
-    - user_management_users is not none
-    - user_management_enable_user_management
+  - name: User Management | Gather Package Facts
+    ansible.builtin.package_facts:
+      manager: auto
 
-- name: User Management | Include ssh_keys
-  ansible.builtin.include_tasks: ssh_keys.yml
-  when:
-    - user_management_users is not none
-    - user_management_enable_user_management
+  - name: User Management | Include unix_users
+    ansible.builtin.include_tasks: unix_users.yml
+    when:
+      - user_management_users is not none
+      - user_management_enable_user_management
 
-- name: User Management | Include Skel Profile Config
-  ansible.builtin.include_tasks: skel_profile.yml
-  when:
-    - user_management_skel_profile is not none
-    - user_management_enable_user_management
+  - name: User Management | Include ssh_keys
+    ansible.builtin.include_tasks: ssh_keys.yml
+    when:
+      - user_management_users is not none
+      - user_management_enable_user_management
 
-- name: User Management | Include unix_groups
-  ansible.builtin.include_tasks: unix_groups.yml
-  when:
-    - user_management_groups is not none
-    - user_management_enable_group_management
+  - name: User Management | Include Skel Profile Config
+    ansible.builtin.include_tasks: skel_profile.yml
+    when:
+      - user_management_skel_profile is not none
+      - user_management_enable_user_management
 
-- name: User Management | Include Samba User Config
-  ansible.builtin.include_tasks: samba_users.yml
-  when:
-    - user_management_users is not none
-    - user_management_enable_samba_users
-    - "'samba' in ansible_facts.packages"
+  - name: User Management | Include unix_groups
+    ansible.builtin.include_tasks: unix_groups.yml
+    when:
+      - user_management_groups is not none
+      - user_management_enable_group_management
+
+  - name: User Management | Include Samba User Config
+    ansible.builtin.include_tasks: samba_users.yml
+    when:
+      - user_management_users is not none
+      - user_management_enable_samba_users
+      - "'samba' in ansible_facts.packages"
+
+  become: true
