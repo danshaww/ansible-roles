@@ -1,13 +1,13 @@
-enable_user_management: true # TODO: change to user_management_enable_user_management
-enable_group_management: true # TODO: change to user_management_enable_group_management
-enable_samba_users: true # TODO: change to user_management_enable_samba_users
-home_path: /home # TODO: change to user_management_home_path
+user_management_enable_user_management: true
+user_management_enable_group_management: true
+user_management_enable_samba_users: true
+user_management_home_path: /home
 
 ## Schema below, these will always be replaced
-skel_profile: # TODO: change to user_management_skel_profile
+user_management_skel_profile:
   files: []
 
-users: # TODO: change to user_management_users:
+user_management_users:
   - username: example
     group: # Defaults to username
     password: password

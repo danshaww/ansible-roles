@@ -1,7 +1,7 @@
-enable_user_management: true
-enable_group_management: true
-enable_samba_users: true
-home_path: /home
-skel_profile: null
-users: null
+user_management_enable_user_management: true
+user_management_enable_group_management: true
+user_management_enable_samba_users: true
+user_management_home_path: /home
+user_management_skel_profile: null
+user_management_users: null
 user_management_groups: null
