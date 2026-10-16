@@ -1,21 +1,25 @@
-- name: User Management | Samba | Check existing users
-  command: pdbedit -L
-  register: samba_users
-  changed_when: false
+- block:
 
-- name: User Manageemnt | Samba | Create users
-  when: item.username not in samba_users.stdout and item.enable_samba | default(false)
-  shell: |
-    (echo "{{ item.password }}"; echo "{{ item.password }}") | smbpasswd -a -s {{ item.username }}
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
-  no_log: true
+  - name: User Management | Samba | Check existing users
+    command: pdbedit -L
+    register: samba_users
+    changed_when: false
 
-- name: User Management | Samba | Enable users
-  when: item.username not in samba_users.stdout and item.enable_samba | default(false)
-  command: smbpasswd -e {{ item.username }}
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
-  no_log: true
+  - name: User Manageemnt | Samba | Create users
+    when: item.username not in samba_users.stdout and item.enable_samba | default(false)
+    shell: |
+      (echo "{{ item.password }}"; echo "{{ item.password }}") | smbpasswd -a -s {{ item.username }}
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
+    no_log: true
+
+  - name: User Management | Samba | Enable users
+    when: item.username not in samba_users.stdout and item.enable_samba | default(false)
+    command: smbpasswd -e {{ item.username }}
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
+    no_log: true
+
+  become: true

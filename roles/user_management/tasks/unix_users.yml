@@ -1,77 +1,81 @@
-- name: User Management | Users | Create Group
-  when: item.create_group | default(true)
-  ansible.builtin.group:
-    name: "{{ item.username }}"
-    state: present
-    gid: "{{ item.gid | default(item.uid | default(4096)) }}"
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
+- block:
 
-- name: User Management | Users | Create/Modify User
-  ansible.builtin.user:
-    name: "{{ item.username }}"
-    comment: "{{ item.username }}"
-    uid: "{{ item.uid | default(4096) }}"
-    shell: "{{ item.shell | default('/bin/bash')}}"
-    group: "{{ item.group | default(item.username) }}"
-    password: "{{ (item.password | password_hash('sha512')) | default('!') }}"
-    append: "{{ item.append | default(true) }}"
-    groups: users
-    state: "{{ item.state | default('present')}}"
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
-  changed_when: false
+  - name: User Management | Users | Create Group
+    when: item.create_group | default(true)
+    ansible.builtin.group:
+      name: "{{ item.username }}"
+      state: present
+      gid: "{{ item.gid | default(item.uid | default(4096)) }}"
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
 
-- name: User Management | Users | Add User to users group
-  ansible.builtin.user:
-    name: "{{ item.username }}"
-    groups: users
-    append: true
-    state: "{{ item.state | default('present')}}"
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
+  - name: User Management | Users | Create/Modify User
+    ansible.builtin.user:
+      name: "{{ item.username }}"
+      comment: "{{ item.username }}"
+      uid: "{{ item.uid | default(4096) }}"
+      shell: "{{ item.shell | default('/bin/bash')}}"
+      group: "{{ item.group | default(item.username) }}"
+      password: "{{ (item.password | password_hash('sha512')) | default('!') }}"
+      append: "{{ item.append | default(true) }}"
+      groups: users
+      state: "{{ item.state | default('present')}}"
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
+    changed_when: false
 
-- name: User Management | Users | Add sudoers files
-  when: item.sudoers is defined
-  ansible.builtin.template:
-    dest: "/etc/sudoers.d/{{ item.username }}"
-    src: sudoers.j2
-    mode: '0644'
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
+  - name: User Management | Users | Add User to users group
+    ansible.builtin.user:
+      name: "{{ item.username }}"
+      groups: users
+      append: true
+      state: "{{ item.state | default('present')}}"
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
 
-- name: User Management | Users | Remove sudoers files
-  when: ( not item.sudoers is defined ) or (item.state | default('present') == 'absent')
-  ansible.builtin.file:
-    path: "/etc/sudoers.d/{{ item.username }}"
-    state: absent
-  loop: "{{ user_management_users }}"
-  loop_control:
-    label: "{{ item.username }}"
+  - name: User Management | Users | Add sudoers files
+    when: item.sudoers is defined
+    ansible.builtin.template:
+      dest: "/etc/sudoers.d/{{ item.username }}"
+      src: sudoers.j2
+      mode: '0644'
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
 
-- name: User Management | Users | Create Home Directories
-  ansible.builtin.file:
-    path: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}{{ item.1.dir }}"
-    mode: "{{ item.1.mode }}"
-    owner: "{{ item.0.username }}"
-    group: "{{ item.0.username }}"
-    state: "{{ item.0.state | default('directory') }}"
-  loop: "{{ user_management_users | product(static_dirs) | list }}"
-  loop_control:
-    label: "{{ item.0.username }} - {{ item.1 }}"
+  - name: User Management | Users | Remove sudoers files
+    when: ( not item.sudoers is defined ) or (item.state | default('present') == 'absent')
+    ansible.builtin.file:
+      path: "/etc/sudoers.d/{{ item.username }}"
+      state: absent
+    loop: "{{ user_management_users }}"
+    loop_control:
+      label: "{{ item.username }}"
 
-- name: User Management | Users | Copy Home Directory Files
-  when: item.0.state | default('present') == 'present'
-  ansible.builtin.copy:
-    src: "{{ item.1.src }}"
-    dest: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}/{{ item.1.dest | default() }}"
-    mode: '0644'
-    owner: "{{ item.0.username }}"
-    group: "{{ item.0.username }}"
-  loop: "{{ user_management_users | subelements('home_dir_files', skip_missing=True) }}"
-  loop_control:
-    label: "{{ item.0.username }} - {{ item.1.src }}"
+  - name: User Management | Users | Create Home Directories
+    ansible.builtin.file:
+      path: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}{{ item.1.dir }}"
+      mode: "{{ item.1.mode }}"
+      owner: "{{ item.0.username }}"
+      group: "{{ item.0.username }}"
+      state: "{{ item.0.state | default('directory') }}"
+    loop: "{{ user_management_users | product(static_dirs) | list }}"
+    loop_control:
+      label: "{{ item.0.username }} - {{ item.1 }}"
+
+  - name: User Management | Users | Copy Home Directory Files
+    when: item.0.state | default('present') == 'present'
+    ansible.builtin.copy:
+      src: "{{ item.1.src }}"
+      dest: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}/{{ item.1.dest | default() }}"
+      mode: '0644'
+      owner: "{{ item.0.username }}"
+      group: "{{ item.0.username }}"
+    loop: "{{ user_management_users | subelements('home_dir_files', skip_missing=True) }}"
+    loop_control:
+      label: "{{ item.0.username }} - {{ item.1.src }}"
+
+  become: true
