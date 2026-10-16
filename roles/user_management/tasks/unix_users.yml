@@ -55,7 +55,7 @@
 
 - name: User Management | Users | Create Home Directories
   ansible.builtin.file:
-    path: "{% if item.0.username != 'root' %}{{ home_path }}{% endif %}/{{ item.0.username }}{{ item.1.dir }}"
+    path: "{% if item.0.username != 'root' %}{{ user_management_home_path }}{% endif %}/{{ item.0.username }}{{ item.1.dir }}"
     mode: "{{ item.1.mode }}"
     owner: "{{ item.0.username }}"
     group: "{{ item.0.username }}"
