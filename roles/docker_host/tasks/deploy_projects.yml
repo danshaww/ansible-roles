@@ -31,7 +31,7 @@
     label: "{{ item.name }}"
 
 - name: Docker Host | Deploy Projects | Start Compose Projects
-  community.docker.docker_host_compose_v2:
+  community.docker.docker_compose_v2:
     project_name: "{{ item.name }}"
     project_src: "{{ docker_host_base_path }}/compose"
     files: "{{ item.name }}.yml"
