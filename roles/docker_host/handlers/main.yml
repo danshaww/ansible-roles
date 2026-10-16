@@ -2,12 +2,15 @@
   ansible.builtin.systemd:
     name: docker
     state: reloaded
+  become: true
 
 - name: Restart Docker
   ansible.builtin.systemd:
     name: docker
     state: restarted
+  become: true
 
 - name: Reload Systemd
   ansible.builtin.systemd:
     daemon_reload: true
+  become: true

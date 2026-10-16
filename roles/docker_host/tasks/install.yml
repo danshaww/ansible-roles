@@ -1,4 +1,4 @@
-- name: Docker | Installation | APT | Ensure Keyring Directory
+- name: Docker Host | Install | Ensure Keyring Directory
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
@@ -6,7 +6,7 @@
     group: root
     mode: '0755'
 
-- name: Docker | Installation | APT | Download Docker GPG Key
+- name: Docker Host | Install | Download Docker GPG Key
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
@@ -14,66 +14,30 @@
     group: root
     mode: '0644'
 
-- name: Docker | Installation | APT | Remove Legacy Repository Entry
+- name: Docker Host | Install | Remove Legacy Repository Entry
   ansible.builtin.lineinfile:
     path: /etc/apt/sources.list.d/docker.list
     regexp: '^deb \[arch=amd64 signed-by=/etc/apt/keyrings/docker\.gpg\] https://download\.docker\.com/linux/ubuntu '
     state: absent
 
-- name: Docker | Installation | APT |  Add Repository
+- name: Docker Host | Install | Add Repository
   ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu   jammy stable"
     state: present
     filename: docker
 
-- name: Docker | Installation | APT |  Install Packages
+- name: Docker Host | Install | Install Packages
   ansible.builtin.apt:
-    pkg: "{{ docker_host_packages }}"
+    name: "{{ docker_host_packages }}"
 
-- name: Docker | Installation | Enable and Start Docker
+- name: Docker Host | Install | Enable and Start Docker
   ansible.builtin.systemd:
     name: docker
     state: started
     enabled: true
-  become: true
 
-- name: Docker | Installation | Copy ctop binary # need to make this multi arch
+- name: Docker Host | Install | Copy ctop binary # no arm binary available, replace with another tool
   ansible.builtin.copy:
     src: ctop
     dest: /usr/local/bin/ctop
     mode: '0755'
-  become: true
-
-- name: Deploy docker ACL restore script
-  ansible.builtin.copy:
-    dest: /usr/local/sbin/docker-acl-fix.sh
-    mode: '0750'
-    owner: root
-    group: root
-    content: |
-      #!/bin/sh
-      # Re-widens the ACL mask on /var/lib/docker after dockerd
-      # resets the directory to 710 on every start, which otherwise
-      # caps named user/group ACL entries.
-      setfacl -m m::rwx /var/lib/docker
-
-- name: Create docker.service systemd drop-in directory
-  ansible.builtin.file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-    mode: '0755'
-    owner: root
-    group: root
-
-- name: Deploy docker.service ExecStartPost override
-  ansible.builtin.copy:
-    dest: /etc/systemd/system/docker.service.d/99-acl-fix.conf
-    mode: '0644'
-    owner: root
-    group: root
-    content: |
-      [Service]
-      ExecStartPost=/usr/local/sbin/docker-acl-fix.sh
-  notify:
-    - Reload Systemd
-    - Restart Docker

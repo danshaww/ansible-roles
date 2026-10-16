@@ -1,19 +1,25 @@
-- name: Docker | Include Installation Tasks
-  ansible.builtin.include_tasks: install.yml
-  when: docker_install
+- block:
 
-- name: Docker | Include Config Tasks
-  ansible.builtin.include_tasks: deploy_config.yml
-  when: docker_configure
+  - name: Docker Host | Include Installation Tasks
+    ansible.builtin.include_tasks: install.yml
+    when:
+      - docker_host_install
 
-- name: Docker | Include Configuration Tasks (Deploy)
-  ansible.builtin.include_tasks: deploy_projects.yml
-  when:
-    - docker_configure
-    - docker_compose_projects is not none
+  - name: Docker Host | Include Config Tasks
+    ansible.builtin.include_tasks: deploy_config.yml
+    when:
+      - docker_host_configure
 
-- name: Docker | Include Configuration Tasks (Destroy)
-  ansible.builtin.include_tasks: destroy_projects.yml
-  when:
-    - docker_configure
-    - docker_compose_projects is not none
+  - name: Docker Host | Include Configuration Tasks (Deploy)
+    ansible.builtin.include_tasks: deploy_projects.yml
+    when:
+      - docker_host_configure
+      - docker_host_compose_projects is not none
+
+  - name: Docker Host | Include Configuration Tasks (Destroy)
+    ansible.builtin.include_tasks: destroy_projects.yml
+    when:
+      - docker_host_configure
+      - docker_host_compose_projects is not none
+
+  become: true

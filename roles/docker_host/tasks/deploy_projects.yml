@@ -1,47 +1,44 @@
-- name: Docker | Configuration | Deploy Projects | Create Compose Directory
+- name: Docker Host | Deploy Projects | Create Compose Directory
   ansible.builtin.file:
-    path: "{{ docker_base_path }}/compose"
+    path: "{{ docker_host_base_path }}/compose"
     owner: root
     group: root
     mode: '0755'
     state: directory
-  become: true
 
-- name: Docker | Configuration | Deploy Projects | Create Bind Mount Volumes
+- name: Docker Host | Deploy Projects | Create Bind Mount Volumes
+  when:
+    - docker_host_bind_mount_volume_path is not none
+    - item.create_bind_mount_volume | default(false)
   ansible.builtin.file:
-    path: "{{ docker_bind_mount_volume_path }}/{{ item.name }}"
+    path: "{{ docker_host_bind_mount_volume_path }}/{{ item.name }}"
     owner: "{{ item.volume_config.owner | default('root') }}"
     group: "{{ item.volume_config.group | default('root') }}"
     mode: "{{ item.volume_config.mode | default('0770') }}"
     state: directory
-  become: true
-  with_items: "{{ docker_compose_projects }}"
-  when:
-    - docker_bind_mount_volume_path is not none
-    - item.create_bind_mount_volume | default(false)
+  loop: "{{ docker_host_compose_projects }}"
 
-- name: Docker | Configuration | Deploy Projects | Generate Compose Files
+
+- name: Docker Host | Deploy Projects | Generate Compose Files
   ansible.builtin.template:
-    src: "{{ item.project_path | default(docker_compose_default_path + '/' + item.name + '.yml.j2') }}"
-    dest: "{{ docker_base_path }}/compose/{{ item.name }}.yml"
+    src: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml.j2') }}"
+    dest: "{{ docker_host_base_path }}/compose/{{ item.name }}.yml"
     owner: root
     group: root
     mode: '0600'
-  with_items: "{{ docker_compose_projects }}"
-  become: true
+  loop: "{{ docker_host_compose_projects }}"
   loop_control:
     label: "{{ item.name }}"
 
-- name: Docker | Configuration | Deploy Projects | Start Compose Projects
-  community.docker.docker_compose_v2:
+- name: Docker Host | Deploy Projects | tart Compose Projects
+  community.docker.docker_host_compose_v2:
     project_name: "{{ item.name }}"
-    project_src: "{{ docker_base_path }}/compose"
+    project_src: "{{ docker_host_base_path }}/compose"
     files: "{{ item.name }}.yml"
     remove_orphans: true
-    build: "{{ docker_build }}"
-    pull: "{{ docker_pull }}"
+    build: "{{ docker_host_build }}"
+    pull: "{{ docker_host_pull }}"
     state: present
-  become: true
-  with_items: "{{ docker_compose_projects }}"
+  loop: "{{ docker_host_compose_projects }}"
   loop_control:
     label: "{{ item.name }}"
