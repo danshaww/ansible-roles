@@ -41,3 +41,10 @@
     src: ctop
     dest: /usr/local/bin/ctop
     mode: '0755'
+
+- name: Install Loki Docker driver plugin
+  community.docker.docker_plugin:
+    plugin_name: "{{ item }}"
+    alias: "{{ item }}"
+    state: enable
+  loop: "{{ docker_host_plugins }}"
