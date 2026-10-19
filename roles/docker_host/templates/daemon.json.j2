@@ -14,7 +14,7 @@
   "log-driver": "loki",
   "log-opts": {
     "loki-url": "{{ docker_host_logging.loki_url }}/loki/api/v1/push",
-    "loki-external-labels": "container_name={% raw %}{{.Name}}{% endraw %},host={{ inventory_hostname }}",
+    "loki-external-labels": "container_name={% raw %}{{.Name}}{% endraw %},hostname={{ inventory_hostname }}",
     "loki-pipeline-stages": {{ docker_host_logging_pipeline_stages | to_json }},
     "loki-retries": "5",
     "loki-batch-size": "400",
