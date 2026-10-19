@@ -15,7 +15,7 @@
     daemon_reload: true
   become: true
 
-- name: Recreate all Docker Compose projects
+- name: Recreate Docker Compose projects
   community.docker.docker_compose_v2:
     project_name: "{{ item.name }}"
     project_src: "{{ docker_host_base_path }}/compose"
