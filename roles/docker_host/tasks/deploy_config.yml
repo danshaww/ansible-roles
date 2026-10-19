@@ -11,10 +11,10 @@
     dest: /root/.docker/config.json
     mode: '0770'
 
-- name: Docker Host | Deploy Config | Populate daemon.json
+- name: Docker Host | Deploy Config | Populate daemon.json from Jinja template
   when: docker_host_enable_syslog
-  ansible.builtin.copy:
-    src: daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
     dest: /etc/docker/daemon.json
     mode: '0700'
   notify:

@@ -1,0 +1,34 @@
+{% if docker_host_logging.type == 'syslog' %}
+
+{
+    "log-driver": "syslog",
+    "log-opts": {
+        "syslog-facility": "daemon",
+        "tag": "{{.Name}}",
+        "labels": "docker"
+    }
+}
+
+{% endif %}
+
+{% if docker_host_logging.type == 'loki' %}
+
+{
+  "log-driver": "loki",
+  "log-opts": {
+    "loki-url": "{{ docker_host_logging.loki_url }}/loki/api/v1/push",
+    "loki-external-labels": "container_name={% raw %}{{.Name}}{% endraw %},host={{ inventory_hostname }}",
+    "loki-retries": "5",
+    "loki-batch-size": "400",
+    "mode": "non-blocking",
+    "max-buffer-size": "4m"
+  }
+}
+
+{% endif %}
+
+{% if docker_host_logging.type == 'none' %}
+
+{}
+
+{% endif %}
