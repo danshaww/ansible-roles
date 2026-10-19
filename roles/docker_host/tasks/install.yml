@@ -44,7 +44,7 @@
 
 - name: Install Loki Docker driver plugin
   community.docker.docker_plugin:
-    plugin_name: "{{ item }}"
-    alias: "{{ item }}"
+    plugin_name: "{{ item.name }}"
+    alias: "{{ item.alias }}"
     state: enable
   loop: "{{ docker_host_plugins }}"
