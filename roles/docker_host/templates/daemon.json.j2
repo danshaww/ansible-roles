@@ -1,18 +1,15 @@
 {% if docker_host_logging.type == 'syslog' %}
-
 {
     "log-driver": "syslog",
     "log-opts": {
         "syslog-facility": "daemon",
-        "tag": "{{.Name}}",
+        "tag": "{% raw %}{{.Name}}{% endraw %}",
         "labels": "docker"
     }
 }
-
 {% endif %}
 
 {% if docker_host_logging.type == 'loki' %}
-
 {
   "log-driver": "loki",
   "log-opts": {
@@ -24,11 +21,8 @@
     "max-buffer-size": "4m"
   }
 }
-
 {% endif %}
 
 {% if docker_host_logging.type == 'none' %}
-
 {}
-
 {% endif %}
