@@ -15,5 +15,16 @@
     daemon_reload: true
   become: true
 
-- name: Restart all Docker Compose projects
-  ansible.builtin.shell: for app in /var/lib/docker/compose/*; do (docker compose -f "$app" down && docker compose -f "$app" up -d); done
+- name: Recreate all Docker Compose projects
+  community.docker.docker_compose_v2:
+    project_name: "{{ item.name }}"
+    project_src: "{{ docker_host_base_path }}/compose"
+    files: "{{ item.name }}.yml"
+    remove_orphans: true
+    build: "{{ docker_host_build }}"
+    pull: "{{ docker_host_pull }}"
+    state: present
+    recreate: always
+  loop: "{{ docker_host_compose_projects }}"
+  loop_control:
+    label: "{{ item.name }}"
