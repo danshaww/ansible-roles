@@ -9,5 +9,5 @@ docker_host_packages:
 docker_host_applications: "{{ docker_host_compose_projects | map(attribute='name') | list }}"
 
 docker_host_plugins:
-  - name: loki
-    alias: grafana/loki-docker-driver:latest
+  - alias: loki
+    name: grafana/loki-docker-driver:latest
