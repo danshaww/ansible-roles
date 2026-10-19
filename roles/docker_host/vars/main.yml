@@ -12,8 +12,11 @@ docker_host_plugins:
   - alias: loki
     name: grafana/loki-docker-driver:latest
 
-docker_host_logging_pipeline_stages: |
+docker_host_logging_pipeline_stages: !unsafe |
   - regex:
-      expression: '(?i)\b(?P<level>debug|info|warn(?:ing)?|error|fatal|crit(?:ical)?)\b'
+      expression: '(?i)\b(?P<level>trace|debug|info|warn(?:ing)?|error|fatal|crit(?:ical)?)\b'
+  - template:
+      source: level
+      template: '{{ if .Value }}{{ ToLower .Value }}{{ else }}info{{ end }}'
   - labels:
       level:
