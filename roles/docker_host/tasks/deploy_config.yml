@@ -19,3 +19,4 @@
   notify:
     - Reload Docker
     - Restart Docker
+    - Restart all Docker Compose projects

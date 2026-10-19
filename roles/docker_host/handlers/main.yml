@@ -14,3 +14,6 @@
   ansible.builtin.systemd:
     daemon_reload: true
   become: true
+
+- name: Restart all Docker Compose projects
+  ansible.builtin.shell: for app in /var/lib/docker/compose/*; do (docker compose -f "$app" down && docker compose -f "$app" up -d); done
