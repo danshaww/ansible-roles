@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: git config --global user.email "git@epichouse.co.uk" &&  git config --global user.name "Gitea Actions"
+      - run: git config --global user.email "git@epichouse.co.uk" &&  git config --global user.name "Actions"
       - run: |
           #!/usr/bin/env bash
           set -euo pipefail
