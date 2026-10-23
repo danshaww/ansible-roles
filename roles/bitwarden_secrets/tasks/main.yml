@@ -1,3 +1,9 @@
+- name: Validate secret grouping
+  ansible.builtin.assert:
+    that:
+      - bws_secret_grouping in ['project', 'none']
+    fail_msg: "bws_secret_grouping must be either 'project' or 'none'."
+
 - name: Get all Bitwarden projects
   command:
     argv:
@@ -45,21 +51,28 @@
   no_log: false
   retries: 5
   delay: 5
-- name: Build secrets dict per project
+- name: Build secrets dict
   set_fact:
     secrets: >-
       {{
-        secrets | combine({
-          item.item.key: dict(
-            (item.stdout | from_json)
-            | map(attribute='key')
-            | map('regex_replace', '[^a-zA-Z0-9_]', '_')
-            | zip(
-                (item.stdout | from_json)
-                | map(attribute='value')
-              )
-          )
-        })
+        secrets | combine(
+          {item.item.key: bws_project_secrets}
+          if bws_secret_grouping == 'project'
+          else bws_project_secrets
+        )
+      }}
+  vars:
+    bws_project_secrets: >-
+      {{
+        dict(
+          (item.stdout | from_json)
+          | map(attribute='key')
+          | map('regex_replace', '[^a-zA-Z0-9_]', '_')
+          | zip(
+              (item.stdout | from_json)
+              | map(attribute='value')
+            )
+        )
       }}
   loop: "{{ bws_results.results }}"
   loop_control:

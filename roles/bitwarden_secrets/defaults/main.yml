@@ -5,4 +5,5 @@ secrets_list:
 bws_cli_path: "bws"
 bws_flatten_secrets: true
 bws_prefix: ""
+bws_secret_grouping: "none"
 bws_no_log: true
