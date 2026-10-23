@@ -9,7 +9,7 @@ Current Ansible Roles:
 - [`apache`](roles/apache) — Ansible role to install Apache.
 - [`az_secrets`](roles/az_secrets) — Ansible role to pull secrets from Azure Key Vault
 - [`bind_dns`](roles/bind_dns) — Ansible Role to install and configure Bind DNS, using Jinja2 templates to build configuration files.
-- [`bitwarden_secrets`](roles/bitwarden_secrets) — Ansible Role to pull all secrets from Bitwarden Secrets Manager and store them based on project.
+- [`bitwarden_secrets`](roles/bitwarden_secrets) — >-
 - [`check_host`](roles/check_host) — Ansible Role to check active hosts & return a dict of hosts called 'activehosts
 - [`checkmk_server`](roles/checkmk_server) — Ansible role to install CheckMK and perform basic configuration.
 - [`cloudflare_warp`](roles/cloudflare_warp) — Ansible role to install and configure cloudflare warp agent.
