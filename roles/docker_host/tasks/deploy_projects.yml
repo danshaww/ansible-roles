@@ -28,7 +28,7 @@
 
 - name: Docker Host | Deploy Projects | Include project vars file
   ansible.builtin.include_tasks: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml') }}"
-  when: project_vars[item].stat.exists
+  when: project_vars[item.name].stat.exists
   loop: "{{ docker_host_compose_projects }}"
   loop_control:
     label: "{{ item.name }}"
