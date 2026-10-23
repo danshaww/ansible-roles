@@ -42,7 +42,30 @@
     dest: /usr/local/bin/ctop
     mode: '0755'
 
-- name: Install Loki Docker driver plugin
+- name: Docker Host | Deploy Config | Ensure root config directory exists
+  ansible.builtin.file:
+    path: /root/.docker
+    state: directory
+    mode: '0770'
+
+- name: Docker | Installation | Populate root Docker config from Jinja template
+  when: docker_host_config_path is not none
+  ansible.builtin.template:
+    src: "{{ docker_host_config_path }}"
+    dest: /root/.docker/config.json
+    mode: '0770'
+
+- name: Docker Host | Deploy Config | Populate daemon.json from Jinja template
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: '0700'
+  notify:
+    - Reload Docker
+    - Restart Docker
+    - Recreate Docker Compose projects
+
+- name: Install Host | Install | Install Plugins
   community.docker.docker_plugin:
     plugin_name: "{{ item.name }}"
     alias: "{{ item.alias }}"

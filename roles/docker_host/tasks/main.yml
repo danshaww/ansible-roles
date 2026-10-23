@@ -5,11 +5,6 @@
     when:
       - docker_host_install
 
-  - name: Docker Host | Include Config Tasks
-    ansible.builtin.include_tasks: deploy_config.yml
-    when:
-      - docker_host_configure
-
   - name: Docker Host | Include Configuration Tasks (Deploy)
     ansible.builtin.include_tasks: deploy_projects.yml
     when:
