@@ -18,6 +18,20 @@
     state: directory
   loop: "{{ docker_host_compose_projects }}"
 
+- name: Docker Host | Deploy Projects | Check for project vars file
+  ansible.builtin.stat:
+    path: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml') }}"
+  register: project_vars
+  loop: "{{ docker_host_compose_projects }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Docker Host | Deploy Projects | Include project vars file
+  ansible.builtin.include_tasks: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml') }}"
+  when: project_vars[item].stat.exists
+  loop: "{{ docker_host_compose_projects }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Docker Host | Deploy Projects | Generate Compose Files # TODO: consider changing projects to a variable under the project name
   ansible.builtin.template:
