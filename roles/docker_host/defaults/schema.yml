@@ -1,9 +1,24 @@
 docker_host_install: # Install Docker?
 docker_host_configure: # Configure Docker? (Deploy compose projects and daemon config)
-docker_host_config_path: # Path to config.json configuration for root user
-docker_host_enable_auth: # Configure github & gitea authentication
+
 docker_host_build: # Default value for docker build argument when running compose up -d
 docker_host_pull: # Default value for docker pull argument when running compose up -d
+
+docker_host_base_path: # Use to override /var/lib/docker
+docker_host_bind_mount_volume_path: # Use to override /srv/volumes
+
+docker_host_logging:
+  type: #syslog, loki or none
+  loki_url: #loki connection
+
+docker_host_auth_sources:
+  provider:
+    auth: # secret containing base64 encoded user:token should be placed here
+
+
+# Only one of the below should be used
+docker_host_compose_project_dir: # Directory containing yaml files to merge into docker_host_compose_projects variable
+
 docker_host_compose_projects: # Compose project definition (remove to skip)
   project1: # Compose project name (must match j2 compose project template filename)
     enabled: # default is true, set to false to remove project without deleting config
@@ -13,10 +28,3 @@ docker_host_compose_projects: # Compose project definition (remove to skip)
       mode: # Defaults to 0770
     create_bind_mount_volume: # Whether to create volume directory or not (default is false)
     compose: # Nested Docker compose definition
-docker_host_compose_default_path: # Path to directory containing compose file templates
-docker_host_base_path: # Use to override /var/lib/docker
-docker_host_bind_mount_volume_path: # Location to create bind mount volume directories
-docker_host_logging:
-  type: #syslog, loki or none
-  loki_url: #loki connection
-docker_host_compose_project_dir: # Directory containing yaml files to merge into docker_host_compose_projects variable

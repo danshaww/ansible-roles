@@ -49,9 +49,8 @@
     mode: '0770'
 
 - name: Docker | Installation | Populate root Docker config from Jinja template
-  when: docker_host_config_path is not none
   ansible.builtin.template:
-    src: "{{ docker_host_config_path }}"
+    src: config.json.j2
     dest: /root/.docker/config.json
     mode: '0770'
 
