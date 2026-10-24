@@ -17,9 +17,9 @@
 
 - name: Recreate Docker Compose projects
   community.docker.docker_compose_v2:
-    project_name: "{{ item.name }}"
+    project_name: "{{ item.key }}"
     project_src: "{{ docker_host_base_path }}/compose"
-    files: "{{ item.name }}.yml"
+    files: "{{ item.key }}.yml"
     remove_orphans: true
     build: "{{ docker_host_build }}"
     pull: "{{ docker_host_pull }}"
@@ -27,4 +27,4 @@
     recreate: always
   loop: "{{ docker_host_compose_projects | dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
