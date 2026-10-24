@@ -22,8 +22,7 @@ docker_host_logging_pipeline_stages: !unsafe |
       level:
 
 docker_host_standard_networks:
-  networks:
-    backend: null
-    frontend:
-      external: true
-      name: traefik_backend
+  backend: null
+  frontend:
+    external: true
+    name: traefik_backend
