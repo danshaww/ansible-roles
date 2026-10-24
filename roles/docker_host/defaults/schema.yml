@@ -17,7 +17,7 @@ docker_host_auth_sources:
 
 
 # Only one of the below should be used
-docker_host_compose_project_dir: # Directory containing yaml files to merge into docker_host_compose_projects variable
+docker_host_compose_project_dir: # Directory containing Jinja-templated project YAML files; item.key is the filename without its extension
 
 docker_host_compose_projects: # Compose project definition (remove to skip)
   project1: # Compose project name (must match j2 compose project template filename)
@@ -27,4 +27,4 @@ docker_host_compose_projects: # Compose project definition (remove to skip)
       group: # Defaults to root
       mode: # Defaults to 0770
     create_bind_mount_volume: # Whether to create volume directory or not (default is false)
-    compose: # Nested Docker compose definition
+    compose: # Nested Docker compose definition; project YAML may reference item.key

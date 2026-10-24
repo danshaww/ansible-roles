@@ -6,12 +6,35 @@
     mode: '0755'
     state: directory
 
-- name: Docker Host | Deploy Projects | Generate project dict
+- name: Docker Host | Deploy Projects | Initialize project dict
   when: docker_host_compose_project_dir is not none
-  ansible.builtin.include_vars:
-    dir: "{{ playbook_dir }}/{{ docker_host_compose_project_dir }}"
-    extensions: [yml, yaml]
-    name: docker_host_compose_projects
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: {}
+
+- name: Docker Host | Deploy Projects | Load project definitions
+  when: docker_host_compose_project_dir is not none
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        docker_host_compose_projects
+        | combine(lookup('ansible.builtin.template', item.value) | from_yaml)
+      }}
+  vars:
+    compose_files: >-
+      {{
+        query('ansible.builtin.fileglob', playbook_dir ~ '/' ~ docker_host_compose_project_dir ~ '/*.yml')
+        + query('ansible.builtin.fileglob', playbook_dir ~ '/' ~ docker_host_compose_project_dir ~ '/*.yaml')
+      }}
+  loop: >-
+    {{
+      dict(
+        compose_files
+        | map('basename')
+        | map('regex_replace', '\.(yml|yaml)$', '')
+        | zip(compose_files)
+      )
+      | dict2items
+    }}
 
 - name: Docker Host | Deploy Projects | Create Bind Mount Volumes
   when:
