@@ -25,6 +25,6 @@
     pull: "{{ docker_host_pull }}"
     state: present
     recreate: always
-  loop: "{{ docker_host_compose_projects }}"
+  loop: "{{ docker_host_compose_projects | dict2items }}"
   loop_control:
     label: "{{ item.name }}"
