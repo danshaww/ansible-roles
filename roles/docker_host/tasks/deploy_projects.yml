@@ -15,7 +15,7 @@
 
 - name: Docker Host | Deploy Projects | Create Bind Mount Volumes
   when:
-    - item.create_bind_mount_volume | default(false)
+    - item.value.create_bind_mount_volume | default(false)
     - item.enabled | default(true)
   ansible.builtin.file:
     path: "{{ docker_host_bind_mount_volume_path }}/{{ item.key }}"
