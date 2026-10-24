@@ -9,5 +9,5 @@ docker_host_logging:
 docker_host_compose_projects: null # TODO: Updated this to be an object rather than a list
 docker_host_compose_default_path: null
 docker_host_base_path: /var/lib/docker
-docker_host_bind_mount_volume_path: null
+docker_host_bind_mount_volume_path: /srv/volumes
 docker_host_compose_project_dir: null
