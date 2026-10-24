@@ -6,56 +6,48 @@
     mode: '0755'
     state: directory
 
+- name: Docker Host | Deploy Projects | Generate project dict
+  when: docker_host_compose_project_dir is not none
+  ansible.builtin.include_vars:
+    dir: "{{ docker_host_compose_project_dir }}"
+    extensions: [yml, yaml]
+    name: docker_host_compose_projects
+
 - name: Docker Host | Deploy Projects | Create Bind Mount Volumes
   when:
     - docker_host_bind_mount_volume_path is not none
     - item.create_bind_mount_volume | default(false)
+    - item.enabled | default(true)
   ansible.builtin.file:
-    path: "{{ docker_host_bind_mount_volume_path }}/{{ item.name }}"
+    path: "{{ docker_host_bind_mount_volume_path }}/{{ item.key }}"
     owner: "{{ item.volume_config.owner | default('root') }}"
     group: "{{ item.volume_config.group | default('root') }}"
     mode: "{{ item.volume_config.mode | default('0770') }}"
     state: directory
-  loop: "{{ docker_host_compose_projects }}"
+  loop: "{{ docker_host_compose_projects | dict2items }}"
 
-# - name: Docker Host | Deploy Projects | Check for project vars file
-#   ansible.builtin.stat:
-#     path: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml') }}"
-#   register: project_vars
-#   loop: "{{ docker_host_compose_projects }}"
-#   loop_control:
-#     label: "{{ item.name }}"
-
-# - debug:
-#     msg: "{{ project_vars }}"
-
-# - name: Docker Host | Deploy Projects | Include project vars file
-#   ansible.builtin.include_tasks: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml') }}"
-#   when: "{{ (project_vars.results | selectattr('item.name', 'equalto', item.name) | first).stat.exists }}"
-#   loop: "{{ docker_host_compose_projects }}"
-#   loop_control:
-#     label: "{{ item.name }}"
-
-- name: Docker Host | Deploy Projects | Generate Compose Files # TODO: consider changing projects to a variable under the project name
+- name: Docker Host | Deploy Projects | Generate Compose Files
+  when: item.enabled | default(true)
   ansible.builtin.template:
-    src: "{{ item.project_path | default(docker_host_compose_default_path + '/' + item.name + '.yml.j2') }}"
-    dest: "{{ docker_host_base_path }}/compose/{{ item.name }}.yml"
+    src: compose.yml.j2
+    dest: "{{ docker_host_base_path }}/compose/{{ item.key }}.yml"
     owner: root
     group: root
     mode: '0600'
-  loop: "{{ docker_host_compose_projects }}"
+  loop: "{{ docker_host_compose_projects | dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
 
 - name: Docker Host | Deploy Projects | Start Compose Projects
+  when: item.enabled | default(true)
   community.docker.docker_compose_v2:
-    project_name: "{{ item.name }}"
+    project_name: "{{ item.key }}"
     project_src: "{{ docker_host_base_path }}/compose"
-    files: "{{ item.name }}.yml"
+    files: "{{ item.key }}.yml"
     remove_orphans: true
     build: "{{ docker_host_build }}"
     pull: "{{ docker_host_pull }}"
     state: present
-  loop: "{{ docker_host_compose_projects }}"
+  loop: "{{ docker_host_compose_projects | dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
