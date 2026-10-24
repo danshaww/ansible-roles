@@ -27,4 +27,6 @@ docker_host_compose_projects: # Compose project definition (remove to skip)
       group: # Defaults to root
       mode: # Defaults to 0770
     create_bind_mount_volume: # Whether to create volume directory or not (default is false)
-    compose: # Nested Docker compose definition; project YAML may reference item.key
+    networks: # docker compose networks - unset to use defaults (backend + traefik)
+    services: # docker compose services
+    volumes: # docker compose volumes - unset to not configure named volumes
