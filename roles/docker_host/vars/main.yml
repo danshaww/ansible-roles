@@ -20,3 +20,10 @@ docker_host_logging_pipeline_stages: !unsafe |
       template: '{{ if .Value }}{{ ToLower .Value }}{{ else }}info{{ end }}'
   - labels:
       level:
+
+docker_host_standard_networks:
+  networks:
+    backend: null
+    frontend:
+      external: true
+      name: traefik_backend
