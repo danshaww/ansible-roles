@@ -16,7 +16,7 @@
 - name: Docker Host | Deploy Projects | Create Bind Mount Volumes
   when:
     - item.value.create_bind_mount_volume | default(false)
-    - item.enabled | default(true)
+    - item.value.enabled | default(true)
   ansible.builtin.file:
     path: "{{ docker_host_bind_mount_volume_path }}/{{ item.key }}"
     owner: "{{ item.volume_config.owner | default('root') }}"
@@ -28,7 +28,7 @@
     label: "{{ item.key }}"
 
 - name: Docker Host | Deploy Projects | Generate Compose Files
-  when: item.enabled | default(true)
+  when: item.value.enabled | default(true)
   ansible.builtin.template:
     src: compose.yml.j2
     dest: "{{ docker_host_base_path }}/compose/{{ item.key }}.yml"
@@ -40,7 +40,7 @@
     label: "{{ item.key }}"
 
 - name: Docker Host | Deploy Projects | Start Compose Projects
-  when: item.enabled | default(true)
+  when: item.value.enabled | default(true)
   community.docker.docker_compose_v2:
     project_name: "{{ item.key }}"
     project_src: "{{ docker_host_base_path }}/compose"
