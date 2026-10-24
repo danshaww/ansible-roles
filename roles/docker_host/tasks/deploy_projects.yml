@@ -25,6 +25,8 @@
     mode: "{{ item.volume_config.mode | default('0770') }}"
     state: directory
   loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
 
 - name: Docker Host | Deploy Projects | Generate Compose Files
   when: item.enabled | default(true)
