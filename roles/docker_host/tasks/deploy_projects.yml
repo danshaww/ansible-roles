@@ -7,9 +7,25 @@
     state: directory
 
 - name: Docker Host | Deploy Projects | Initialize project dict
-  when: docker_host_compose_project_dir is not none
   ansible.builtin.set_fact:
-    docker_host_compose_projects: {}
+    docker_host_compose_projects: >-
+      {{ docker_host_compose_projects | default({}, true) }}
+
+- name: Docker Host | Deploy Projects | Load role-defined project templates
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        lookup(
+          'ansible.builtin.template',
+          role_path ~ '/vars/compose/' ~ item ~ '.yml',
+          template_vars={'item': {'key': item}}
+        )
+        | from_yaml
+        | combine(docker_host_compose_projects, recursive=true)
+      }}
+  loop: "{{ docker_host_compose_project_templates }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Docker Host | Deploy Projects | Load project definitions
   when: docker_host_compose_project_dir is not none

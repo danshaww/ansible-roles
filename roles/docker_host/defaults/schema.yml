@@ -16,10 +16,11 @@ docker_host_auth_sources:
     auth: # secret containing base64 encoded user:token should be placed here
 
 
-# Only one of the below should be used
+# Use either playbook project definitions or a project directory; role-defined
+# templates can be added to either source.
 docker_host_compose_project_dir: # Directory containing Jinja-templated project YAML files; item.key is the filename without its extension
 
-docker_host_compose_projects: # Compose project definition (remove to skip)
+docker_host_compose_projects: # Compose project definitions provided by the playbook
   project1: # Compose project name (must match j2 compose project template filename)
     enabled: # default is true, set to false to remove project without deleting config
     volume_config:
@@ -30,3 +31,8 @@ docker_host_compose_projects: # Compose project definition (remove to skip)
     networks: # docker compose networks - unset to use defaults (backend + traefik)
     services: # docker compose services
     volumes: # docker compose volumes - unset to not configure named volumes
+
+# Role-defined projects to add (names match files in vars/compose).
+docker_host_compose_project_templates:
+  - traefik
+  - dozzle

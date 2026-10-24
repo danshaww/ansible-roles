@@ -1,0 +1,23 @@
+dozzle:
+  services:
+    web:
+      restart: unless-stopped
+      image: amir20/dozzle:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      environment:
+        DOZZLE_BASE: /dozzle
+      labels:
+        - traefik.enable=true
+        - traefik.http.services.{{ item.key }}.loadbalancer.server.port=8080
+        - traefik.http.routers.{{ item.key }}.rule=(Host(`{{ inventory_hostname }}.epichouse.co.uk`) && PathPrefix(`/dozzle`))
+        - traefik.http.routers.{{ item.key }}.entrypoints=websecure
+        - traefik.http.routers.{{ item.key }}.tls=true
+        - traefik.http.routers.{{ item.key }}.tls.certresolver=letsencrypt
+      # healthcheck:
+      #   test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      #   interval: 120s
+      #   timeout: 10s
+      #   retries: 3
+      networks:
+        - frontend
