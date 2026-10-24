@@ -9,7 +9,7 @@
 - name: Docker Host | Deploy Projects | Generate project dict
   when: docker_host_compose_project_dir is not none
   ansible.builtin.include_vars:
-    dir: "{{ docker_host_compose_project_dir }}"
+    dir: "{{ playbook_dir}}/{{ docker_host_compose_project_dir }}"
     extensions: [yml, yaml]
     name: docker_host_compose_projects
 
