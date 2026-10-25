@@ -12,3 +12,10 @@
   ansible.builtin.include_tasks: subscription_nag.yml
   when:
     - pve_utils_configure_subscription_nag
+
+
+# TODO: Add ACME configuration
+# TODO: Add Storage configuration (pbs, nfs etc)
+# TODO: Add Backup job configuration
+# TODO: Add Datacenter configuration
+# TODO: Add no subscription repo config
