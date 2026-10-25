@@ -28,3 +28,5 @@
     user: "{{ item.user | default(cron_management_default_user) }}"
   when: cron_management_mail_to is not none
   become: true
+
+# TODO: make cron jobs idempotent with a config setting to allow removals
