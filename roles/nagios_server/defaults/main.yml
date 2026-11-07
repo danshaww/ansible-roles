@@ -1,0 +1,9 @@
+nagios_version: 4.5.11
+nagios_admin_password: changeme
+nagios_smtp_username: changeme
+nagios_smtp_password: changeme
+nagios_smtp_host: changeme
+nagios_smtp_test_email: changeme
+nagios_config_path: changeme
+nagios_cloudflare_api_token: changeme
+nagios_hostname: changeme

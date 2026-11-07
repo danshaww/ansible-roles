@@ -1,0 +1,2 @@
+pve_utils_configure_firewall: true
+pve_utils_configure_subscription_nag: true

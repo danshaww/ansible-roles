@@ -1,0 +1,15 @@
+packages:
+  - curl
+  - tar
+  - jq
+  - nodejs
+#  - golang-go
+  - software-properties-common
+  - gnupg
+  - mkisofs
+  - yq
+  - sshpass
+
+ansible_collections:
+  - lucasheld.uptime_kuma
+  - azure.azcollection

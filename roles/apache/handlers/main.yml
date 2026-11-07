@@ -1,0 +1,12 @@
+- name: Reload Web
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+- name: Restart Web
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+  become: true
+- name: Enable Default SSL Site
+  ansible.builtin.shell: a2ensite default-ssl
+  become: true

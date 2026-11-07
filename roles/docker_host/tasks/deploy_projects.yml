@@ -1,0 +1,95 @@
+- name: Docker Host | Deploy Projects | Create Compose Directory
+  ansible.builtin.file:
+    path: "{{ docker_host_base_path }}/compose"
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+- name: Docker Host | Deploy Projects | Initialize project dict
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{ docker_host_compose_projects | default({}, true) }}
+
+- name: Docker Host | Deploy Projects | Load role-defined project templates
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        lookup(
+          'ansible.builtin.template',
+          role_path ~ '/vars/compose/' ~ item ~ '.yml',
+          template_vars={'item': {'key': item}}
+        )
+        | from_yaml
+        | combine(docker_host_compose_projects, recursive=true)
+      }}
+  loop: "{{ docker_host_compose_project_templates }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Docker Host | Deploy Projects | Load project definitions
+  when: docker_host_compose_project_dir is not none
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        docker_host_compose_projects
+        | combine(lookup('ansible.builtin.template', item.value) | from_yaml)
+      }}
+  vars:
+    compose_files: >-
+      {{
+        query('ansible.builtin.fileglob', playbook_dir ~ '/' ~ docker_host_compose_project_dir ~ '/*.yml')
+        + query('ansible.builtin.fileglob', playbook_dir ~ '/' ~ docker_host_compose_project_dir ~ '/*.yaml')
+      }}
+  loop: >-
+    {{
+      dict(
+        compose_files
+        | map('basename')
+        | map('regex_replace', '\.(yml|yaml)$', '')
+        | zip(compose_files)
+      )
+      | dict2items
+    }}
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Docker Host | Deploy Projects | Create Bind Mount Volumes
+  when:
+    - item.value.create_bind_mount_volume | default(false)
+    - item.value.enabled | default(true)
+  ansible.builtin.file:
+    path: "{{ docker_host_bind_mount_volume_path }}/{{ item.key }}"
+    owner: "{{ item.volume_config.owner | default('root') }}"
+    group: "{{ item.volume_config.group | default('root') }}"
+    mode: "{{ item.volume_config.mode | default('0770') }}"
+    state: directory
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Docker Host | Deploy Projects | Generate Compose Files
+  when: item.value.enabled | default(true)
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ docker_host_base_path }}/compose/{{ item.key }}.yml"
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Docker Host | Deploy Projects | Start Compose Projects
+  when: item.value.enabled | default(true)
+  community.docker.docker_compose_v2:
+    project_name: "{{ item.key }}"
+    project_src: "{{ docker_host_base_path }}/compose"
+    files: "{{ item.key }}.yml"
+    remove_orphans: true
+    build: "{{ docker_host_build }}"
+    pull: "{{ docker_host_pull }}"
+    state: present
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"

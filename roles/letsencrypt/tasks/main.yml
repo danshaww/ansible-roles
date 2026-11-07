@@ -1,0 +1,39 @@
+- name: Install Packages
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ packages }}"
+
+- name: Download ACME DNS Challenge Script
+  ansible.builtin.uri:
+    url: https://raw.githubusercontent.com/alanmburr/acme-dns-certbot/refs/heads/master/acme-dns-auth.py
+    dest: /etc/letsencrypt/acme-dns-auth.py
+    mode: '0755'
+
+- name: Configure Authentication
+  ansible.builtin.template:
+    src: auth.ini.j2
+    dest: /etc/letsencrypt/auth.ini
+    mode: '0600'
+
+- name: Check for existing certificates
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ item }}/fullchain.pem"
+  register: certificates
+  with_items: "{{ letsencrypt_certificates }}"
+
+- name: Generate Certificate
+  ansible.builtin.shell: >
+    certbot certonly
+    --preferred-challenges dns
+    --debug-challenges
+    --domain {{ item.item }}
+    --non-interactive
+    --agree-tos
+    --email {{ letsencrypt_email }}
+    --dns-cloudflare-credentials /etc/letsencrypt/auth.ini
+    --dns-cloudflare
+    --dns-cloudflare-propagation-seconds 60
+  when: not item.stat.exists
+  changed_when: item.stat.exists
+  with_items: "{{ certificates.results }}"
+  no_log: true

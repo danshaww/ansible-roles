@@ -1,0 +1,7 @@
+- name: Nagios Agent | Installation
+  ansible.builtin.include_tasks: install.yml
+  when: enable_install
+
+- name: Nagios Agent | Config Deployment
+  ansible.builtin.include_tasks: config.yml
+  when: enable_config

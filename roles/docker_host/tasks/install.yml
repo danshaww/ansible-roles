@@ -1,0 +1,72 @@
+- name: Docker Host | Install | Ensure Keyring Directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Docker Host | Install | Download Docker GPG Key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Docker Host | Install | Remove Legacy Repository Entry
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/docker.list
+    regexp: '^deb \[arch=amd64 signed-by=/etc/apt/keyrings/docker\.gpg\] https://download\.docker\.com/linux/ubuntu '
+    state: absent
+
+- name: Docker Host | Install | Add Repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu   jammy stable"
+    state: present
+    filename: docker
+
+- name: Docker Host | Install | Install Packages
+  ansible.builtin.apt:
+    name: "{{ docker_host_packages }}"
+
+- name: Docker Host | Install | Enable and Start Docker
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Docker Host | Install | Copy ctop binary # no arm binary available, replace with another tool
+  ansible.builtin.copy:
+    src: ctop
+    dest: /usr/local/bin/ctop
+    mode: '0755'
+
+- name: Docker Host | Deploy Config | Ensure root config directory exists
+  ansible.builtin.file:
+    path: /root/.docker
+    state: directory
+    mode: '0770'
+
+- name: Docker | Installation | Populate root Docker config from Jinja template
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: /root/.docker/config.json
+    mode: '0770'
+
+- name: Docker Host | Deploy Config | Populate daemon.json from Jinja template
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: '0700'
+  notify:
+    - Reload Docker
+    - Restart Docker
+    - Recreate Docker Compose projects
+
+- name: Install Host | Install | Install Plugins
+  community.docker.docker_plugin:
+    plugin_name: "{{ item.name }}"
+    alias: "{{ item.alias }}"
+    state: enable
+  loop: "{{ docker_host_plugins }}"

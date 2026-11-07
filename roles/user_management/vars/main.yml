@@ -1,0 +1,9 @@
+user_management_static_dirs:
+  - dir: /
+    mode: '0750'
+  - dir: /.ssh
+    mode: '0700'
+  - dir: /.config
+    mode: '0700'
+  - dir: /.config/htop
+    mode: '0700'

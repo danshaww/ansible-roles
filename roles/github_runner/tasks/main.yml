@@ -1,0 +1,16 @@
+- name: Main | Install GitHub Actions Runner
+  ansible.builtin.include_tasks: agent/configure.yml
+- name: Main | Execute Misc Tasks
+  ansible.builtin.include_tasks: agent/misc.yml
+- name: Main | Install AZ CLI
+  ansible.builtin.include_tasks: utils/az_cli.yml
+- name: Main | Install Ansible
+  ansible.builtin.include_tasks: utils/ansible.yml
+- name: Main | Install Hashicorp Tools
+  ansible.builtin.include_tasks: utils/hashicorp.yml
+- name: Main | Install Docker
+  ansible.builtin.include_tasks: utils/docker.yml
+- name: Main | Install Bitwarden CLI
+  ansible.builtin.include_tasks: utils/bitwarden_cli.yml
+- name: Main | Install Bitwarden Secrets CLI
+  ansible.builtin.include_tasks: utils/bitwarden_secrets_cli.yml

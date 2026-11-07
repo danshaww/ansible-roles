@@ -1,0 +1,57 @@
+- name: Download Nagios Source
+  ansible.builtin.shell: wget https://github.com/NagiosEnterprises/nagioscore/releases/download/nagios-{{ nagios_version }}/nagios-{{ nagios_version }}.tar.gz
+  args:
+    chdir: /tmp
+
+- name: Unarchive Source
+  ansible.builtin.unarchive:
+    src: /tmp/nagios-{{ nagios_version }}.tar.gz
+    dest: /tmp/
+    remote_src: true
+
+- name: Comile Source
+  ansible.builtin.shell: ./configure --with-httpd-conf=/etc/apache2/sites-available && make all
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+
+- name: Install Nagios
+  ansible.builtin.shell: make "{{ item }}"
+  with_items:
+    - install
+    - install-daemoninit
+    - install-commandmode
+    - install-config
+    - install-webconf
+  args:
+    chdir: "/tmp/nagios-{{ nagios_version }}"
+
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: /usr/local/nagios/etc/htpasswd.users
+    name: nagiosadmin
+    password: "{{ nagios_admin_password }}"
+
+- name: Enable Nagios SSL Site
+  ansible.builtin.file:
+    src: "/etc/apache2/sites-available/nagios.conf"
+    dest: "/etc/apache2/sites-enabled/nagios.conf"
+    state: link
+  register: enable_nagios_site
+
+- name: Start Nagios Service
+  ansible.builtin.service:
+    name: nagios
+    state: started
+    enabled: true
+
+- name: Reload Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+    enabled: true
+  when: enable_nagios_site.changed
+
+- name: Remove temp Directory
+  ansible.builtin.file:
+    path: /tmp/nagios-{{ nagios_version }}
+    state: absent

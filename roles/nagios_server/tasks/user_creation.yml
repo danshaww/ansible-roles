@@ -1,0 +1,40 @@
+- name: Create nagios Group
+  ansible.builtin.group:
+    name: nagios
+    state: present
+    gid: 3888
+
+- name: Create nagcmd Group
+  ansible.builtin.group:
+    name: nagcmd
+    state: present
+    gid: 3889
+
+- name: Create nagios User
+  ansible.builtin.user:
+    name: nagios
+    uid: 3888
+    shell: /bin/bash
+    group: nagios
+    append: true
+    groups: users
+  no_log: true
+  changed_when: false
+
+- name: Add users to nagcmd Group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagcmd
+    append: true
+  with_items:
+    - www-data
+    - nagios
+
+- name: Add users to nagios Group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagios
+    append: true
+  with_items:
+    - www-data
+    - nagios

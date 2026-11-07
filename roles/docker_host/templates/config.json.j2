@@ -1,0 +1,5 @@
+{% set auths = {} %}
+{% for source in docker_host_auth_sources | default([]) %}
+{% set _ = auths.update({source.registry: {"auth": source.auth}}) %}
+{% endfor %}
+{{ ({"auths": auths} if auths else {}) | to_nice_json }}

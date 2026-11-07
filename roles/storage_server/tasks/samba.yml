@@ -1,0 +1,22 @@
+- name: Storage Server | Samba | Install
+  become: true
+  ansible.builtin.apt:
+    name: samba
+
+- name: Storage Server | Samba | Copy Config
+  ansible.builtin.copy:
+    src: "{{ storage_server_smb_config_path }}"
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: users
+    mode: '0770'
+  notify: Restart SMB
+  become: true
+
+- name: Storage Server | Samba | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "445"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+

@@ -1,0 +1,28 @@
+- name: Add Cloudflare APT key
+  ansible.builtin.apt_key:
+    url: "https://pkg.cloudflare.com/cloudflare-main.gpg"
+    keyring: /usr/share/keyrings/cloudflare-main.gpg
+  become: true
+- name: Add Cloudflare APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main"
+    state: present
+  become: true
+
+- name: Install cloudflared
+  ansible.builtin.apt:
+    name: cloudflared
+    state: present
+    update_cache: true
+  become: true
+
+- name: Check for cloudflared service
+  ansible.builtin.stat:
+    path: /etc/systemd/system/cloudflared.service
+  register: cloudflared_service
+
+- name: Configure Runner
+  ansible.builtin.command: "cloudflared service install {{ tunnel_token }}"
+  become: true
+  changed_when: not cloudflared_service.stat.exists
+  when: not cloudflared_service.stat.exists

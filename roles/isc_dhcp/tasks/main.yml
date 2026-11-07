@@ -1,0 +1,36 @@
+- name: ISC | Package Installation
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - isc-dhcp-server
+
+- name: ISC | Render Config File
+  ansible.builtin.template:
+    src: "{{ config_path }}/dhcpd.conf.j2"
+    dest: "/etc/dhcp/dhcpd.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Service
+
+- name: ISC | Copy Defaults File
+  ansible.builtin.copy:
+    src: isc-dhcp-server
+    dest: /etc/default/isc-dhcp-server
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Daemon Reload
+    - Restart Service
+
+- name: ISC | Copy Justfile
+  ansible.builtin.copy:
+    src: justfile
+    dest: "/home/{{ ansible_user }}/justfile"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+  become: true

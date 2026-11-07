@@ -1,0 +1,7 @@
+- name: Copy Stylesheets
+  ansible.builtin.copy:
+    src: stylesheets/
+    dest: /usr/local/nagios/share/stylesheets
+    mode: '0755'
+    owner: nagios
+    group: nagios

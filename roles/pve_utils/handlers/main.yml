@@ -1,0 +1,5 @@
+- name: PVE Utils | Restart Proxmox proxy
+  ansible.builtin.service:
+    name: pveproxy
+    state: restarted
+  become: true

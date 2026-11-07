@@ -1,0 +1,36 @@
+- name: Restart NFS
+  ansible.builtin.service:
+    name: nfs-server
+    state: restarted
+  become: true
+
+- name: Restart SMB
+  ansible.builtin.service:
+    name: smb
+    state: restarted
+  become: true
+
+- name: Restart zed
+  ansible.builtin.systemd:
+    name: zfs-zed
+    state: restarted
+    enabled: true
+  become: true
+
+- name: Restore iscsi target config
+  ansible.builtin.command:
+    cmd: targetctl restore
+  args:
+    executable: /bin/bash
+  changed_when: true
+  become: true
+
+- name: Restart target service
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  become: true
+  failed_when: false
+  loop:
+    - target.service
+    - targetclid.service

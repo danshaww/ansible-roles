@@ -1,0 +1,31 @@
+- name: Restart SSH
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  become: true
+  ignore_errors: true
+  with_items:
+    - ssh
+    - sshd
+- name: Restart Syslog
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+  become: true
+- name: Restart Cloud Init
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  become: true
+  loop:
+    - cloud-init-local.service
+    - cloud-init-main.service
+    - cloud-init-network.service
+    - cloud-config.service
+    - cloud-final.service
+  failed_when: false
+- name: Restart Journald
+  ansible.builtin.service:
+    name: systemd-journald
+    state: restarted
+  become: true

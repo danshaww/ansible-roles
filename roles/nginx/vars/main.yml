@@ -1,0 +1,5 @@
+packages:
+  - nginx
+
+default_sites:
+  - default

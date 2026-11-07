@@ -1,0 +1,26 @@
+- name: Storage Server | NFS | Install
+  become: true
+  ansible.builtin.apt:
+    name:
+      - nfs-kernel-server
+      - nfs4-acl-tools
+
+- name: Storage Server | NFS | Copy Exports
+  ansible.builtin.copy:
+    src: "{{ storage_server_nfs_config_path }}"
+    dest: /etc/exports
+    owner: root
+    group: users
+    mode: '0770'
+  notify: Restart NFS
+  become: true
+
+- name: Storage Server | NFS | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+  with_items:
+    - 2049
+    - 111

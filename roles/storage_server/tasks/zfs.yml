@@ -1,0 +1,90 @@
+- name: Storage Server | ZFS | Install
+  become: true
+  ansible.builtin.apt:
+    name:
+      - zfsutils-linux
+      - sanoid
+      - hdparm
+
+- name: Storage Server | ZFS | Create Pools
+  community.general.zpool:
+    name: "{{ item.name }}"
+    vdevs: "{{ item.vdevs }}"
+    altroot: "{{ item.altroot | default(omit) }}"
+    disable_new_features: "{{ item.disable_new_features | default(false) }}"
+    filesystem_properties: "{{ item.filesystem_properties | default({}) }}"
+    force: "{{ item.force | default(false) }}"
+    mountpoint: "{{ item.mountpoint | default('/mnt/' + item.name) }}"
+    pool_properties: "{{ item.pool_properties | default({}) }}"
+    state: "{{ item.state | default('present') }}"
+    temp_name: "{{ item.temp_name | default(omit) }}"
+  when:
+    - storage_server_zfs.pools is defined
+    - item.vdevs is defined
+  loop: "{{ storage_server_zfs.pools }}"
+  loop_control:
+    label: "{{ item.name }}"
+  become: true
+
+- name: Storage Server | ZFS | Create Datasets
+  community.general.zfs:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    extra_zfs_properties: "{{ item.extra_zfs_properties | default({}) }}"
+  loop: "{{ storage_server_zfs.datasets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  become: true
+
+- name: Storage Server | ZFS | Create Sanoid Config Directory
+  ansible.builtin.file:
+    path: /etc/sanoid
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  when: storage_server_zfs.sanoid_config_path is not none
+
+- name: Storage Server | ZFS | Copy Sanoid Config
+  ansible.builtin.copy:
+    src: "{{ storage_server_zfs.sanoid_config_path }}"
+    dest: /etc/sanoid/sanoid.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: storage_server_zfs.sanoid_config_path is not none
+
+- name: Storage Server | ZFS | Disable default sanoid timer
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  with_items:
+    - sanoid-prune.service
+    - sanoid.timer
+  become: true
+  when: storage_server_zfs.sanoid_config_path is not none
+
+
+- name: Storage Server | ZFS | Configure zed.rc
+  ansible.builtin.template:
+    src: zed.rc.j2
+    dest: /etc/zfs/zed.d/zed.rc
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart zed
+  become: true
+  when: storage_server_zfs.zed is defined
+
+- name: Storage Server | ZFS | Configure Scrub Cron Job
+  ansible.builtin.cron:
+    name: Weekly ZFS Scrub "{{ item.name }}"
+    weekday: 1
+    hour: 23
+    minute: 0
+    job: "/bin/bash -c 'zpool scrub {{ item.name }} 1> >(logger -p local3.info -t zfs) 2> >(tee /dev/stderr | logger -p local3.err -t zfs)'"
+  become: true
+  with_items: "{{ storage_server_zfs.pools }}"
