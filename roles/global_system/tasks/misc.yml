@@ -1,0 +1,23 @@
+- name: Global_System | Misc | Set TimeZone
+  community.general.timezone:
+    name: Europe/London
+
+- name: Global_System | Misc | Render Templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  when: global_system_templates | default(null) is not none
+  with_items: "{{ global_system_templates }}"
+
+- name: Global_System | Misc | Copy Binaries
+  ansible.builtin.copy:
+    src: bin/
+    dest: /usr/bin/
+    mode: '0755'
+
+- name: Global_System | Misc | Install Starship
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
+  args:
+    creates: /usr/local/bin/starship
+  become: true

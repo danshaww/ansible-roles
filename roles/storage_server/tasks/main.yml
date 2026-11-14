@@ -1,0 +1,45 @@
+- name: Storage Server | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Storage Server | ZFS
+  ansible.builtin.include_tasks: zfs.yml
+  when:
+    - enable_zfs_config
+    - storage_server_zfs is not none
+
+- name: Storage Server | Permissions
+  ansible.builtin.include_tasks: permissions.yml
+  when:
+    - enable_permissions
+    - storage_server_permissions is not none
+
+- name: Include Filesystem Tasks
+  ansible.builtin.include_tasks: filesystem.yml
+  when:
+    - storage_server_filesystem is not none
+    - enable_filesystem_tasks
+
+- name: Storage Server | SMB
+  ansible.builtin.include_tasks: smb.yml
+  when:
+    - enable_smb
+    - storage_server_smb is not none
+
+- name: Storage Server | NFS
+  ansible.builtin.include_tasks: nfs.yml
+  when:
+    - enable_nfs
+    - storage_server_nfs is not none
+
+- name: Storage Server | ISCSI
+  ansible.builtin.include_tasks: iscsi.yml
+  when:
+    - enable_iscsi
+    - storage_server_iscsi_config_path is not none
+
+- name: Storage Server | Rclone
+  ansible.builtin.include_tasks: rclone.yml
+  when:
+    - enable_rclone
+    - storage_server_rclone is not none

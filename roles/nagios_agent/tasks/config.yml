@@ -1,0 +1,5 @@
+- name: Nagios Agent | Update NRPE Config
+  ansible.builtin.template:
+    src: nrpe.cfg
+    dest: /usr/local/nagios/etc/nrpe.cfg
+  notify: Restart NRPE

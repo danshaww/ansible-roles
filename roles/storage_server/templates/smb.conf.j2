@@ -1,0 +1,13 @@
+# Managed by Ansible
+[global]
+{% for option, value in (storage_server_smb.get('global_config') | default(storage_server_smb.get('global', {}), true)).items() %}
+    {{ option }} = {% if value is number and ('mask' in option or option.endswith('mode')) %}{{ '%04o' % value }}{% else %}{{ value }}{% endif %}{{ '\n' }}
+{%- endfor %}
+
+{% for share_name, share_options in (storage_server_smb.get('shares') | default({}, true)).items() %}
+[{{ share_name }}]
+{% for option, value in share_options.items() %}
+    {{ option }} = {% if value is number and ('mask' in option or option.endswith('mode')) %}{{ '%04o' % value }}{% else %}{{ value }}{% endif %}{{ '\n' }}
+{%- endfor %}
+
+{% endfor %}

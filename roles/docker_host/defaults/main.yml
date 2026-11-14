@@ -1,0 +1,12 @@
+docker_host_install: true
+docker_host_configure: false
+docker_host_build: never
+docker_host_pull: missing
+docker_host_logging:
+  type: syslog
+docker_host_base_path: /var/lib/docker
+docker_host_bind_mount_volume_path: /srv/volumes
+docker_host_compose_projects: null
+docker_host_compose_project_dir: null
+docker_host_compose_project_templates: []
+docker_host_auth_sources: []

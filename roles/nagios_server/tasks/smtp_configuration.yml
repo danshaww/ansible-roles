@@ -1,0 +1,31 @@
+- name: Nagios Server | SMTP Configuration | Configure ssmtp service
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/ssmtp.conf
+    create: true
+    line: "{{ item }}"
+    mode: '0640'
+  with_items:
+    - root={{ nagios_server_smtp_username }}
+    - server={{ nagios_server_smtp_host }}
+    - UseSTARTTLS=YES
+    - FromLineOverride=YES
+    - AuthUser={{ nagios_server_smtp_username }}
+    - mailhub={{ nagios_server_smtp_host }}:587
+    - rewritedomain=epichouse.co.uk
+    - hostname={{ nagios_server_smtp_username }}
+  notify: Nagios Server | Handlers | Test SMTP
+- name: Nagios Server | SMTP Configuration | Configure ssmtp password
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/ssmtp.conf
+    create: true
+    line: "AuthPass={{ nagios_server_smtp_password }}"
+    mode: '0640'
+  no_log: true
+  notify: Nagios Server | Handlers | Test SMTP
+- name: Nagios Server | SMTP Configuration | Configure ssmtp revaliases
+  ansible.builtin.lineinfile:
+    path: /etc/ssmtp/revaliases
+    create: true
+    line: "root:{{ nagios_server_smtp_username }}:{{ nagios_server_smtp_host }}:587"
+    mode: '0640'
+  notify: Nagios Server | Handlers | Test SMTP

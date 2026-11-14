@@ -1,0 +1,45 @@
+- name: Nagios Server | User Creation | Create nagios group
+  ansible.builtin.group:
+    name: nagios
+    state: present
+    gid: 3888
+
+- name: Nagios Server | User Creation | Create nagcmd group
+  ansible.builtin.group:
+    name: nagcmd
+    state: present
+    gid: 3889
+
+- name: Nagios Server | User Creation | Check if nagios user exists
+  ansible.builtin.getent:
+    database: passwd
+    key: nagios
+    fail_key: false
+
+- name: Nagios Server | User Creation | Create nagios user
+  ansible.builtin.user:
+    name: nagios
+    uid: 3888
+    shell: /bin/bash
+    group: nagios
+    append: true
+    groups: users
+  when: (ansible_facts.getent_passwd | default({})).get('nagios') is none
+
+- name: Nagios Server | User Creation | Add users to nagcmd group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagcmd
+    append: true
+  with_items:
+    - www-data
+    - nagios
+
+- name: Nagios Server | User Creation | Add users to nagios group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nagios
+    append: true
+  with_items:
+    - www-data
+    - nagios

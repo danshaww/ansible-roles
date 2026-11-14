@@ -1,0 +1,153 @@
+- name: Nagios Server | Config Deployment | Copy base config
+  ansible.builtin.copy:
+    src: config/
+    dest: /usr/local/nagios/etc/
+    owner: nagios
+    group: nagios
+    mode: '0644'
+    directory_mode: '0755'
+  notify:
+    - Nagios Server | Handlers | Restart Nagios
+
+- name: Nagios Server | Config Deployment | Load YAML config
+  ansible.builtin.set_fact:
+    nagios_server_object_config: >-
+      {{
+        lookup(
+          'ansible.builtin.template',
+          playbook_dir ~ '/' ~ nagios_server_config_path ~ '/config.yml'
+        ) | from_yaml
+      }}
+    nagios_server_object_files: >-
+      {{
+        query(
+          'ansible.builtin.fileglob',
+          playbook_dir ~ '/' ~ nagios_server_config_path ~ '/objects/*.yml'
+        )
+        + query(
+          'ansible.builtin.fileglob',
+          playbook_dir ~ '/' ~ nagios_server_config_path ~ '/objects/*.yaml'
+        )
+      }}
+
+- name: Nagios Server | Config Deployment | Initialize host configs
+  ansible.builtin.set_fact:
+    nagios_server_host_configs: {}
+
+- name: Nagios Server | Config Deployment | Load host configs
+  ansible.builtin.set_fact:
+    nagios_server_host_configs: >-
+      {{
+        nagios_server_host_configs
+        | combine({
+            item | basename | regex_replace('\.(yml|yaml)$', '.cfg'):
+              (lookup('ansible.builtin.template', item) | from_yaml)
+          })
+      }}
+  loop: "{{ nagios_server_object_files }}"
+  loop_control:
+    label: "{{ item | basename }}"
+
+- name: Nagios Server | Config Deployment | Create objects directory
+  ansible.builtin.file:
+    path: /usr/local/nagios/etc/objects
+    state: directory
+    owner: nagios
+    group: nagios
+    mode: '0755'
+
+- name: Nagios Server | Config Deployment | Render shared config
+  ansible.builtin.template:
+    src: config.cfg.j2
+    dest: /usr/local/nagios/etc/config.cfg
+    owner: nagios
+    group: nagios
+    mode: '0644'
+  notify:
+    - Nagios Server | Handlers | Restart Nagios
+
+- name: Nagios Server | Config Deployment | Render host configs
+  ansible.builtin.template:
+    src: object.cfg.j2
+    dest: "/usr/local/nagios/etc/objects/{{ item.key }}"
+    owner: nagios
+    group: nagios
+    mode: '0644'
+  vars:
+    nagios_server_hosts: "{{ item.value }}"
+  loop: "{{ nagios_server_host_configs | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  notify:
+    - Nagios Server | Handlers | Restart Nagios
+
+- name: Nagios Server | Config Deployment | Get required root config files
+  ansible.builtin.set_fact:
+    nagios_server_required_root_config_files: >-
+      {{
+        (
+          query('ansible.builtin.fileglob', role_path ~ '/files/config/*.cfg')
+          | map('basename')
+          | list
+        ) + ['config.cfg']
+      }}
+
+- name: Nagios Server | Config Deployment | Find current root config files
+  ansible.builtin.find:
+    paths: /usr/local/nagios/etc
+    patterns: '*.cfg'
+    file_type: file
+    recurse: false
+  register: nagios_server_current_root_config_files
+
+- name: Nagios Server | Config Deployment | Remove stale root config files
+  ansible.builtin.file:
+    path: "/usr/local/nagios/etc/{{ item }}"
+    state: absent
+  loop: >-
+    {{
+      (
+        nagios_server_current_root_config_files.files
+        | map(attribute='path')
+        | map('basename')
+        | list
+      )
+      | difference(nagios_server_required_root_config_files)
+    }}
+  notify:
+    - Nagios Server | Handlers | Restart Nagios
+
+- name: Nagios Server | Config Deployment | Find current object config files
+  ansible.builtin.find:
+    paths: /usr/local/nagios/etc/objects
+    patterns: '*.cfg'
+    file_type: file
+    recurse: false
+  register: nagios_server_current_object_config_files
+
+- name: Nagios Server | Config Deployment | Remove stale object config files
+  ansible.builtin.file:
+    path: "/usr/local/nagios/etc/objects/{{ item }}"
+    state: absent
+  loop: >-
+    {{
+      (
+        nagios_server_current_object_config_files.files
+        | map(attribute='path')
+        | map('basename')
+        | list
+      )
+      | difference(nagios_server_host_configs.keys() | list)
+    }}
+  notify:
+    - Nagios Server | Handlers | Restart Nagios
+
+- name: Nagios Server | Config Deployment | Check config
+  ansible.builtin.command: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+  changed_when: false
+  register: nagios_server_config_test
+
+- name: Nagios Server | Config Deployment | Output config test result
+  ansible.builtin.debug:
+    msg: "{{ nagios_server_config_test }}"
+  changed_when: false

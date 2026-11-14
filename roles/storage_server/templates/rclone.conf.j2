@@ -1,0 +1,6 @@
+{% for remote, options in storage_server_rclone.remotes.items() %}
+[{{ remote }}]
+{% for option, value in options.items() %}
+{{ option }} = {{ value }}{{ '\n' }}
+{%- endfor %}
+{% endfor %}

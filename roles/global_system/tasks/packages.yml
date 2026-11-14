@@ -1,0 +1,27 @@
+- name: Global_System | Packages | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Global_System | Packages | Enable Ubuntu Universe repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb http://{{ 'ports.ubuntu.com/ubuntu-ports' if ansible_architecture in
+      ['aarch64', 'armv7l', 'ppc64le', 'riscv64', 's390x']
+      else 'archive.ubuntu.com/ubuntu' }} {{ item }} universe
+    filename: ubuntu-universe
+    state: present
+    update_cache: false
+  loop:
+    - "{{ ansible_distribution_release }}"
+    - "{{ ansible_distribution_release }}-updates"
+    - "{{ ansible_distribution_release }}-backports"
+    - "{{ ansible_distribution_release }}-security"
+  when:
+    - ansible_pkg_mgr == "apt"
+    - ansible_distribution == "Ubuntu"
+
+- name: Global_System | Packages | Apt Installation
+  ansible.builtin.apt:
+    name: "{{ global_system_packages + global_system_server_packages }}"
+    update_cache: true
+  when: ansible_pkg_mgr == "apt"

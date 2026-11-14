@@ -1,0 +1,50 @@
+- name: Act Configuration | Install dependancies
+  ansible.builtin.apt:
+    pkg: "{{ packages }}"
+    state: present
+    update_cache: true
+- name: Act Configuration | Create runner directory
+  ansible.builtin.file:
+    path: "{{ runner_path }}"
+    state: directory
+    mode: '0775'
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  changed_when: false
+- name: Act Configuration | Copy Agent Binary
+  ansible.builtin.get_url:
+    url: "{{ runner_url }}"
+    dest: "{{ runner_path }}/act_runner"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: '0755'
+- name: Act Configuration | Register runner with Gitea
+  ansible.builtin.command: >
+    ./act_runner register
+    --no-interactive
+    --instance {{ gitea_instance }}
+    --token {{ gitea_token }}
+    --name {{ runner_name }}
+    --labels {{ runner_labels }}
+  args:
+    chdir: "{{ runner_path }}"
+    creates: "{{ runner_path }}/.runner"
+- name: Act Configuration | Configure runner binary permissions
+  ansible.builtin.file:
+    path: "{{ runner_path }}/.runner"
+    state: file
+    mode: '0755'
+    owner: "{{ username }}"
+    group: "{{ username }}"
+- name: Act Configuration | Create Service
+  ansible.builtin.template:
+    src: act_runner.service.j2
+    dest: /etc/systemd/system/act_runner.service
+    owner: root
+    group: root
+    mode: '0644'
+- name: Act Configuration | Ensure Service is started and enabled
+  ansible.builtin.service:
+    name: act_runner
+    state: started
+    enabled: true

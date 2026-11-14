@@ -1,0 +1,52 @@
+- name: Nagios Server | Plugin Installation | Create temporary plugin directory
+  ansible.builtin.file:
+    path: /tmp/plugins
+    state: directory
+
+- name: Nagios Server | Plugin Installation | Mark installation in progress
+  ansible.builtin.file:
+    path: /tmp/plugins/.ansible-install-in-progress
+    state: touch
+    mode: '0644'
+
+- name: Nagios Server | Plugin Installation | Download plugins
+  ansible.builtin.shell: >-
+    wget -O nagios-plugins.tar.gz.tmp
+    $(wget -q -O - https://api.github.com/repos/nagios-plugins/nagios-plugins/releases/latest
+    | grep '"browser_download_url":'
+    | grep -o 'https://[^"]*')
+    && mv nagios-plugins.tar.gz.tmp nagios-plugins.tar.gz
+  args:
+    chdir: /tmp/plugins
+    creates: /tmp/plugins/nagios-plugins.tar.gz
+
+- name: Nagios Server | Plugin Installation | Find plugin source directory
+  ansible.builtin.command: "tar -tzf /tmp/plugins/nagios-plugins.tar.gz"
+  register: nagios_server_plugin_dir
+  changed_when: false
+
+- name: Nagios Server | Plugin Installation | Unarchive plugin source
+  ansible.builtin.unarchive:
+    src: /tmp/plugins/nagios-plugins.tar.gz
+    dest: /tmp/plugins/
+    remote_src: true
+    creates: "/tmp/plugins/{{ nagios_server_plugin_dir.stdout_lines[0].split('/')[0] }}"
+
+- name: Nagios Server | Plugin Installation | Build and install plugins
+  ansible.builtin.shell: >-
+    ./configure && make && make install
+    && touch /usr/local/nagios/libexec/.ansible-plugins-installed
+  args:
+    chdir: "/tmp/plugins/{{ nagios_server_plugin_dir.stdout_lines[0].split('/')[0] }}"
+    creates: /usr/local/nagios/libexec/.ansible-plugins-installed
+
+- name: Nagios Server | Plugin Installation | Mark installation complete
+  ansible.builtin.file:
+    path: /usr/local/nagios/libexec/.ansible-install-complete
+    state: touch
+    mode: '0644'
+
+- name: Nagios Server | Plugin Installation | Remove temporary plugin directory
+  ansible.builtin.file:
+    path: /tmp/plugins
+    state: absent

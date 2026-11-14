@@ -1,0 +1,87 @@
+- name: Nagios Server | Apache Configuration | Copy ACME DNS challenge script
+  ansible.builtin.uri:
+    url: https://raw.githubusercontent.com/alanmburr/acme-dns-certbot/refs/heads/master/acme-dns-auth.py
+    dest: /etc/letsencrypt/acme-dns-auth.py
+    mode: '0755'
+  changed_when: false
+
+- name: Nagios Server | Apache Configuration | Check if certificate exists
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ nagios_server_hostname }}/fullchain.pem"
+  register: nagios_server_certificate
+
+- name: Nagios Server | Apache Configuration | Configure Cloudflare credentials
+  ansible.builtin.lineinfile:
+    path: /etc/letsencrypt/auth.ini
+    line: "dns_cloudflare_api_token = {{ nagios_server_cloudflare_api_token }}"
+    regexp: "dns_cloudflare_api_token = "
+    create: true
+    mode: '0600'
+  no_log: true
+
+- name: Nagios Server | Apache Configuration | Generate certificate # TODO: Fix the length of this command
+  ansible.builtin.shell: "certbot certonly --preferred-challenges dns --debug-challenges -d {{ nagios_server_hostname }} --non-interactive --agree-tos -m {{ nagios_server_smtp_test_email }} --dns-cloudflare-credentials /etc/letsencrypt/auth.ini --dns-cloudflare --dns-cloudflare-propagation-seconds 60"
+  when: not nagios_server_certificate.stat.exists
+
+- name: Nagios Server | Apache Configuration | Enable Apache SSL module
+  community.general.apache2_module:
+    state: present
+    name: ssl
+
+- name: Nagios Server | Apache Configuration | Enable Apache modules
+  community.general.apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - headers
+    - rewrite
+
+- name: Nagios Server | Apache Configuration | Render Apache SSL config
+  ansible.builtin.template:
+    src: default-ssl.conf.j2
+    dest: /etc/apache2/sites-available/default-ssl.conf
+
+- name: Nagios Server | Apache Configuration | Set Apache directory permissions
+  ansible.builtin.file:
+    path: /etc/apache
+    owner: root
+    group: users
+    mode: '0644'
+    recurse: true
+  become: true
+
+- name: Nagios Server | Apache Configuration | Enable default SSL site
+  ansible.builtin.file:
+    src: "/etc/apache2/sites-available/default-ssl.conf"
+    dest: "/etc/apache2/sites-enabled/default-ssl.conf"
+    state: link
+  register: nagios_server_default_ssl_site
+
+- name: Nagios Server | Apache Configuration | Allow HTTPS through UFW
+  community.general.ufw:
+    rule: allow
+    port: '443'
+  when: "'ufw' in ansible_facts.packages"
+
+- name: Nagios Server | Apache Configuration | Restart Apache after enabling SSL site
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+    enabled: true
+  when: nagios_server_default_ssl_site.changed
+
+- name: Nagios Server | Apache Configuration | Enable CGI and rewrite modules
+  community.general.apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - cgi
+    - rewrite
+  register: nagios_server_enable_modules
+
+- name: Nagios Server | Apache Configuration | Restart Apache after enabling modules
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+    enabled: true
+  when: nagios_server_enable_modules.changed

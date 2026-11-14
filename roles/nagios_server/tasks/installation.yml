@@ -1,0 +1,78 @@
+- name: Nagios Server | Installation | Download Nagios source
+  ansible.builtin.get_url:
+    url: "https://github.com/NagiosEnterprises/nagioscore/releases/download/nagios-{{ nagios_server_version }}/nagios-{{ nagios_server_version }}.tar.gz"
+    dest: "/tmp/nagios-{{ nagios_server_version }}.tar.gz"
+    force: false
+
+- name: Nagios Server | Installation | Unarchive Nagios source
+  ansible.builtin.unarchive:
+    src: "/tmp/nagios-{{ nagios_server_version }}.tar.gz"
+    dest: /tmp/
+    remote_src: true
+    creates: "/tmp/nagios-{{ nagios_server_version }}/configure"
+
+- name: Nagios Server | Installation | Mark installation in progress
+  ansible.builtin.file:
+    path: "/tmp/nagios-{{ nagios_server_version }}/.ansible-install-in-progress"
+    state: touch
+    mode: '0644'
+
+- name: Nagios Server | Installation | Compile Nagios source
+  ansible.builtin.shell: ./configure --with-httpd-conf=/etc/apache2/sites-available && make all
+  args:
+    chdir: "/tmp/nagios-{{ nagios_server_version }}"
+    creates: "/tmp/nagios-{{ nagios_server_version }}/src/nagios"
+
+- name: Nagios Server | Installation | Install Nagios build targets
+  ansible.builtin.shell: "make {{ item.target }} && touch {{ item.marker }}"
+  loop:
+    - target: install
+      marker: /usr/local/nagios/bin/nagios
+    - target: install-daemoninit
+      marker: /etc/init.d/nagios
+    - target: install-commandmode
+      marker: /usr/local/nagios/.ansible-install-commandmode
+    - target: install-config
+      marker: /usr/local/nagios/etc/nagios.cfg
+    - target: install-webconf
+      marker: /etc/apache2/sites-available/nagios.conf
+  args:
+    chdir: "/tmp/nagios-{{ nagios_server_version }}"
+    creates: "{{ item.marker }}"
+
+- name: Nagios Server | Installation | Add web administrator credentials
+  community.general.htpasswd:
+    path: /usr/local/nagios/etc/htpasswd.users
+    name: nagiosadmin
+    password: "{{ nagios_server_admin_password }}"
+
+- name: Nagios Server | Installation | Enable Nagios SSL site
+  ansible.builtin.file:
+    src: "/etc/apache2/sites-available/nagios.conf"
+    dest: "/etc/apache2/sites-enabled/nagios.conf"
+    state: link
+  register: nagios_server_enable_site
+
+- name: Nagios Server | Installation | Start Nagios service
+  ansible.builtin.service:
+    name: nagios
+    state: started
+    enabled: true
+
+- name: Nagios Server | Installation | Reload Apache service
+  ansible.builtin.service:
+    name: apache2
+    state: reloaded
+    enabled: true
+  when: nagios_server_enable_site.changed
+
+- name: Nagios Server | Installation | Mark installation complete
+  ansible.builtin.file:
+    path: /usr/local/nagios/.ansible-install-complete
+    state: touch
+    mode: '0644'
+
+- name: Nagios Server | Installation | Remove temporary source directory
+  ansible.builtin.file:
+    path: /tmp/nagios-{{ nagios_server_version }}
+    state: absent

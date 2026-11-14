@@ -1,0 +1,95 @@
+- name: Nagios Server | Main | Check if installation is complete
+  ansible.builtin.stat:
+    path: /usr/local/nagios/.ansible-install-complete
+  register: nagios_server_installation_complete
+
+- name: Nagios Server | Main | Check for interrupted installation
+  ansible.builtin.stat:
+    path: "/tmp/nagios-{{ nagios_server_version }}/.ansible-install-in-progress"
+  register: nagios_server_installation_in_progress
+
+- name: Nagios Server | Main | Check installation artifacts
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - /usr/local/nagios/bin/nagios
+    - /etc/init.d/nagios
+    - /usr/local/nagios/var/rw
+    - /usr/local/nagios/etc/nagios.cfg
+    - /etc/apache2/sites-available/nagios.conf
+  register: nagios_server_installation_artifacts
+
+- name: Nagios Server | Main | Check if plugin installation is complete
+  ansible.builtin.stat:
+    path: /usr/local/nagios/libexec/.ansible-install-complete
+  register: nagios_server_plugins_installation_complete
+
+- name: Nagios Server | Main | Check for interrupted plugin installation
+  ansible.builtin.stat:
+    path: /tmp/plugins/.ansible-install-in-progress
+  register: nagios_server_plugins_installation_in_progress
+
+- name: Nagios Server | Main | Check if plugins are installed
+  ansible.builtin.stat:
+    path: /usr/local/nagios/libexec/check_icmp
+  register: nagios_server_plugins_installed
+
+- name: Nagios Server | Main | Mark existing installation complete
+  ansible.builtin.file:
+    path: /usr/local/nagios/.ansible-install-complete
+    state: touch
+    mode: '0644'
+  when:
+    - not nagios_server_installation_complete.stat.exists
+    - not nagios_server_installation_in_progress.stat.exists
+    - nagios_server_installation_artifacts.results | map(attribute='stat.exists') | min
+
+- name: Nagios Server | Main | Mark existing plugin installation complete
+  ansible.builtin.file:
+    path: /usr/local/nagios/libexec/.ansible-install-complete
+    state: touch
+    mode: '0644'
+  when:
+    - not nagios_server_plugins_installation_complete.stat.exists
+    - not nagios_server_plugins_installation_in_progress.stat.exists
+    - nagios_server_plugins_installed.stat.exists
+
+- name: Nagios Server | Main | Include package installation
+  ansible.builtin.include_tasks: package_installation.yml
+
+- name: Nagios Server | Main | Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Nagios Server | Main | Include user creation
+  ansible.builtin.include_tasks: user_creation.yml
+
+- name: Nagios Server | Main | Include Apache configuration
+  ansible.builtin.include_tasks: apache_configuration.yml
+
+- name: Nagios Server | Main | Include Nagios installation
+  ansible.builtin.include_tasks: installation.yml
+  when:
+    - not nagios_server_installation_complete.stat.exists
+    - >-
+      nagios_server_installation_in_progress.stat.exists
+      or not (nagios_server_installation_artifacts.results
+              | map(attribute='stat.exists')
+              | min)
+
+- name: Nagios Server | Main | Include plugin installation
+  ansible.builtin.include_tasks: plugin_installation.yml
+  when:
+    - not nagios_server_plugins_installation_complete.stat.exists
+    - >-
+      nagios_server_plugins_installation_in_progress.stat.exists
+      or not nagios_server_plugins_installed.stat.exists
+
+- name: Nagios Server | Main | Include SMTP configuration
+  ansible.builtin.include_tasks: smtp_configuration.yml
+
+- name: Nagios Server | Main | Include dark theme
+  ansible.builtin.include_tasks: dark_theme.yml
+
+- name: Nagios Server | Main | Include config deployment
+  ansible.builtin.include_tasks: config_deployment.yml

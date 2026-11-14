@@ -1,0 +1,16 @@
+default:
+    just --list
+
+# Output Current BIND Cache Contents
+dump:
+    sudo rndc dumpdb -zones
+    sleep 5
+    sudo cat /var/cache/bind/named_dump.db
+
+# Check Config
+check:
+    sudo named-checkconfig
+
+# Output Zone Update History
+jnl $zone:
+    named-journalprint /etc/bind/zones/$zone.zone.jnl

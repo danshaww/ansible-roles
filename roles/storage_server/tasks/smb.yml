@@ -1,0 +1,24 @@
+- name: Storage Server | Samba | Install
+  become: true
+  ansible.builtin.apt:
+    name: samba
+
+- name: Storage Server | Samba | Render Config
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: users
+    mode: '0770'
+  notify: Restart SMB
+  become: true
+
+- name: Storage Server | Samba | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "445"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+
+- name: Storage Server | Samba | Flush handlers so SMB config is applied
+  ansible.builtin.meta: flush_handlers

@@ -1,0 +1,9 @@
+nagios_server_version: 4.5.14
+nagios_server_admin_password: null
+nagios_server_smtp_username: null
+nagios_server_smtp_password: null
+nagios_server_smtp_host: null
+nagios_server_smtp_test_email: null
+nagios_server_config_path: null
+nagios_server_cloudflare_api_token: null
+nagios_server_hostname: null

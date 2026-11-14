@@ -1,0 +1,8 @@
+/var/bind9/chroot/** r,
+/var/bind9/chroot/etc/bind/** r,
+/var/bind9/chroot/usr/** rw,
+/var/bind9/chroot/var/** rw,
+/var/bind9/chroot/dev/** rw,
+/var/bind9/chroot/run/** rw,
+/var/bind9/chroot/ r,
+/etc/bind/** rw,

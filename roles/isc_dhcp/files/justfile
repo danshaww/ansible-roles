@@ -1,0 +1,6 @@
+default:
+    just --list
+
+# List DHCP Leases
+list-leases:
+    sudo cat /var/lib/dhcp/dhcpd.leases

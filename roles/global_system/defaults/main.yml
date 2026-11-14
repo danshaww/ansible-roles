@@ -1,0 +1,10 @@
+global_system_enable_packages: true
+global_system_enable_ssh_config: true
+global_system_enable_firewall_config: true
+global_system_enable_logging_config: true
+global_system_enable_misc_config: true
+
+global_system_server_packages: []
+global_system_syslog_server: null
+global_system_server_location: Not specified
+global_system_server_function: Not specified

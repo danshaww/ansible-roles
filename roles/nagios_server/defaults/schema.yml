@@ -1,0 +1,9 @@
+nagios_server_version:  # Nagios Core release version to install
+nagios_server_admin_password:  # Nagios web administrator password
+nagios_server_smtp_username:  # SMTP authentication username
+nagios_server_smtp_password:  # SMTP authentication password
+nagios_server_smtp_host:  # SMTP server hostname
+nagios_server_smtp_test_email:  # SMTP test and ACME registration email
+nagios_server_config_path:  # Playbook-relative path to config.yml and objects/
+nagios_server_cloudflare_api_token:  # Cloudflare DNS validation API token
+nagios_server_hostname:  # Public hostname for the Nagios TLS certificate

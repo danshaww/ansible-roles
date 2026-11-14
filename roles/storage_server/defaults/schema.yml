@@ -1,0 +1,85 @@
+storage_server_smb:
+  global_config:
+    # All lines of config here
+  shares:
+    testshare1:
+      # All lines of config here
+storage_server_nfs:
+  exports:
+    - path: /mnt/data/backups/example
+      clients:
+        - host: 10.100.0.0/24
+          options:
+            - rw
+            - sync
+            - no_subtree_check
+storage_server_rclone:
+  config_dest: # Custom destination for rclone config ('/root/.config/rclone/rclone.conf' by default)
+  remotes:
+    epichousebackups:
+      type: azureblob
+      account: epichousebackups
+      key: # Rclone remote access key
+storage_server_iscsi_config_path: # Path to saveconfig.json iscsi configuration
+storage_server_zfs: # ZFS config, emit for zfs installation to be skipped
+  sanoid:
+    templates:
+      standard:
+        frequently: 0
+        hourly: 0
+        daily: 14
+        monthly: 0
+        yearly: 0
+        autosnap: 'yes'
+        autoprune: 'yes'
+    datasets:
+      rpool/docker-volumes:
+        use_template: standard
+        recursive: 'yes'
+  sanoid_enable_timer: # Enable systemd timer for sanoid (disabled by default)
+  zed:
+    email: zfs@example.com
+    verbose: 1
+    notify_interval_secs: 3600
+    notify_verbose: 0
+  pools:
+    - name: data # Pool name
+      vdevs: # Dictionary of vdevs
+        - type: mirror
+          disks:
+            - /dev/sda
+            - /dev/sdb
+      altroot: # Alternate root for mounting filesystems.
+      disable_new_features: # disable new ZFS feature flags when creating
+      filesystem_properties: # Dictionary of ZFS filesystem properties to set on the root dataset
+      force: # Force Operations
+      mountpoint: # Root dataset mount point (default is /mnt/{pool name})
+      pool_properties: # Dictionary of ZFS pool properties to set
+      state: # set to absent to remove
+      temp_name: # Temporary name used during pool creation.
+  datasets:
+    - name: test # dataset name (ommiting pool name)
+      extra_zfs_properties: # All ZFS options
+      state: # set to absent to delete dataset
+
+storage_server_permissions:
+  - path: # Location to apply permissions
+    mode: # Unix mode for file/directory
+    owner: # Unix owner for file/directory
+    group: # Unix group for file/directory
+    acl: # Posix ACL configuration for file/directory
+      - u:userhere:rwx
+      - g:yourgroup:rx
+
+storage_server_filesystem:
+  directories:
+    - name: /etc/directory
+      mode: '0770' # This option is default
+      owner: root # This option is default
+      group: users # This option is default
+  copy_files:
+    - src: ../example_path # Local git path
+      dest: ../example_path # Remote destination
+      mode: '0770' # This option is default
+      owner: root # This option is default
+      group: users # This option is default

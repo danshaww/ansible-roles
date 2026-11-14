@@ -1,0 +1,49 @@
+- name: CheckMK Server | Check for existing site
+  ansible.builtin.stat:
+    path: /opt/omd/sites/{{ checkmk_server_site_name }}
+  register: checkmk_site
+
+- name: CheckMK Server | Download Installer
+  ansible.builtin.uri:
+    url: "{{ checkmk_url }}"
+    dest: /tmp/checkmk.deb
+  when: not checkmk_site.stat.exists
+
+- name: CheckMK Server | Install CheckMK
+  ansible.builtin.apt:
+    deb: /tmp/checkmk.deb
+    state: present
+  when: not checkmk_site.stat.exists
+
+
+- name: CheckMK Server | Create site
+  ansible.builtin.command:
+    cmd: "omd create {{ checkmk_server_site_name }} && omd start {{ checkmk_server_site_name }}"
+  changed_when: not checkmk_site.stat.exists
+  when: not checkmk_site.stat.exists
+
+- name: CheckMK Server | Set Admin Password
+  community.general.htpasswd:
+    path: "/opt/omd/sites/{{ checkmk_server_site_name }}/etc/htpasswd"
+    name: cmkadmin
+    password: "{{ checkmk_server_admin_password }}"
+
+- name: CheckMK Server | Configure Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items: "{{ firewall_ports }}"
+  when: ansible_facts.packages['ufw'] is defined
+
+- name: CheckMK Server | Create Local Backup Directory
+  ansible.builtin.file:
+    path: /srv/backups
+    state: directory
+    mode: '0775'
+    owner: root
+    group: omd
+
+- name: CheckMK Server | Remove Installation Media
+  ansible.builtin.file:
+    path: /tmp/checkmk.deb
+    state: absent

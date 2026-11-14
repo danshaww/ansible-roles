@@ -1,0 +1,82 @@
+- name: Nagios Agent | Remove NRPE apt package
+  ansible.builtin.apt:
+    name: nagios-nrpe-server
+    state: absent
+    purge: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Nagios Agent | Check for NRPE binary
+  ansible.builtin.stat:
+    path: /usr/local/nagios/bin/nrpe
+  register: nrpe_bin
+  changed_when: false
+
+- name: Nagios Agent | Install build dependencies
+  ansible.builtin.apt:
+    name: "{{ nagios_agent_packages }}"
+  when: ansible_pkg_mgr == "apt"
+
+- name: Nagios Agent | Install NRPE from source
+  when: not nrpe_bin.stat.exists
+  block:
+
+    - name: Nagios Agent | Download NRPE source
+      ansible.builtin.get_url:
+        url: "{{ nagios_agent_install_media }}"
+        dest: "/tmp/nrpe-{{ nagios_agent_version }}.tar.gz"
+
+    - name: Nagios Agent | Unarchive NRPE source
+      ansible.builtin.unarchive:
+        src: "/tmp/nrpe-{{ nagios_agent_version }}.tar.gz"
+        dest: /tmp/
+        remote_src: true
+
+    - name: Nagios Agent | Configure NRPE source
+      ansible.builtin.shell: ./configure --enable-command-args --enable-ssl
+      args:
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
+
+    - name: Nagios Agent | Build and install NRPE
+      ansible.builtin.shell: make "{{ item }}"
+      loop:
+        - install-groups-users
+        - all
+        - install
+        - install-plugin
+        - install-config
+      args:
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
+
+    - name: Nagios Agent | Install NRPE service
+      ansible.builtin.command: make install-init
+      args:
+        chdir: "/tmp/nrpe-{{ nagios_agent_version }}"
+
+- name: Nagios Agent | Configure Service
+  ansible.builtin.service:
+    name: nrpe
+    enabled: true
+    state: started
+
+- name: Nagios Agent | Copy Scripts
+  ansible.builtin.copy:
+    src: plugins/
+    dest: /usr/lib/nagios/plugins/
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Nagios Agent | Add Nagios user to groups
+  ansible.builtin.user:
+    name: nagios
+    groups: "{{ item }}"
+    append: true
+  no_log: true
+  loop: "{{ nagios_user_groups }}"
+
+- name: Nagios Agent | Configure UFW Firewall
+  community.general.ufw:
+    rule: allow
+    port: "{{ nagios_firewall_port }}"
+  when:
+    - "'ufw' in ansible_facts.packages"
