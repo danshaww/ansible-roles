@@ -1,0 +1,66 @@
+- name: Monitors | Create Groups
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: present
+    type: group
+    description: "{{ item.description | default('') }}"
+  with_items: "{{ monitor_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+  retries: 10
+  delay: 5
+
+- name: Monitors | Delete Groups
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: absent
+    type: group
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.type == 'group' and item.name not in monitor_groups | map(attribute='name')
+  loop_control:
+    label: "{{ item.name }}"
+  retries: 10
+  delay: 5
+
+- name: Monitors | Create Monitors
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    hostname: "{%if item.type | default('ping') in 'ping,dns,port' %}{{ item.hostname | default(item.name) }}{%else%}null{%endif%}"
+    type: "{{ item.type | default('ping')}}"
+    state: present
+    parent_name: "{{ item.parent }}"
+    description: "{{ item.description | default('') }}"
+    maxretries: "{{ item.maxretries | default(config.maxretries) }}"
+    resendInterval: "{{ item.resendInterval | default(config.resendInterval)}}"
+    url: "{%if item.type | default('ping') == 'http' %}{{ item.url }}{%else%}null{%endif%}"
+    dns_resolve_server: "{%if item.type | default('ping') == 'dns' %}{{ item.dns_resolve_server }}{%else%}null{%endif%}"
+    databaseConnectionString: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseConnectionString }}{%else%}null{%endif%}"
+    databaseQuery: "{%if item.type | default('ping') in 'mysql,postgres,sqlserver' %}{{ item.databaseQuery }}{%else%}null{%endif%}"
+    port: "{%if item.type | default('ping') == 'port' %}{{ item.port }}{%else%}0{%endif%}"
+
+  with_items: "{{ monitors }}"
+  when: monitors is defined
+  loop_control:
+    label: "{{ item.parent }}:{{ item.name }}"
+  retries: 10
+  delay: 5
+
+- name: Monitors | Delete Monitors
+  lucasheld.uptime_kuma.monitor:
+    api_url: "{{ config.api_url }}"
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    state: absent
+    type: group
+  with_items: "{{ monitors_result.monitors }}"
+  when: item.name not in monitors | default([]) | map(attribute='name') and item.type != 'group'
+  loop_control:
+    label: "{{ item.parent }}:{{ item.name }}"
+  retries: 10
+  delay: 5

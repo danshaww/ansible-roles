@@ -1,0 +1,8 @@
+- name: Cron Management | Manage Ansible cron file
+  ansible.builtin.template:
+    src: cron.j2
+    dest: "/etc/cron.d/{{ cron_management_crontab_name }}"
+    owner: "{{ cron_management_default_user }}"
+    group: "{{ cron_management_default_user }}"
+    mode: "0644"
+  become: true

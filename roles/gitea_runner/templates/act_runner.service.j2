@@ -1,0 +1,15 @@
+[Unit]
+Description=Gitea Actions runner
+Documentation=https://gitea.com/gitea/act_runner
+
+[Service]
+ExecStart={{ runner_path }}/act_runner daemon
+ExecReload=/bin/kill -s HUP $MAINPID
+WorkingDirectory={{ runner_path }}
+TimeoutSec=0
+RestartSec=10
+Restart=always
+User={{ username }}
+
+[Install]
+WantedBy=multi-user.target

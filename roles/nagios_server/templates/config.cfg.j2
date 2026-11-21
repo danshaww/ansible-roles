@@ -1,0 +1,11 @@
+{% set object_types = {'hostgroups': 'hostgroup', 'contacts': 'contact', 'contact_groups': 'contactgroup', 'timeperiods': 'timeperiod'} %}
+{% set name_fields = {'hostgroups': 'hostgroup_name', 'contacts': 'contact_name', 'contact_groups': 'contactgroup_name'} %}
+{% for collection, definitions in nagios_server_object_config.items() %}
+{% for definition in definitions %}
+define {{ object_types[collection] }} {
+{% for key, value in definition.items() %}
+    {{ name_fields[collection] if key == 'name' and collection in name_fields else key }}    {{ value | join(',') if value is sequence and value is not string else value }}
+{% endfor %}
+}
+{% endfor %}
+{% endfor %}

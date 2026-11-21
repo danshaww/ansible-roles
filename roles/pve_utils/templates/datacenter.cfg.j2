@@ -1,0 +1,33 @@
+{#- Rendered in the same layout PVE writes (description as '#' lines, keys sorted),
+    so a GUI save of unchanged settings won't show as drift. No "Ansible managed"
+    header is possible: any '#' line in this file becomes part of the description. -#}
+{%- macro scalar(v) -%}
+{%- if v is boolean -%}{{ v | ternary('1', '0') }}{%- else -%}{{ v }}{%- endif -%}
+{%- endmacro -%}
+{#- list -> a;b;c   mapping -> k1:v1;k2:v2 (insertion order kept, e.g. tag-style color-map) -#}
+{%- macro join_list(v) -%}
+{%- if v is mapping -%}
+{%- for k, x in v.items() -%}{{ k }}:{{ scalar(x) }}{{ ';' if not loop.last }}{%- endfor -%}
+{%- else -%}
+{%- for x in v -%}{{ scalar(x) }}{{ ';' if not loop.last }}{%- endfor -%}
+{%- endif -%}
+{%- endmacro -%}
+{#- scalar -> as-is   list -> a;b;c   mapping -> property string k1=v1,k2=v2 (keys sorted) -#}
+{%- macro option(v) -%}
+{%- if v is mapping -%}
+{%- for k in v | sort -%}
+{{ k }}={{ join_list(v[k]) if (v[k] is iterable and v[k] is not string) else scalar(v[k]) }}{{ ',' if not loop.last }}
+{%- endfor -%}
+{%- elif v is iterable and v is not string -%}{{ join_list(v) }}
+{%- else -%}{{ scalar(v) }}
+{%- endif -%}
+{%- endmacro %}
+{% if pve_utils_datacenter_description | length > 0 %}
+{% for line in pve_utils_datacenter_description.splitlines() %}
+#{{ line | replace(':', '%3A') }}
+{% endfor %}
+
+{% endif %}
+{% for key in pve_utils_datacenter_options | sort %}
+{{ key }}: {{ option(pve_utils_datacenter_options[key]) }}
+{% endfor %}

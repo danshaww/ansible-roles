@@ -1,0 +1,24 @@
+argument_specs:
+  main:
+    options:
+      ssmtp_server:
+        type: str
+        required: true
+      ssmtp_user:
+        type: str
+        required: true
+      ssmtp_password:
+        type: str
+        required: true
+      ssmtp_domain:
+        type: str
+        required: true
+      ssmtp_sender:
+        type: str
+        default: root
+      ssmtp_use_start_tls:
+        type: bool
+        default: true
+      ssmtp_from_line_override:
+        type: str
+        default: 'YES'

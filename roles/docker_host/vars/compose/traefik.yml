@@ -1,0 +1,47 @@
+traefik:
+  networks:
+    backend: null
+
+  services:
+    traefik:
+      image: traefik:latest
+      restart: unless-stopped
+      environment:
+        PUID: 0
+        PGID: 121
+        CF_API_EMAIL: "{{ global_email }}"
+        CF_DNS_API_TOKEN: "{{ secrets.cloudflare_dns_token }}"
+      command:
+        - "--api.insecure=true"
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--entrypoints.websecure.address=:443"
+        - "--entrypoints.mgmt.address=:444"
+        - "--serverstransport.insecureskipverify=true"
+        - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+        - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
+        - "--certificatesResolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+        - "--certificatesresolvers.letsencrypt.acme.email={{ global_email }}"
+        - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+        - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+        - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      dns:
+        - 1.1.1.1
+      labels:
+        - traefik.enable=true
+        - traefik.backend=frontend
+        - traefik.docker.network=traefik_backend
+        - traefik.http.routers.{{ item.key }}.rule=Host(`{{ inventory_hostname }}.epichouse.co.uk`)
+        - traefik.http.routers.{{ item.key }}.entrypoints=mgmt
+        - traefik.http.services.{{ item.key }}.loadbalancer.server.port=8080
+        - traefik.http.routers.{{ item.key }}.tls=true
+        - traefik.http.routers.{{ item.key }}.tls.certresolver=letsencrypt
+      ports:
+        - "443:443"
+        - "444:444"
+        - "80:80"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - /etc/certs/traefik:/letsencrypt
+      networks:
+        - backend

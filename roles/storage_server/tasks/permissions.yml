@@ -1,0 +1,64 @@
+
+- name: Storage Server | ZFS | Set Unix Permissions
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+  loop: "{{ storage_server_permissions }}"
+  when: item.mode is defined or item.owner is defined or item.group is defined
+  loop_control:
+    label: "{{ item.path }}"
+  become: true
+
+- name: Storage Server | ZFS | Configure ACL
+  ansible.builtin.shell: |
+    set -euo pipefail
+    MOUNT="{{ item.path }}"
+
+    normalize() { echo "$1" | sed -e 's/^u:/user:/' -e 's/^g:/group:/'; }
+
+    # Desired type:name keys, derived from ansible config
+    DESIRED_KEYS=""
+    {% for entry in item.acl %}
+    DESIRED_KEYS="$DESIRED_KEYS $(normalize '{{ entry }}' | cut -d: -f1-2)"
+    {% endfor %}
+
+    # Current named user/group entries actually on disk (access ACL, top-level representative)
+    CURRENT_KEYS=$(getfacl -p --access "$MOUNT" | awk -F: '($1=="user" || $1=="group") && $2!="" {print $1":"$2}')
+
+    for key in $CURRENT_KEYS; do
+      case " $DESIRED_KEYS " in
+        *" $key "*) : ;;   # still wanted, leave alone
+        *)
+          echo "Removing stale ACL entry: $key"
+          setfacl -R -x "$key" "$MOUNT" || true
+          setfacl -R -x "d:$key" "$MOUNT" || true
+          ;;
+      esac
+    done
+
+    # Apply/refresh desired entries — untouched entries stay as-is
+    setfacl -R -m "{{ item.acl | join(',') }},d:{{ item.acl | join(',d:') }}" "$MOUNT"
+  args:
+    executable: /bin/bash
+  when:
+    - item.acl is defined
+    - item.acl != []
+  become: true
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }}"
+  changed_when: false
+
+- name: Storage Server | ZFS | Stip ACL
+  ansible.builtin.shell: |
+    setfacl -R -b {{ item.path }}
+  when:
+    - item.acl is defined
+    - item.acl == []
+  become: true
+  loop: "{{ storage_server_permissions }}"
+  loop_control:
+    label: "{{ item.path }}"
+  changed_when: false

@@ -1,0 +1,36 @@
+# Ansible Roles <img src="https://raw.githubusercontent.com/benc-uk/icon-collection/refs/heads/master/azure-docs/ansible.svg" alt="drawing" width="40" align="right"/>
+This repository is my centralised Ansible Role collection.  
+  
+All of my Ansible project repositories (i.e core,dev,docker etc) make use of the roles stored here.  
+From a CI/CD perspective, the only workflows that run in this repository are stub workflows used to trigger workflows in project repositories.  
+
+Current Ansible Roles:
+- [`ado_agent`](roles/ado_agent) — Ansible role to deploy the Azure DevOps build agent
+- [`apache`](roles/apache) — Ansible role to install Apache.
+- [`az_secrets`](roles/az_secrets) — Ansible role to pull secrets from Azure Key Vault
+- [`bind_dns`](roles/bind_dns) — Ansible Role to install and configure Bind DNS, using Jinja2 templates to build configuration files.
+- [`bitwarden_secrets`](roles/bitwarden_secrets) — >-
+- [`check_host`](roles/check_host) — Ansible Role to check active hosts & return a dict of hosts called 'activehosts
+- [`checkmk_server`](roles/checkmk_server) — Ansible role to install CheckMK and perform basic configuration.
+- [`cloudflare_warp`](roles/cloudflare_warp) — Ansible role to install and configure cloudflare warp agent.
+- [`cloudflared`](roles/cloudflared) — Ansible role to install and configure cloudflared.
+- [`cron_management`](roles/cron_management) — Ansible role containing for managing cron
+- [`docker_host`](roles/docker_host) — Ansible role to install Docker & deploy docker compose projects where configured.
+- [`gitea_runner`](roles/gitea_runner) — Ansible role to deploy the Gitea Action runner
+- [`github_runner`](roles/github_runner) — Ansible role to deploy the GitHub Action runner
+- [`global_system`](roles/global_system) — System Configuration Role used on all servers.
+- [`isc_dhcp`](roles/isc_dhcp) — Ansible Role to install and configure ISC DHCP Server.
+- [`k8s_node`](roles/k8s_node) — Ansible Role to install and configure K8S.
+- [`letsencrypt`](roles/letsencrypt) — Ansible role to install and configure Lets Encrypt using Cloudflare DNS.
+- [`nagios_agent`](roles/nagios_agent) — Ansible Role to configure Nagios NRPE Agent
+- [`nagios_server`](roles/nagios_server) — Ansible role to install Nagios Core. This role has no dependancies on other roles.
+- [`nfs_mount`](roles/nfs_mount) — Ansible Role to mount a dict of NFS shares
+- [`nginx`](roles/nginx) — Ansible role to install NGINX.
+- [`pve_utils`](roles/pve_utils) — Ansible role containing Proxmox utilities
+- [`ssmtp`](roles/ssmtp) — Ansible role containing for configuring ssmtp
+- [`storage_server`](roles/storage_server) — Ansible role containing a range of common storage server related tasks
+- [`technitium`](roles/technitium) — Ansible Role to install technitium
+- [`unifi_os`](roles/unifi_os) — Ansible Role to install Unifi OS Server
+- [`uptime_kuma`](roles/uptime_kuma) — Ansible Role to configure an Uptime Kuma instance.
+- [`user_management`](roles/user_management) — Ansible role for creating & managing users.
+- [`windows_system`](roles/windows_system) — System Configuration Role used on Windows servers.

@@ -1,0 +1,306 @@
+argument_specs:
+  main:
+    short_description: Common storage server tasks (ZFS, permissions, SMB, NFS, iSCSI, rclone).
+    options:
+      storage_server_smb:
+        type: dict
+        default: null
+        description: Samba configuration. SMB tasks are skipped when null.
+        options:
+          global_config:
+            type: dict
+            description: Options for the [global] section, as option/value pairs.
+          global:
+            type: dict
+            description: Fallback for O(storage_server_smb.global_config).
+          shares:
+            type: dict
+            description: Shares keyed by share name, each a dict of option/value pairs.
+
+      storage_server_nfs:
+        type: dict
+        default: null
+        description: NFS configuration. NFS tasks are skipped when null.
+        options:
+          exports:
+            type: list
+            elements: dict
+            required: true
+            description: Entries for /etc/exports.
+            options:
+              path:
+                type: path
+                required: true
+                description: Exported path.
+              clients:
+                type: list
+                elements: dict
+                required: true
+                description: Clients allowed to mount the export.
+                options:
+                  host:
+                    type: str
+                    required: true
+                    description: Client host or network (e.g. 10.100.0.0/24).
+                  options:
+                    type: list
+                    elements: str
+                    required: true
+                    description: Export options (e.g. rw, sync, no_subtree_check).
+
+      storage_server_rclone:
+        type: dict
+        default: null
+        description: Rclone configuration. Rclone tasks are skipped when null.
+        options:
+          config_dest:
+            type: path
+            default: /root/.config/rclone/rclone.conf
+            description: Destination for the rclone config file.
+          remotes:
+            type: dict
+            required: true
+            description: Remotes keyed by name, each a dict of rclone option/value pairs (e.g. type, account, key).
+
+      storage_server_iscsi_config_path:
+        type: str
+        default: null
+        description: Path to a saveconfig.json iSCSI configuration template. iSCSI tasks are skipped when null.
+
+      storage_server_zfs:
+        type: dict
+        default: null
+        description: ZFS configuration. ZFS tasks are skipped when null.
+        options:
+          sanoid:
+            type: dict
+            description: Sanoid configuration.
+            options:
+              templates:
+                type: dict
+                description: Sanoid templates keyed by name, each a dict of option/value pairs.
+              datasets:
+                type: dict
+                description: Sanoid datasets keyed by dataset name, each a dict of option/value pairs.
+          sanoid_enable_timer:
+            type: bool
+            default: false
+            description: Enable the systemd timer for sanoid. Not currently used by the role.
+          zed:
+            type: dict
+            description: ZFS event daemon configuration.
+            options:
+              email:
+                type: str
+                required: true
+                description: Address ZED notifications are sent to.
+              email_verbose:
+                type: int
+                default: 1
+                description: ZED_EMAIL_VERBOSE value.
+              verbose:
+                type: int
+                description: Not used by the role, use O(storage_server_zfs.zed.email_verbose).
+              notify_interval_secs:
+                type: int
+                default: 3600
+                description: ZED_NOTIFY_INTERVAL_SECS value.
+              notify_verbose:
+                type: int
+                default: 0
+                description: ZED_NOTIFY_VERBOSE value.
+          pools:
+            type: list
+            elements: dict
+            required: true
+            description: ZFS pools to manage. A weekly scrub cron job is created for each.
+            options:
+              name:
+                type: str
+                required: true
+                description: Pool name.
+              vdevs:
+                type: list
+                elements: dict
+                description: Vdevs as accepted by community.general.zpool (e.g. type, disks). The pool is skipped when unset.
+              altroot:
+                type: str
+                description: Alternate root for mounting filesystems.
+              disable_new_features:
+                type: bool
+                default: false
+                description: Disable new ZFS feature flags when creating.
+              filesystem_properties:
+                type: dict
+                default: {}
+                description: ZFS filesystem properties to set on the root dataset.
+              force:
+                type: bool
+                default: false
+                description: Force operations.
+              mountpoint:
+                type: str
+                description: Root dataset mount point. Defaults to C(/mnt/<name>).
+              pool_properties:
+                type: dict
+                default: {}
+                description: ZFS pool properties to set.
+              state:
+                type: str
+                default: present
+                choices: [present, absent]
+                description: Set to absent to remove the pool.
+              temp_name:
+                type: str
+                description: Temporary name used during pool creation.
+          datasets:
+            type: list
+            elements: dict
+            required: true
+            description: ZFS datasets to manage.
+            options:
+              name:
+                type: str
+                required: true
+                description: Dataset name.
+              extra_zfs_properties:
+                type: dict
+                default: {}
+                description: ZFS properties to set on the dataset.
+              state:
+                type: str
+                default: present
+                choices: [present, absent]
+                description: Set to absent to delete the dataset.
+
+      storage_server_permissions:
+        type: list
+        elements: dict
+        default: null
+        description: Permissions and POSIX ACLs to apply. Permission tasks are skipped when null.
+        options:
+          path:
+            type: path
+            required: true
+            description: Location to apply permissions to.
+          mode:
+            type: raw
+            description: Unix mode for the file/directory.
+          owner:
+            type: str
+            description: Unix owner for the file/directory.
+          group:
+            type: str
+            description: Unix group for the file/directory.
+          acl:
+            type: list
+            elements: str
+            description:
+              - POSIX ACL entries (e.g. u:user:rwx, g:group:rx), applied recursively and as defaults.
+              - Named entries not listed are removed. An empty list strips all ACLs.
+
+      storage_server_filesystem:
+        type: dict
+        default: null
+        description: Filesystem tasks. Skipped when null.
+        options:
+          directories:
+            type: list
+            elements: dict
+            description: Directories to create. Not currently used by the role.
+            options:
+              name:
+                type: path
+                required: true
+                description: Directory path.
+              mode:
+                type: raw
+                default: '0770'
+                description: Directory mode.
+              owner:
+                type: str
+                default: root
+                description: Directory owner.
+              group:
+                type: str
+                default: users
+                description: Directory group.
+          copy_files:
+            type: list
+            elements: dict
+            description:
+              - Files to place on the host. Each entry needs either C(src) or C(content).
+              - C(src) rsyncs a playbook-relative directory to C(dest).
+              - C(content) writes the given string to the single file at C(dest).
+            mutually_exclusive:
+              - [src, content]
+            required_one_of:
+              - [src, content]
+            options:
+              src:
+                type: str
+                description: Playbook-relative source directory. Mutually exclusive with C(content).
+              content:
+                type: str
+                description: Literal file content written to C(dest). Mutually exclusive with C(src).
+              dest:
+                type: path
+                required: true
+                description: Remote destination. A directory when using C(src), a file path when using C(content).
+              mode:
+                type: raw
+                default: '0644'
+                description: Mode applied to the destination.
+              owner:
+                type: str
+                default: root
+                description: Owner applied to the destination.
+              group:
+                type: str
+                default: root
+                description: Group applied to the destination.
+              recurse:
+                type: bool
+                default: true
+                description: Apply ownership and mode recursively. Only used with C(src).
+
+      enable_permissions:
+        type: bool
+        default: true
+        description: Run permission tasks.
+      enable_installation:
+        type: bool
+        default: true
+        description: Not currently used by the role.
+      enable_firewall_config:
+        type: bool
+        default: true
+        description: Not currently used by the role.
+      enable_smb:
+        type: bool
+        default: true
+        description: Run SMB tasks.
+      enable_nfs:
+        type: bool
+        default: true
+        description: Run NFS tasks.
+      enable_zfs_config:
+        type: bool
+        default: true
+        description: Run ZFS tasks.
+      enable_filesystem_tasks:
+        type: bool
+        default: true
+        description: Run filesystem tasks.
+      enable_rclone:
+        type: bool
+        default: true
+        description: Run rclone tasks.
+      enable_builtin_cron_jobs:
+        type: bool
+        default: true
+        description: Not currently used by the role.
+      enable_iscsi:
+        type: bool
+        default: true
+        description: Run iSCSI tasks.

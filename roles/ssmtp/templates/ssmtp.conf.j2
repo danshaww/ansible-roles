@@ -1,0 +1,23 @@
+# Config file for sSMTP sendmail
+
+root=postmaster
+
+# The place where the mail goes. The actual machine name is required no
+# MX records are consulted. Commonly mailhosts are named mail.domain.com
+mailhub=mail
+
+# Where will the mail seem to come from?
+#rewriteDomain=
+
+# The full hostname
+hostname={{ inventory_hostname }}
+
+root={{ inventory_hostname }}
+server={{ ssmtp_server }}
+UseSTARTTLS={{ ssmtp_use_start_tls}}
+FromLineOverride={{ ssmtp_from_line_override }}
+AuthUser={{ ssmtp_user }}
+AuthPass={{ ssmtp_password }}
+mailhub={{ ssmtp_server }}
+rewritedomain={{ ssmtp_domain }}
+hostname={{ inventory_hostname }}

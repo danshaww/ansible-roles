@@ -1,0 +1,5 @@
+cron_management_jobs: "{{ cron_jobs | default(none) }}"
+cron_management_mail_to: "{{ cron_mail_to | default(none) }}"
+cron_management_mail_from: "{{ cron_mail_from | default(none) }}"
+cron_management_default_user: root
+cron_management_crontab_name: ansible

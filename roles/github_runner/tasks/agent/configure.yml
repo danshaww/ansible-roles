@@ -1,0 +1,82 @@
+- name: Act Configuration | Install dependancies
+  ansible.builtin.apt:
+    pkg: "{{ packages }}"
+    state: present
+    update_cache: true
+- name: Act Configuration | Create runner directory
+  ansible.builtin.file:
+    path: "{{ github_runner_path }}"
+    state: directory
+    mode: '0775'
+    owner: "{{ github_runner_username }}"
+    group: "{{ github_runner_username }}"
+
+- name: Check for existing archive
+  ansible.builtin.stat:
+    path: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+  register: runner_archive
+- name: Download GitHub Actions Runner
+  ansible.builtin.get_url:
+    url: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+    dest: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+    mode: '0644'
+  when: not runner_archive.stat.exists
+  become: true
+  become_user: "{{ github_runner_username }}"
+- name: Extract Archive
+  ansible.builtin.unarchive:
+    src: "{{ github_runner_path }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+    dest: "{{ github_runner_path }}"
+    remote_src: true
+  when: not runner_archive.stat.exists
+  become: true
+  become_user: "{{ github_runner_username }}"
+
+- name: Check for existing runner instance
+  ansible.builtin.stat:
+    path: "{{ github_runner_path }}/.runner"
+  register: runner
+  become: true
+  become_user: "{{ github_runner_username }}"
+
+- name: Generate GitHub Actions Runner Token
+  ansible.builtin.uri:
+    url: "https://api.github.com/orgs/{{ github_runner_org }}/actions/runners/registration-token"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ github_runner_pat }}"
+      Accept: "application/vnd.github+json"
+      X-GitHub-Api-Version: "2022-11-28"
+    status_code: 201
+  register: runner_token_response
+  no_log: true
+  when: not runner.stat.exists
+
+- name: Configure GitHub Actions Runner
+  ansible.builtin.command: "./config.sh --url https://github.com/{{ github_runner_org }} --token {{ runner_token_response.json.token }} --name {{ github_runner_name }} --labels {{ github_runner_labels }} --runnergroup Default --work _work"
+  args:
+    chdir: "{{ github_runner_path }}"
+    creates: "{{ github_runner_path }}/.runner"
+  register: runner_conf
+  become: true
+  become_user: "{{ github_runner_username }}"
+  when: not runner.stat.exists
+
+- name : Check for existing service
+  ansible.builtin.stat:
+    path: "{{ github_runner_path }}/.service"
+  register: service_file
+
+- name: Install Service
+  ansible.builtin.command: ./svc.sh install {{ github_runner_username }}
+  args:
+    chdir: "{{ github_runner_path }}"
+    creates: "{{ github_runner_path }}/.service"
+  become: true
+  when: not service_file.stat.exists
+- name: Start Service
+  ansible.builtin.service:
+    name: actions.runner.{{ github_runner_org | replace('/', '.') }}.{{ github_runner_name }}.service
+    state: started
+    enabled: true
+  become: true

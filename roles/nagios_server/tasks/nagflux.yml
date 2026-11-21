@@ -1,0 +1,176 @@
+- name: Nagios Server | Nagflux | Create directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.owner }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: /opt/nagflux
+      owner: root
+      mode: '0755'
+    - path: /opt/nagflux/bin
+      owner: root
+      mode: '0755'
+    - path: /var/lib/nagflux
+      owner: nagios
+      mode: '0750'
+    - path: /var/lib/nagflux/spool
+      owner: nagios
+      mode: '0750'
+    - path: /usr/local/nagios/var/spool
+      owner: nagios
+      mode: '0775'
+    - path: /usr/local/nagios/var/spool/nagfluxperfdata
+      owner: nagios
+      mode: '0775'
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Nagios Server | Nagflux | Check for installed binary
+  ansible.builtin.stat:
+    path: "/opt/nagflux/bin/nagflux-{{ nagios_server_nagflux_version }}"
+  register: nagios_server_nagflux_binary
+
+# Nagflux does not publish release binaries, so it is built from source
+# using an upstream Go toolchain that is removed again afterwards.
+- name: Nagios Server | Nagflux | Build from source
+  when: not nagios_server_nagflux_binary.stat.exists
+  vars:
+    nagios_server_nagflux_build_dir: /tmp/nagflux-build
+    nagios_server_nagflux_go_arch: >-
+      {{ {'x86_64': 'amd64', 'aarch64': 'arm64'}[ansible_facts['architecture']] }}
+  block:
+    - name: Nagios Server | Nagflux | Create build directory
+      ansible.builtin.file:
+        path: "{{ nagios_server_nagflux_build_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Nagios Server | Nagflux | Download Go toolchain
+      ansible.builtin.unarchive:
+        src: "https://go.dev/dl/go{{ nagios_server_nagflux_go_version }}.linux-{{ nagios_server_nagflux_go_arch }}.tar.gz"
+        dest: "{{ nagios_server_nagflux_build_dir }}"
+        remote_src: true
+        creates: "{{ nagios_server_nagflux_build_dir }}/go/bin/go"
+
+    - name: Nagios Server | Nagflux | Download Nagflux source
+      ansible.builtin.unarchive:
+        src: "https://github.com/ConSol-Monitoring/nagflux/archive/refs/tags/{{ nagios_server_nagflux_version }}.tar.gz"
+        dest: "{{ nagios_server_nagflux_build_dir }}"
+        remote_src: true
+        creates: "{{ nagios_server_nagflux_build_dir }}/nagflux-{{ nagios_server_nagflux_version | regex_replace('^v', '') }}/go.mod"
+
+    - name: Nagios Server | Nagflux | Compile Nagflux
+      ansible.builtin.command:
+        argv:
+          - "{{ nagios_server_nagflux_build_dir }}/go/bin/go"
+          - build
+          - -ldflags
+          - -s -w
+          - -o
+          - "/opt/nagflux/bin/nagflux-{{ nagios_server_nagflux_version }}"
+          - ./cmd/nagflux
+        chdir: "{{ nagios_server_nagflux_build_dir }}/nagflux-{{ nagios_server_nagflux_version | regex_replace('^v', '') }}"
+        creates: "/opt/nagflux/bin/nagflux-{{ nagios_server_nagflux_version }}"
+      environment:
+        GOWORK: "off"
+        GOFLAGS: -modcacherw
+        GOPATH: "{{ nagios_server_nagflux_build_dir }}/gopath"
+        GOCACHE: "{{ nagios_server_nagflux_build_dir }}/gocache"
+        HOME: "{{ nagios_server_nagflux_build_dir }}"
+
+  always:
+    - name: Nagios Server | Nagflux | Remove build directory
+      ansible.builtin.file:
+        path: "{{ nagios_server_nagflux_build_dir }}"
+        state: absent
+
+- name: Nagios Server | Nagflux | Link current binary
+  ansible.builtin.file:
+    src: "/opt/nagflux/bin/nagflux-{{ nagios_server_nagflux_version }}"
+    dest: /opt/nagflux/nagflux
+    state: link
+  notify:
+    - Nagios Server | Handlers | Restart Nagflux
+
+- name: Nagios Server | Nagflux | Render config
+  ansible.builtin.template:
+    src: nagflux.gcfg.j2
+    dest: /opt/nagflux/config.gcfg
+    owner: root
+    group: nagios
+    mode: '0640'
+  notify:
+    - Nagios Server | Handlers | Restart Nagflux
+
+- name: Nagios Server | Nagflux | Render systemd unit
+  ansible.builtin.template:
+    src: nagflux.service.j2
+    dest: /etc/systemd/system/nagflux.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Nagios Server | Handlers | Restart Nagflux
+
+- name: Nagios Server | Nagflux | Start Nagflux service
+  ansible.builtin.systemd:
+    name: nagflux
+    state: started
+    enabled: true
+    daemon_reload: true
+
+# InfluxDB 1.x reports durations as e.g. 2160h0m0s, so compare in that form.
+- name: Nagios Server | Nagflux | Ensure InfluxDB database exists
+  ansible.builtin.uri:
+    url: "{{ nagios_server_nagflux_influxdb_url }}/query"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      q: CREATE DATABASE "{{ nagios_server_nagflux_influxdb_database }}"
+    return_content: true
+  register: nagios_server_nagflux_create_db
+  changed_when: false
+  failed_when: >-
+    nagios_server_nagflux_create_db.status != 200
+    or (nagios_server_nagflux_create_db.json.results | selectattr('error', 'defined') | list | length > 0)
+
+- name: Nagios Server | Nagflux | Get InfluxDB retention policy
+  ansible.builtin.uri:
+    url: "{{ nagios_server_nagflux_influxdb_url }}/query"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      q: SHOW RETENTION POLICIES ON "{{ nagios_server_nagflux_influxdb_database }}"
+    return_content: true
+  register: nagios_server_nagflux_retention
+  changed_when: false
+  failed_when: >-
+    nagios_server_nagflux_retention.status != 200
+    or (nagios_server_nagflux_retention.json.results | selectattr('error', 'defined') | list | length > 0)
+
+- name: Nagios Server | Nagflux | Set InfluxDB retention policy
+  ansible.builtin.uri:
+    url: "{{ nagios_server_nagflux_influxdb_url }}/query"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      q: >-
+        ALTER RETENTION POLICY "autogen" ON "{{ nagios_server_nagflux_influxdb_database }}"
+        DURATION {{ nagios_server_nagflux_retention_days }}d SHARD DURATION 1d DEFAULT
+    return_content: true
+  register: nagios_server_nagflux_retention_set
+  changed_when: true
+  failed_when: >-
+    nagios_server_nagflux_retention_set.status != 200
+    or (nagios_server_nagflux_retention_set.json.results | selectattr('error', 'defined') | list | length > 0)
+  vars:
+    nagios_server_nagflux_autogen: >-
+      {{
+        (nagios_server_nagflux_retention.json.results[0].series[0]['values']
+         | selectattr(0, 'equalto', 'autogen') | list | first)
+      }}
+  when: >-
+    nagios_server_nagflux_autogen[1] != (nagios_server_nagflux_retention_days * 24) ~ 'h0m0s'
+    or nagios_server_nagflux_autogen[2] != '24h0m0s'

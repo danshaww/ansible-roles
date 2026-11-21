@@ -1,0 +1,177 @@
+argument_specs:
+  main:
+    short_description: Create and manage users and groups.
+    options:
+      user_management_enable_user_management:
+        type: bool
+        default: true
+        description: Run user, SSH key and skel profile tasks.
+      user_management_enable_group_management:
+        type: bool
+        default: true
+        description: Run group tasks.
+      user_management_enable_samba_users:
+        type: bool
+        default: true
+        description: Run Samba user tasks (only when samba is installed).
+      user_management_home_path:
+        type: path
+        default: /home
+        description: Base directory for home directories (not used for root).
+
+      user_management_skel_profile:
+        type: dict
+        default: null
+        description: Files to copy into /etc/skel. Skipped when null.
+        options:
+          files:
+            type: list
+            elements: dict
+            default: []
+            description: Files to write to /etc/skel, either copied from O(src) or written inline from O(content).
+            mutually_exclusive:
+              - [src, content]
+            required_one_of:
+              - [src, content]
+            required_by:
+              content: dest
+            options:
+              src:
+                type: str
+                description: Source file.
+              content:
+                type: str
+                description: Inline file content (e.g. a .bashrc, .profile or .config/htop/htoprc).
+              dest:
+                type: str
+                description:
+                  - Destination relative to /etc/skel. Required with O(content).
+                  - Missing parent directories are created.
+
+      user_management_users:
+        type: list
+        elements: dict
+        default: null
+        description: Users to manage. User tasks are skipped when null.
+        options:
+          username:
+            type: str
+            required: true
+            description: Username.
+          group:
+            type: str
+            description: Primary group. Defaults to the username.
+          create_group:
+            type: bool
+            default: true
+            description: Create a group named after the user.
+          password:
+            type: str
+            no_log: true
+            description: Plain text password, hashed with sha512. Also used as the Samba password.
+          uid:
+            type: int
+            default: 4096
+            description: User ID.
+          gid:
+            type: int
+            description: Group ID for the user's group. Defaults to the UID.
+          home:
+            type: path
+            description: Not currently used by the role; home is always <user_management_home_path>/<username>.
+          shell:
+            type: str
+            default: /bin/bash
+            description: Login shell.
+          append:
+            type: bool
+            default: true
+            description: Append to existing supplementary groups.
+          sudoers:
+            type: list
+            elements: str
+            description: Sudoers rules (e.g. "ALL=(ALL) ALL"). The user's sudoers file is removed when unset.
+          ssh_private_key:
+            type: str
+            no_log: true
+            description: Content of ~/.ssh/id_rsa.
+          ssh_public_key:
+            type: str
+            description: Content of ~/.ssh/id_rsa.pub.
+          ssh_config:
+            type: str
+            description: Content of ~/.ssh/config.
+          ssh_authorized_keys:
+            type: list
+            elements: str
+            description: Authorized SSH public keys.
+          ssh_manage_keys:
+            type: bool
+            default: false
+            description: Remove keys and authorized keys not defined in Ansible config.
+          home_dir_files:
+            type: list
+            elements: dict
+            description: Files to write to the home directory, either copied from O(src) or written inline from O(content).
+            mutually_exclusive:
+              - [src, content]
+            required_one_of:
+              - [src, content]
+            required_by:
+              content: dest
+            options:
+              src:
+                type: str
+                description: Source file.
+              content:
+                type: str
+                description: Inline file content (e.g. a .bashrc, .profile or .config/htop/htoprc).
+              dest:
+                type: str
+                description:
+                  - Destination relative to the home directory. Required with O(content).
+                  - Missing parent directories are created.
+          state:
+            type: str
+            default: present
+            choices: [present, absent]
+            description: Set to absent to delete the user.
+          enable_samba:
+            type: bool
+            default: false
+            description: Create a Samba user (requires user_management_enable_samba_users).
+
+      user_management_groups:
+        type: list
+        elements: dict
+        default: null
+        description: Groups to manage. Group tasks are skipped when null.
+        options:
+          name:
+            type: str
+            required: true
+            description: Group name.
+          gid:
+            type: int
+            description: Group ID.
+          state:
+            type: str
+            default: present
+            choices: [present, absent]
+            description: Group state.
+          append:
+            type: bool
+            description: Not currently used by the role; set append per member.
+          members:
+            type: list
+            elements: dict
+            description: Users to add to the group.
+            options:
+              name:
+                type: str
+                required: true
+                description: Username.
+              append:
+                type: bool
+                default: true
+                description: Append to the user's existing supplementary groups.

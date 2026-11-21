@@ -1,0 +1,3 @@
+ssmtp_sender: root
+ssmtp_use_start_tls: true
+ssmtp_from_line_override: 'YES'

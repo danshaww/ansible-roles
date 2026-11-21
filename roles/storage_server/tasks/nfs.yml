@@ -1,0 +1,29 @@
+- name: Storage Server | NFS | Install
+  become: true
+  ansible.builtin.apt:
+    name:
+      - nfs-kernel-server
+      - nfs4-acl-tools
+
+- name: Storage Server | NFS | Render Exports
+  ansible.builtin.template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart NFS
+  become: true
+
+- name: Storage Server | NFS | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+  with_items:
+    - 2049
+    - 111
+
+- name: Storage Server | NFS | Flush handlers so exports are applied
+  ansible.builtin.meta: flush_handlers

@@ -1,0 +1,19 @@
+- name: Global_System | Logging | Copy Syslog Config Files
+  ansible.builtin.template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    mode: '0644'
+  notify: Restart Syslog
+
+- name: Global_System | Logging | Configure rsyslog service
+  ansible.builtin.service:
+    name: rsyslog
+    state: started
+    enabled: true
+
+- name: Global_System | Logging | Copy Journald Config File
+  ansible.builtin.copy:
+    src: journald.conf
+    dest: /etc/systemd/journald.conf
+    mode: 0644
+  notify: Restart Journald

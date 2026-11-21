@@ -1,0 +1,15 @@
+- name: Nagios Server | Grafana Access | Add read-only Grafana web user
+  community.general.htpasswd:
+    path: /usr/local/nagios/etc/htpasswd.users
+    name: grafana
+    password: "{{ nagios_server_grafana_password }}"
+    state: present
+  no_log: true
+  when: nagios_server_grafana_password | length > 0
+
+- name: Nagios Server | Grafana Access | Remove Grafana web user
+  community.general.htpasswd:
+    path: /usr/local/nagios/etc/htpasswd.users
+    name: grafana
+    state: absent
+  when: nagios_server_grafana_password | length == 0

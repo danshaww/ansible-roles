@@ -1,0 +1,13 @@
+config_path: changeme
+tests: changeme
+dynamic_zones: false
+a_records: changeme
+cname_records: changeme
+ptr_records: changeme
+nameservers: changeme
+
+include_installation: true
+include_global_config: true
+include_zone_config: true
+include_record_config: "{{ dynamic_zones }}"
+include_testing: true

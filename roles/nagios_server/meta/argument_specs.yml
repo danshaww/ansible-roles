@@ -1,0 +1,78 @@
+argument_specs:
+  main:
+    short_description: Install and configure Nagios Core.
+    options:
+      nagios_server_version:
+        type: str
+        default: 4.5.14
+        description: Nagios Core release version to install.
+      nagios_server_admin_password:
+        type: str
+        required: true
+        no_log: true
+        description: Nagios web administrator (nagiosadmin) password.
+      nagios_server_smtp_username:
+        type: str
+        required: true
+        description: SMTP authentication username.
+      nagios_server_smtp_password:
+        type: str
+        required: true
+        no_log: true
+        description: SMTP authentication password.
+      nagios_server_smtp_host:
+        type: str
+        required: true
+        description: SMTP server hostname.
+      nagios_server_smtp_test_email:
+        type: str
+        required: true
+        description: Address the SMTP test email is sent to.
+      nagios_server_config_path:
+        type: str
+        required: true
+        description: Playbook-relative path to the directory containing config.yml and objects/.
+      nagios_server_certificate_path:
+        type: path
+        description:
+          - Public key certificate path.
+          - Defaults to C(/etc/letsencrypt/live/<inventory_hostname>.epichouse.co.uk/fullchain.pem).
+      nagios_server_certificate_private_path:
+        type: path
+        description:
+          - Private key certificate path.
+          - Defaults to C(/etc/letsencrypt/live/<inventory_hostname>.epichouse.co.uk/privkey.pem).
+      nagios_server_grafana_password:
+        type: str
+        default: ""
+        no_log: true
+        description:
+          - Password for the read-only C(grafana) web user, used by Grafana to query the Nagios JSON CGIs.
+          - When empty, the C(grafana) user is removed.
+      nagios_server_nagflux_enabled:
+        type: bool
+        default: false
+        description: Enable performance data processing and ship it to InfluxDB with Nagflux.
+      nagios_server_nagflux_version:
+        type: str
+        default: v0.6.3
+        description: Nagflux release tag to build and install.
+      nagios_server_nagflux_go_version:
+        type: str
+        default: 1.27.4
+        description: Go toolchain version used to build Nagflux. Removed after the build.
+      nagios_server_nagflux_influxdb_url:
+        type: str
+        default: ""
+        description:
+          - InfluxDB 1.x API URL that Nagflux writes to, e.g. C(http://ldnlogprd1.epichouse.co.uk:8086).
+          - Required when I(nagios_server_nagflux_enabled) is true.
+      nagios_server_nagflux_influxdb_database:
+        type: str
+        description:
+          - InfluxDB database Nagflux writes to. Created automatically if missing.
+          - Defaults to C(nagflux_<inventory_hostname>).
+      nagios_server_nagflux_retention_days:
+        type: int
+        default: 90
+        description: Days of performance data InfluxDB keeps before deleting it.

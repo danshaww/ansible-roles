@@ -1,0 +1,37 @@
+pve_utils_configure_firewall: true
+pve_utils_configure_subscription_nag: true
+pve_utils_configure_datacenter: true
+
+# Datacenter > Notes. Plain text; ':' is escaped to %3A on write as PVE does. ASCII only.
+pve_utils_datacenter_description: |
+  # PVE
+  Tagging Standards:
+  - core-infrastructure: always running & monitored
+  - lab-infrastructure: does not need to be running, not monitored
+  - templates: as per
+
+# Datacenter > Options, written to /etc/pve/datacenter.cfg (the whole file is managed;
+# options not listed here are removed). Value rendering:
+#   scalar  -> as-is (booleans become 1/0)
+#   list    -> joined with ';'                     e.g. registered-tags
+#   mapping -> property string 'k=v,k=v' (sorted), where a nested list is joined with ';'
+#              and a nested mapping becomes 'k:v;k:v' (e.g. tag-style color-map)
+pve_utils_datacenter_options:
+  console: xtermjs
+  email_from: proxmox@epichouse.co.uk
+  keyboard: en-gb
+  next-id:
+    lower: 140
+  registered-tags:
+    - core-infrastructure
+    - lab-infrastructure
+    - templates
+  tag-style:
+    color-map:
+      core-infrastructure: 31a72f:FFFFFF
+      lab-infrastructure: a72f8d:FFFFFF
+      templates: 362fb6:FFFFFF
+      zdomain: 000000:FFFFFF
+      znetwork: 000000:FFFFFF
+    ordering: config
+    shape: none

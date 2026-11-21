@@ -1,0 +1,11 @@
+# Templated directly onto pmxcfs rather than via `pvesh set /cluster/options` so the
+# whole file is declarative (options removed from the var are removed from the host).
+# On a cluster every node writes identical content, so this stays idempotent.
+- name: PVE Utils | Configure Datacenter Options
+  ansible.builtin.template:
+    src: datacenter.cfg.j2
+    dest: /etc/pve/datacenter.cfg
+    owner: root
+    group: www-data
+    mode: '0640'
+  become: true
