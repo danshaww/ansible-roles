@@ -1,0 +1,25 @@
+- name: Nagios Agent | Update NRPE Config
+  ansible.builtin.template:
+    src: nrpe.cfg
+    dest: /usr/local/nagios/etc/nrpe.cfg
+  notify: Restart NRPE
+
+# smartctl needs root to read disk health, so allow the nagios user to run
+# only these two plugins as root. Both validate their device argument.
+- name: Nagios Agent | Allow nagios to run disk health plugins as root
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/nagios-plugins
+    content: |
+      # Managed by Ansible (nagios_agent role)
+      nagios ALL=(root) NOPASSWD: /usr/lib/nagios/plugins/check_smart.sh, /usr/lib/nagios/plugins/check_nvme.sh
+    owner: root
+    group: root
+    mode: '0440'
+    validate: /usr/sbin/visudo -cf %s
+
+# PostgreSQL checks now run from the Nagios server (nagios_server role).
+# Remove the credentials file earlier versions of this role deployed.
+- name: Nagios Agent | Remove legacy PostgreSQL service file
+  ansible.builtin.file:
+    path: /usr/local/nagios/etc/pg_service.conf
+    state: absent

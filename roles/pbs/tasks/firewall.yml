@@ -1,0 +1,7 @@
+- name: PBS | Firewall | Allow PBS Ports through UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ pbs_firewall_ports }}"
+  become: true

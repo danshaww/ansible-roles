@@ -1,0 +1,47 @@
+argument_specs:
+  main:
+    short_description: Mount a list of NFS shares and virtiofs filesystems.
+    options:
+      mountpoints:
+        type: list
+        elements: dict
+        default: []
+        description: Filesystems to mount. Each is created as a directory, added to fstab and mounted.
+        options:
+          mount:
+            type: str
+            required: true
+            description:
+              - Mount source.
+              - For C(nfs), the export as C(host:/path).
+              - For C(virtiofs), the tag configured on the hypervisor.
+          directory:
+            type: str
+            required: true
+            description: Path to mount the filesystem at. Created if missing.
+          fstype:
+            type: str
+            default: nfs
+            choices: [nfs, virtiofs]
+            description: Filesystem type.
+          opts:
+            type: str
+            description: Mount options. Defaults to the entry in O(mountpoints_default_opts) for O(mountpoints[].fstype).
+          owner:
+            type: str
+            default: omit
+            description: Owner of the mount point directory.
+          group:
+            type: str
+            default: omit
+            description: Group of the mount point directory.
+          mode:
+            type: raw
+            default: omit
+            description: Mode of the mount point directory.
+      mountpoints_default_opts:
+        type: dict
+        default:
+          nfs: rw
+          virtiofs: defaults
+        description: Default mount options per filesystem type, used when an entry has no O(mountpoints[].opts).

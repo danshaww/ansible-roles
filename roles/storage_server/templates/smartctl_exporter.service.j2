@@ -1,0 +1,34 @@
+# Managed by Ansible
+[Unit]
+Description=Prometheus smartctl exporter
+Documentation=https://github.com/prometheus-community/smartctl_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Runs as root: smartctl needs raw access to every disk.
+ExecStart=/usr/local/bin/smartctl_exporter \
+  --web.listen-address={{ _smartctl_exporter.listen_address }} \
+  --smartctl.path=/usr/sbin/smartctl \
+  --smartctl.interval={{ _smartctl_exporter.interval }} \
+  --smartctl.rescan={{ _smartctl_exporter.rescan }} \
+{% for device in _smartctl_exporter.devices | default([], true) %}
+  --smartctl.device={{ device }} \
+{% endfor %}
+{% if _smartctl_exporter.device_exclude | default('', true) %}
+  --smartctl.device-exclude={{ _smartctl_exporter.device_exclude }} \
+{% endif %}
+{% for arg in _smartctl_exporter.extra_args | default([], true) %}
+  {{ arg }} \
+{% endfor %}
+  --log.level=warn
+Restart=on-failure
+RestartSec=10s
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+- name: Run Prerequisits
+  ansible.builtin.include_tasks: prerequisits.yml
+
+- name: Run Containerd Install
+  ansible.builtin.include_tasks: containerd.yml
+
+- name: Run K8S Install
+  ansible.builtin.include_tasks: install.yml

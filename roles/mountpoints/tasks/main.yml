@@ -1,0 +1,22 @@
+- name: Create mount points
+  ansible.builtin.file:
+    path: "{{ item.directory }}"
+    state: directory
+    mode: "{{ item.mode | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+  loop: "{{ mountpoints }}"
+  loop_control:
+    label: "{{ item.directory }}"
+
+- name: Create fstab entries and mount
+  ansible.posix.mount:
+    path: "{{ item.directory }}"
+    src: "{{ item.mount }}"
+    fstype: "{{ item.fstype | default('nfs') }}"
+    opts: "{{ item.opts | default(mountpoints_default_opts[item.fstype | default('nfs')]) }}"
+    state: mounted
+    boot: true
+  loop: "{{ mountpoints }}"
+  loop_control:
+    label: "{{ item.mount }} -> {{ item.directory }} ({{ item.fstype | default('nfs') }})"

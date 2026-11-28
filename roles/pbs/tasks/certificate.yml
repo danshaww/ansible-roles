@@ -1,0 +1,109 @@
+# proxmox-backup-proxy runs as the backup user and only reads /etc/proxmox-backup/proxy.{pem,key},
+# so those are symlinked to the configured files and backup is granted read access in place.
+
+- name: PBS | Certificate | Install ACL Package
+  ansible.builtin.apt:
+    name: acl
+    state: present
+  become: true
+
+- name: PBS | Certificate | Check Certificate Files
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ pbs_certificate_path }}"
+    - "{{ pbs_certificate_private_path }}"
+  register: pbs_certificate_files
+  become: true
+
+- name: PBS | Certificate | Assert Certificate Files Exist
+  ansible.builtin.assert:
+    that: item.stat.exists
+    fail_msg: "{{ item.item }} does not exist."
+    quiet: true
+  loop: "{{ pbs_certificate_files.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+# lnk_source is the fully resolved path, e.g. /etc/letsencrypt/archive/<name>/privkey1.pem
+- name: PBS | Certificate | Resolve Certificate Paths
+  ansible.builtin.set_fact:
+    pbs_certificate_real_path: "{{ pbs_certificate_files.results[0].stat.lnk_source | default(pbs_certificate_path, true) }}"
+    pbs_certificate_private_real_path: "{{ pbs_certificate_files.results[1].stat.lnk_source | default(pbs_certificate_private_path, true) }}"
+
+# Every parent directory of both the configured and resolved paths, e.g. /etc/letsencrypt/live,
+# /etc/letsencrypt/live/<name>, /etc/letsencrypt/archive, /etc/letsencrypt/archive/<name>
+- name: PBS | Certificate | Check Parent Directories
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop: >-
+    {%- set dirs = [] -%}
+    {%- for p in [pbs_certificate_path, pbs_certificate_private_path,
+                  pbs_certificate_real_path, pbs_certificate_private_real_path] -%}
+    {%- set parts = (p | dirname).strip('/').split('/') -%}
+    {%- for i in range(parts | length) -%}
+    {%- set _ = dirs.append('/' ~ parts[:i + 1] | join('/')) -%}
+    {%- endfor -%}
+    {%- endfor -%}
+    {{ dirs | unique | sort }}
+  register: pbs_certificate_dirs
+  become: true
+
+# ACLs rather than group changes, so existing group ownership (e.g. ssl-cert) is untouched.
+# Directory ACLs persist across certbot renewals.
+- name: PBS | Certificate | Grant Backup Group Traverse Access to Parent Directories
+  ansible.posix.acl:
+    path: "{{ item.item }}"
+    etype: group
+    entity: backup
+    permissions: x
+    state: present
+  loop: "{{ pbs_certificate_dirs.results | rejectattr('stat.xoth') }}"
+  loop_control:
+    label: "{{ item.item }}"
+  become: true
+
+- name: PBS | Certificate | Grant Backup Group Read Access to Certificate
+  ansible.posix.acl:
+    path: "{{ pbs_certificate_real_path }}"
+    etype: group
+    entity: backup
+    permissions: r
+    state: present
+  when: not pbs_certificate_files.results[0].stat.roth
+  become: true
+
+# Group ownership rather than an ACL: certbot copies the previous key's group and group
+# permissions to the new key on renewal, but not its ACLs.
+- name: PBS | Certificate | Grant Backup Group Read Access to Private Key
+  ansible.builtin.file:
+    path: "{{ pbs_certificate_private_real_path }}"
+    group: backup
+    mode: '0640'
+  become: true
+
+- name: PBS | Certificate | Link Certificate
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "/etc/proxmox-backup/{{ item.dest }}"
+    state: link
+    force: true
+  loop:
+    - src: "{{ pbs_certificate_path }}"
+      dest: proxy.pem
+    - src: "{{ pbs_certificate_private_path }}"
+      dest: proxy.key
+  loop_control:
+    label: "{{ item.dest }} -> {{ item.src }}"
+  notify: PBS | Reload Proxmox Backup Proxy
+  become: true
+
+- name: PBS | Certificate | Install Certbot Deploy Hook
+  ansible.builtin.template:
+    src: certbot-deploy-hook.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/pbs.sh
+    owner: root
+    group: root
+    mode: '0755'
+  when: pbs_certificate_path is match('/etc/letsencrypt/live/')
+  become: true

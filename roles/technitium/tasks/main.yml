@@ -1,0 +1,3 @@
+- name: Technitium | Installation
+  ansible.builtin.include_tasks: installation.yml
+  when: include_installation

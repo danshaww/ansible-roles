@@ -1,0 +1,39 @@
+# SMTP relay, sent via msmtp (ssmtp is removed if present).
+# smtp_host: mail.smtp2go.com
+smtp_port: 587
+
+# starttls (587), tls (implicit TLS, 465) or off. Unset picks tls for port 465, otherwise starttls.
+# smtp_tls: starttls
+# CA bundle used to verify the relay's certificate.
+smtp_tls_trust_file: /etc/ssl/certs/ca-certificates.crt
+
+# Authentication method. 'on' lets msmtp pick the strongest the server offers, but newer
+# GNU SASL (Debian trixie) then chooses SCRAM-SHA-256, which smtp2go rejects. plain is safe
+# because TLS is always negotiated before authenticating.
+smtp_auth: plain
+
+# smtp_user: ldnpbsprd1
+# smtp_password: "{{ secrets.smtp_backup }}"
+
+# Envelope sender for all mail. Must be a sender the relay accepts (smtp2go: a verified address/domain).
+# smtp_from_address: alerts@epichouse.co.uk
+
+# Allow callers (sendmail -f, e.g. PBS/PVE notifications) to override the envelope sender.
+# Off by default so every message leaves with a sender the relay accepts.
+smtp_allow_from_override: false
+
+# From: header handling - auto: add one only if missing, on: always replace with
+# smtp_from_address, off: never touch.
+smtp_set_from_header: auto
+
+# Local recipients (e.g. root for cron/ZED mail) mapped to real addresses, written to /etc/aliases.
+# 'default' catches any local recipient not listed. Without an entry, mail to a bare local
+# user such as root is rejected by the relay. Empty leaves /etc/aliases untouched.
+# smtp_aliases:
+#   default: someone@example.com
+smtp_aliases: {}
+
+# Keep /etc/msmtprc (which holds the password) at 0640 root:msmtp and make msmtp setgid msmtp
+# (via dpkg-statoverride, so it survives upgrades) so non-root users can still send mail.
+# When false the file is 0644 and readable by every local user.
+smtp_restrict_config: true

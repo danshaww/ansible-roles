@@ -1,0 +1,4 @@
+# Managed by Ansible
+{% for export in storage_server_nfs.exports %}
+{{ export.path }}{% for client in export.clients %} {{ client.host }}({{ client.options | join(',') }}){% endfor %}{{ '\n' }}
+{%- endfor %}

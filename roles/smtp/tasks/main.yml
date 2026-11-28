@@ -1,0 +1,112 @@
+# Configures msmtp as the system sendmail and removes ssmtp, which is unmaintained,
+# doesn't verify the relay's certificate and has no logging.
+- name: SMTP | Validate Settings
+  ansible.builtin.assert:
+    that:
+      - smtp_tls_mode in ['starttls', 'tls', 'off']
+      - not (smtp_port | int == 465 and smtp_tls_mode == 'starttls')
+      - "'@' in smtp_from_address"
+      - smtp_aliases.values() | map('string') | select('search', '@') | list | length == smtp_aliases | length
+    fail_msg: >-
+      Invalid mail settings: port 465 needs smtp_tls 'tls' (implicit TLS), not 'starttls';
+      smtp_from_address and every smtp_aliases value must be full email addresses.
+    quiet: true
+
+- name: SMTP | Install and Configure msmtp
+  become: true
+  block:
+    - name: SMTP | Keep msmtp AppArmor Profile Disabled
+      # Debian's default; the profile breaks some msmtp options with opaque permission errors
+      ansible.builtin.debconf:
+        name: msmtp
+        question: msmtp/apparmor
+        value: 'false'
+        vtype: boolean
+
+    - name: SMTP | Install Packages
+      # msmtp-mta conflicts with ssmtp (both provide mail-transport-agent), so apt removes ssmtp here
+      ansible.builtin.apt:
+        name: "{{ smtp_packages }}"
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: SMTP | Purge ssmtp
+      ansible.builtin.apt:
+        name: "{{ smtp_legacy_packages }}"
+        state: absent
+        purge: true
+
+    - name: SMTP | Remove Leftover ssmtp Configuration
+      # Holds the old SMTP password; not always removed by the package purge
+      ansible.builtin.file:
+        path: /etc/ssmtp
+        state: absent
+
+    - name: SMTP | Restrict Config Access
+      when: smtp_restrict_config
+      block:
+        - name: SMTP | Create msmtp Group
+          ansible.builtin.group:
+            name: "{{ smtp_group }}"
+            system: true
+
+        - name: SMTP | Get msmtp Stat Override
+          ansible.builtin.command: dpkg-statoverride --list {{ smtp_binary }}
+          register: smtp_statoverride
+          changed_when: false
+          check_mode: false
+          failed_when: smtp_statoverride.rc not in [0, 1]
+
+        - name: SMTP | Remove Mismatched msmtp Stat Override
+          ansible.builtin.command: dpkg-statoverride --remove {{ smtp_binary }}
+          when:
+            - smtp_statoverride.rc == 0
+            - smtp_statoverride.stdout | trim != 'root ' ~ smtp_group ~ ' 2755 ' ~ smtp_binary
+          changed_when: true
+
+        - name: SMTP | Make msmtp Setgid
+          # Lets non-root senders read the 0640 root:msmtp config; persists across package upgrades
+          ansible.builtin.command: dpkg-statoverride --update --add root {{ smtp_group }} 2755 {{ smtp_binary }}
+          when: smtp_statoverride.stdout | trim != 'root ' ~ smtp_group ~ ' 2755 ' ~ smtp_binary
+          changed_when: true
+
+    - name: SMTP | Unrestrict Config Access
+      when: not smtp_restrict_config
+      block:
+        - name: SMTP | Get msmtp Stat Override
+          ansible.builtin.command: dpkg-statoverride --list {{ smtp_binary }}
+          register: smtp_statoverride
+          changed_when: false
+          check_mode: false
+          failed_when: smtp_statoverride.rc not in [0, 1]
+
+        - name: SMTP | Remove msmtp Stat Override
+          ansible.builtin.command: dpkg-statoverride --remove {{ smtp_binary }}
+          when: smtp_statoverride.rc == 0
+          changed_when: true
+
+        - name: SMTP | Reset msmtp Permissions
+          ansible.builtin.file:
+            path: "{{ smtp_binary }}"
+            owner: root
+            group: root
+            mode: '0755'
+
+    - name: SMTP | Populate msmtp Config
+      ansible.builtin.template:
+        src: msmtprc.j2
+        dest: "{{ smtp_config_path }}"
+        owner: root
+        group: "{{ smtp_group if smtp_restrict_config else 'root' }}"
+        mode: "{{ '0640' if smtp_restrict_config else '0644' }}"
+      # Contains the SMTP password - never show it in --diff output
+      diff: false
+
+    - name: SMTP | Populate Aliases
+      ansible.builtin.template:
+        src: aliases.j2
+        dest: "{{ smtp_aliases_path }}"
+        owner: root
+        group: root
+        mode: '0644'
+      when: smtp_aliases | length > 0

@@ -1,0 +1,66 @@
+- name: General | Enable Remote Desktop
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server
+    name: fDenyTSConnections
+    data: 0
+    type: dword
+  register: enable_rdp
+
+- name: General | Enable Remote Desktop
+  ansible.windows.win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services\Client
+    name: fClientDisableUDP
+    data: 0
+    type: dword
+  register: enable_rdp
+
+- name: General | Enable Remote Desktop
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp
+    name: UserAuthentication
+    data: 1
+    type: dword
+
+- name: General | Add Remote Desktop Firewall Rule
+  ansible.windows.win_shell: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+  when: enable_rdp.changed
+
+- name: Set region format to English (United Kingdom)
+  ansible.windows.win_region:
+    format: en-GB
+    unicode_language: en-GB
+    copy_settings: yes
+  register: region_result
+
+- name: Disable UAC
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableLUA
+    data: 0
+    type: dword
+  register: uac_result
+
+- name: Disable built-in Administrator account
+  ansible.windows.win_user:
+    name: Administrator
+    state: present
+    account_disabled: true
+
+- name: Hide Windows search bar
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Search
+    name: SearchboxTaskbarMode
+    data: 0
+    type: dword
+
+- name: Hide Task View button
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: ShowTaskViewButton
+    data: 0
+    type: dword
+
+- name: Reboot if required for locale changes
+  ansible.windows.win_reboot:
+    reboot_timeout: 3600
+  when: region_result.changed or uac_result.changed

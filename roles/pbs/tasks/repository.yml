@@ -1,0 +1,27 @@
+- name: PBS | Repository | Download Proxmox Archive Keyring
+  ansible.builtin.get_url:
+    url: "{{ pbs_releases[ansible_facts['distribution_release']].key_url }}"
+    checksum: "{{ pbs_releases[ansible_facts['distribution_release']].key_checksum }}"
+    dest: "{{ pbs_keyring }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: PBS | Repository | Include Enterprise Repository Removal
+  ansible.builtin.include_tasks: enterprise_repository.yml
+  when:
+    - pbs_remove_enterprise_repository
+    - pbs_repository_component != 'pbs-enterprise'
+
+# Named 'proxmox' to match the proxmox.sources file a PBS 4 ISO install creates
+- name: PBS | Repository | Add Proxmox Backup Server Repository
+  ansible.builtin.deb822_repository:
+    name: proxmox
+    types: deb
+    uris: "{{ (pbs_repository_component == 'pbs-enterprise')
+              | ternary('https://enterprise.proxmox.com/debian/pbs', 'http://download.proxmox.com/debian/pbs') }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: "{{ pbs_repository_component }}"
+    signed_by: "{{ pbs_keyring }}"
+  become: true

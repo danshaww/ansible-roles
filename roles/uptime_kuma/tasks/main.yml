@@ -1,0 +1,8 @@
+- name: Include Setup Tasks
+  ansible.builtin.include_tasks: setup.yml
+
+- name: Include Notification Tasks
+  ansible.builtin.include_tasks: notifications.yml
+
+- name: Include Monitors Tasks
+  ansible.builtin.include_tasks: monitors.yml

@@ -1,0 +1,80 @@
+- name: PVE Utils | Repository | Check Supported OS
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == 'Debian'
+      - ansible_facts['distribution_release'] in pve_utils_releases
+    fail_msg: >-
+      Proxmox VE repository configuration supports Debian {{ pve_utils_releases.keys() | join(' or ') }},
+      found {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_release'] }}.
+    quiet: true
+
+- name: PVE Utils | Repository | Download Proxmox Archive Keyring
+  ansible.builtin.get_url:
+    url: "{{ pve_utils_releases[ansible_facts['distribution_release']].key_url }}"
+    checksum: "{{ pve_utils_releases[ansible_facts['distribution_release']].key_checksum }}"
+    dest: "{{ pve_utils_keyring }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+# Matched on content rather than filename so pve-enterprise, ceph enterprise and entries
+# in /etc/apt/sources.list are caught too. find's 'contains' is anchored at line start.
+- name: PVE Utils | Repository | Find Enterprise Repositories
+  ansible.builtin.find:
+    paths:
+      - /etc/apt
+      - /etc/apt/sources.list.d
+    patterns:
+      - "*.list"
+      - "*.sources"
+    contains: '.*enterprise\.proxmox\.com'
+  register: pve_utils_enterprise_repositories
+  when:
+    - pve_utils_remove_enterprise_repository
+    - pve_utils_repository_component != 'pve-enterprise'
+  become: true
+
+- name: PVE Utils | Repository | Remove Enterprise deb822 Repositories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ pve_utils_enterprise_repositories.files | map(attribute='path') | select('match', '.*\\.sources$') }}"
+  when: pve_utils_enterprise_repositories is not skipped
+  register: pve_utils_enterprise_deb822_removed
+  become: true
+
+# One-line-style files may be shared with other repositories (e.g. /etc/apt/sources.list),
+# so only the enterprise lines are commented out.
+- name: PVE Utils | Repository | Disable Enterprise One-Line Repositories
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^(\s*deb(-src)?\s.*enterprise\.proxmox\.com.*)$'
+    replace: '# \1'
+  loop: "{{ pve_utils_enterprise_repositories.files | map(attribute='path') | select('match', '.*\\.list$') }}"
+  when: pve_utils_enterprise_repositories is not skipped
+  register: pve_utils_enterprise_oneline_disabled
+  become: true
+
+# Named 'pve' rather than 'proxmox' so it doesn't collide with the pbs role's proxmox.sources
+# when PBS is installed on the same host.
+- name: PVE Utils | Repository | Add Proxmox VE Repository
+  ansible.builtin.deb822_repository:
+    name: pve
+    types: deb
+    uris: "{{ (pve_utils_repository_component == 'pve-enterprise')
+              | ternary('https://enterprise.proxmox.com/debian/pve', 'http://download.proxmox.com/debian/pve') }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: "{{ pve_utils_repository_component }}"
+    signed_by: "{{ pve_utils_keyring }}"
+  register: pve_utils_repository
+  become: true
+
+- name: PVE Utils | Repository | Update APT Cache
+  ansible.builtin.apt:
+    update_cache: true
+  when: >-
+    pve_utils_repository is changed
+    or pve_utils_enterprise_deb822_removed is changed
+    or pve_utils_enterprise_oneline_disabled is changed
+  become: true

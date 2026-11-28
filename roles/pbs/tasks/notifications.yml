@@ -1,0 +1,19 @@
+# Sender for all sendmail notification targets that don't set their own from-address
+# (node.cfg email-from). Without it PBS sends as root@$hostname, which smarthosts such
+# as smtp2go reject as an unverified sender.
+- name: PBS | Notifications | Get Node Configuration
+  ansible.builtin.command: proxmox-backup-manager node show --output-format json
+  register: pbs_node_config
+  changed_when: false
+  become: true
+
+- name: PBS | Notifications | Set Email From Address
+  ansible.builtin.command:
+    argv:
+      - proxmox-backup-manager
+      - node
+      - update
+      - --email-from
+      - "{{ pbs_email_from }}"
+  when: (pbs_node_config.stdout | from_json).get('email-from') != pbs_email_from
+  become: true

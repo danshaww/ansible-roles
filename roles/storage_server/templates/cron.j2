@@ -1,0 +1,31 @@
+# Managed by Ansible
+SHELL=/bin/bash
+{% set _cron = storage_server_cron | default({}, true) %}
+{% if _cron.mail_from | default(none) is not none %}
+MAILFROM={{ _cron.mail_from }}
+{% endif %}
+{% if _cron.mail_to | default(none) is not none %}
+MAILTO={{ _cron.mail_to }}
+{% endif %}
+
+# Sanoid Jobs
+#Ansible: Sanoid
+{% if storage_server_zfs is not none %}
+0 * * * * root /usr/sbin/sanoid --take-snapshots --prune-snapshots --verbose 1> >(logger -p local3.info -t sanoid) 2> >(tee /dev/stderr | logger -p local3.err -t sanoid)
+{% endif %}
+
+{% if storage_server_zfs.syncoid_jobs | default(none) is not none %}
+# Syncoid Jobs
+{% for item in storage_server_zfs.syncoid_jobs %}
+#Ansible: Syncoid - {{ item.name }}
+{{ item.minute | default('0') }} {{ item.hour | default('0') }} {{ item.day | default('*') }} {{ item.month | default('*') }} {{ item.weekday | default('*') }} root /usr/sbin/syncoid --recursive --no-sync-snap --sshoption=StrictHostKeyChecking=no --sshoption=UserKnownHostsFile=/dev/null {{ item.args | default('') }} {{ item.src }} {{ item.dest }} 1> >(logger -p local3.info -t syncoid) 2> >(tee /dev/stderr | logger -p local3.err -t syncoid)
+{% endfor %}
+{% endif %}
+{% if storage_server_zfs.pools | default(none) is not none %}
+
+# ZFS Scrub Jobs
+{% for item in storage_server_zfs.pools %}
+#Ansible: ZFS Scrub - {{ item.name }}
+0 23 * * 1 root /usr/sbin/zpool scrub {{ item.name }} 1> >(logger -p local3.info -t zfs) 2> >(tee /dev/stderr | logger -p local3.err -t zfs)
+{% endfor %}
+{% endif %}

@@ -1,0 +1,34 @@
+# Run before installation, so apt update doesn't 401, and again after it: on a fresh install
+# proxmox-backup-server ships pbs-enterprise.sources as a conffile. Once deleted, dpkg doesn't
+# restore it on upgrade.
+
+# Matched on content rather than filename so pve-enterprise, ceph enterprise and entries
+# in /etc/apt/sources.list are caught too. find's 'contains' is anchored at line start.
+- name: PBS | Enterprise Repository | Find Enterprise Repositories
+  ansible.builtin.find:
+    paths:
+      - /etc/apt
+      - /etc/apt/sources.list.d
+    patterns:
+      - "*.list"
+      - "*.sources"
+    contains: '.*enterprise\.proxmox\.com'
+  register: pbs_enterprise_repositories
+  become: true
+
+- name: PBS | Enterprise Repository | Remove Enterprise deb822 Repositories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ pbs_enterprise_repositories.files | map(attribute='path') | select('match', '.*\\.sources$') }}"
+  become: true
+
+# One-line-style files may be shared with other repositories (e.g. /etc/apt/sources.list),
+# so only the enterprise lines are commented out.
+- name: PBS | Enterprise Repository | Disable Enterprise One-Line Repositories
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^(\s*deb(-src)?\s.*enterprise\.proxmox\.com.*)$'
+    replace: '# \1'
+  loop: "{{ pbs_enterprise_repositories.files | map(attribute='path') | select('match', '.*\\.list$') }}"
+  become: true

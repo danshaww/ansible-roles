@@ -1,0 +1,6 @@
+- name: Nagios Server | Package Installation | Install packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items: "{{ nagios_server_packages }}"

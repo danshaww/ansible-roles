@@ -1,0 +1,1 @@
+update_zones: "{% if dynamic_zones %}false{% else %}true{% endif %}"

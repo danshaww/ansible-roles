@@ -1,0 +1,7 @@
+galaxy_info:
+  author: Dan Shaw
+  description: Ansible Role to install and configure ISC DHCP Server.
+  license: GPL
+  min_ansible_version: "2.1"
+  galaxy_tags: []
+dependencies: []

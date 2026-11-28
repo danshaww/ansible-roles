@@ -1,0 +1,10 @@
+nagios_server_version: 4.5.14
+nagios_server_certificate_path: /etc/letsencrypt/live/{{ inventory_hostname }}.epichouse.co.uk/fullchain.pem
+nagios_server_certificate_private_path: /etc/letsencrypt/live/{{ inventory_hostname }}.epichouse.co.uk/privkey.pem
+nagios_server_grafana_password: ""
+nagios_server_nagflux_enabled: false
+nagios_server_nagflux_version: v0.6.3
+nagios_server_nagflux_go_version: 1.27.4
+nagios_server_nagflux_influxdb_url: ""
+nagios_server_nagflux_influxdb_database: nagflux_{{ inventory_hostname }}
+nagios_server_nagflux_retention_days: 90

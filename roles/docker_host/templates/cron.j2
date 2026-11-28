@@ -1,0 +1,9 @@
+# Managed by Ansible
+{% for item in docker_host_cron_jobs | default([], true) %}
+#Ansible: {{ item.name }}
+{% if item.special_time is defined %}
+@{{ item.special_time }} root {{ item.job | replace('%', '\\%') }}
+{% else %}
+{{ item.minute | default('*') }} {{ item.hour | default('*') }} {{ item.day | default('*') }} {{ item.month | default('*') }} {{ item.weekday | default('*') }} root {{ item.job | replace('%', '\\%') }}
+{% endif %}
+{% endfor %}

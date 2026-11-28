@@ -1,0 +1,33 @@
+- name: PVE Utils | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: PVE Utils | Include Repository Tasks
+  ansible.builtin.include_tasks: repository.yml
+  when: pve_utils_configure_repository
+
+- name: PVE Utils | Include Firewall Tasks
+  ansible.builtin.include_tasks: firewall.yml
+  when:
+    - pve_utils_configure_firewall
+    - "'ufw' in ansible_facts.packages"
+
+- name: PVE Utils | Include Subscription Nag Tasks
+  ansible.builtin.include_tasks: subscription_nag.yml
+  when:
+    - pve_utils_configure_subscription_nag
+
+- name: PVE Utils | Include Datacenter Tasks
+  ansible.builtin.include_tasks: datacenter.yml
+  when:
+    - pve_utils_configure_datacenter
+
+- name: PVE Utils | Include Certificate Tasks
+  ansible.builtin.include_tasks: certificate.yml
+  when:
+    - pve_utils_certificate_path is not none
+    - pve_utils_certificate_private_path is not none
+
+# TODO: Add ACME configuration
+# TODO: Add Storage configuration (pbs, nfs etc)
+# TODO: Add Backup job configuration

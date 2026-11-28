@@ -1,0 +1,18 @@
+mountpoints: []
+
+# Default mount options per filesystem type, used when an entry has no 'opts'
+mountpoints_default_opts:
+  nfs: rw
+  virtiofs: defaults
+
+## Example
+#
+# mountpoints:
+#   - mount: nas:/dpool/data/fs/media   # NFS export (host:/path)
+#     directory: /mnt/nas/media
+#     owner: user1
+#     group: group1
+#     mode: "0777"
+#   - mount: media                      # virtiofs tag as configured on the hypervisor
+#     directory: /mnt/media
+#     fstype: virtiofs

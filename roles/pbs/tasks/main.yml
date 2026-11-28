@@ -1,0 +1,53 @@
+- name: PBS | Check Supported OS
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == 'Debian'
+      - ansible_facts['distribution_release'] in pbs_releases
+    fail_msg: >-
+      Proxmox Backup Server requires Debian {{ pbs_releases.keys() | join(' or ') }},
+      found {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_release'] }}.
+    quiet: true
+
+- name: PBS | Include Repository Tasks
+  ansible.builtin.include_tasks: repository.yml
+  when: pbs_configure_repository
+
+- name: PBS | Include Installation Tasks
+  ansible.builtin.include_tasks: installation.yml
+
+- name: PBS | Include Post-Installation Enterprise Repository Removal
+  ansible.builtin.include_tasks: enterprise_repository.yml
+  when:
+    - pbs_configure_repository
+    - pbs_remove_enterprise_repository
+    - pbs_repository_component != 'pbs-enterprise'
+
+- name: PBS | Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: PBS | Include Firewall Tasks
+  ansible.builtin.include_tasks: firewall.yml
+  when:
+    - pbs_configure_firewall
+    - "'ufw' in ansible_facts.packages"
+
+- name: PBS | Include Subscription Nag Tasks
+  ansible.builtin.include_tasks: subscription_nag.yml
+  when: pbs_configure_subscription_nag
+
+- name: PBS | Include Certificate Tasks
+  ansible.builtin.include_tasks: certificate.yml
+  when:
+    - pbs_certificate_path is not none
+    - pbs_certificate_private_path is not none
+
+- name: PBS | Include Datastore Tasks
+  ansible.builtin.include_tasks: datastores.yml
+  when:
+    - pbs_configure_datastores
+    - pbs_datastores | length > 0
+
+- name: PBS | Include Notification Tasks
+  ansible.builtin.include_tasks: notifications.yml
+  when: pbs_email_from is not none

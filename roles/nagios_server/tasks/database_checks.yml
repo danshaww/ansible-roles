@@ -1,0 +1,27 @@
+- name: Nagios Server | Database Checks | Install database clients
+  ansible.builtin.apt:
+    name:
+      - postgresql-client
+      - mysql-client
+    state: present
+
+- name: Nagios Server | Database Checks | Install plugins
+  ansible.builtin.copy:
+    src: "plugins/{{ item }}"
+    dest: "/usr/local/nagios/libexec/{{ item }}"
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - check_postgres.sh
+    - check_mysql.sh
+
+# Connection details are now passed in each service's check_command, so
+# remove the credential files earlier versions of this role deployed.
+- name: Nagios Server | Database Checks | Remove legacy service files
+  ansible.builtin.file:
+    path: "/usr/local/nagios/etc/{{ item }}"
+    state: absent
+  loop:
+    - pg_service.conf
+    - my_service.cnf

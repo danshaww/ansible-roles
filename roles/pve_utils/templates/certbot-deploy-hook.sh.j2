@@ -1,0 +1,5 @@
+#!/bin/sh
+# {{ ansible_managed }}
+# Installs the renewed certificate into Proxmox VE and restarts pveproxy.
+[ "$RENEWED_LINEAGE" = "{{ pve_utils_certificate_path | dirname }}" ] || exit 0
+pvenode cert set {{ pve_utils_certificate_path | quote }} {{ pve_utils_certificate_private_path | quote }} --force 1 --restart 1

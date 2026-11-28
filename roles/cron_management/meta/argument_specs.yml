@@ -1,0 +1,59 @@
+argument_specs:
+  main:
+    short_description: Manage an Ansible-owned cron file in /etc/cron.d.
+    options:
+      cron_management_jobs:
+        type: list
+        elements: dict
+        description:
+          - Cron jobs to write to the cron file.
+          - Defaults to the value of C(cron_jobs), or null if unset.
+        options:
+          name:
+            type: str
+            required: true
+            description: Job name, written as a comment above the entry.
+          job:
+            type: str
+            required: true
+            description: Command to run.
+          user:
+            type: str
+            description: User to run the job as. Defaults to O(cron_management_default_user).
+          special_time:
+            type: str
+            choices: [reboot, yearly, annually, monthly, weekly, daily, hourly, midnight]
+            description: Special time specification. When set, the minute/hour/day/month/weekday fields are ignored.
+          minute:
+            type: raw
+            description: Minute field. Defaults to C(*).
+          hour:
+            type: raw
+            description: Hour field. Defaults to C(*).
+          day:
+            type: raw
+            description: Day of month field. Defaults to C(*).
+          month:
+            type: raw
+            description: Month field. Defaults to C(*).
+          weekday:
+            type: raw
+            description: Day of week field. Defaults to C(*).
+      cron_management_mail_to:
+        type: str
+        description:
+          - MAILTO address for the cron file. Not written when null.
+          - Defaults to the value of C(cron_mail_to), or null if unset.
+      cron_management_mail_from:
+        type: str
+        description:
+          - MAILFROM address for the cron file. Not written when null.
+          - Defaults to the value of C(cron_mail_from), or null if unset.
+      cron_management_default_user:
+        type: str
+        default: root
+        description: User jobs run as when not set per job; also owns the cron file.
+      cron_management_crontab_name:
+        type: str
+        default: ansible
+        description: Filename of the cron file under /etc/cron.d.

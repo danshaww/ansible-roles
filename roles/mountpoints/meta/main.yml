@@ -1,0 +1,7 @@
+galaxy_info:
+  author: Dan Shaw
+  description: Ansible Role to mount a list of NFS shares and virtiofs filesystems
+  license: GPL
+  min_ansible_version: "2.1"
+  galaxy_tags: []
+dependencies: []

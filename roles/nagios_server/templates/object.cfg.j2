@@ -1,0 +1,18 @@
+{% for host in nagios_server_hosts | dict2items %}
+define host {
+    use    {{ host.value.use | default('standard-host') }}
+    host_name    {{ host.key }}
+{% for key, value in host.value.items() if key not in ['use', 'host_name', 'services'] %}
+    {{ key }}    {{ value | join(',') if value is sequence and value is not string else value }}
+{% endfor %}
+}
+{% for service in host.value.services | default([]) %}
+define service {
+    use    {{ service.use | default('generic-service') }}
+    host_name    {{ host.key }}
+{% for key, value in service.items() if key not in ['use', 'host_name'] %}
+    {{ 'service_description' if key == 'description' else key }}    {{ value | join(',') if value is sequence and value is not string else value }}
+{% endfor %}
+}
+{% endfor %}
+{% endfor %}

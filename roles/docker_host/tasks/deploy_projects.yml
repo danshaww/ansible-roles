@@ -1,0 +1,107 @@
+- name: Docker Host | Deploy Projects | Create Compose Directory
+  ansible.builtin.file:
+    path: "{{ docker_host_base_path }}/compose"
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+- name: Docker Host | Deploy Projects | Initialize project dict
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{ docker_host_compose_projects | default({}, true) }}
+    docker_host_compose_project_sources: {}
+
+- name: Docker Host | Deploy Projects | Load role-defined project templates
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        lookup(
+          'ansible.builtin.template',
+          role_path ~ '/vars/compose/' ~ item ~ '.yml',
+          template_vars={'item': {'key': item}}
+        )
+        | from_yaml
+        | combine(docker_host_compose_projects, recursive=true)
+      }}
+  loop: "{{ docker_host_compose_project_templates }}"
+  loop_control:
+    label: "{{ item }}"
+
+# Project definitions can also come from variables (typically group_vars)
+# named docker_host_compose_projects_*, each a dict keyed by project name in
+# the same shape as docker_host_compose_projects. Values are templated with
+# item.key set to the project name. Ansible never templates dict keys, so
+# {{ item.key }} in keys (e.g. traefik labels) is substituted afterwards.
+- name: Docker Host | Deploy Projects | Map projects to their variables
+  ansible.builtin.set_fact:
+    docker_host_compose_project_sources: >-
+      {{
+        docker_host_compose_project_sources
+        | combine(dict(lookup('ansible.builtin.vars', docker_host_compose_project_var) | list
+                       | product([docker_host_compose_project_var])))
+      }}
+  vars:
+    # Placeholder so {{ item.key }} references resolve while reading project
+    # names; values are rendered with the real name in the next task.
+    item:
+      key: ""
+  loop: "{{ query('ansible.builtin.varnames', '^docker_host_compose_projects_.+') | sort }}"
+  loop_control:
+    loop_var: docker_host_compose_project_var
+
+- name: Docker Host | Deploy Projects | Load project variables
+  ansible.builtin.set_fact:
+    docker_host_compose_projects: >-
+      {{
+        docker_host_compose_projects
+        | combine({
+            item.key: lookup('ansible.builtin.vars', item.value)[item.key]
+              | to_json
+              | regex_replace('\{\{\s*item\.key\s*\}\}', item.key)
+              | from_json
+          })
+      }}
+  loop: "{{ docker_host_compose_project_sources | dict2items }}"
+  loop_control:
+    label: "{{ item.key }} ({{ item.value }})"
+
+- name: Docker Host | Deploy Projects | Create Bind Mount Volumes
+  when:
+    - item.value.create_bind_mount_volume | default(false)
+    - item.value.enabled | default(true)
+  ansible.builtin.file:
+    path: "{{ docker_host_bind_mount_volume_path }}/{{ item.key }}"
+    owner: "{{ item.value.volume_config.owner | default('root') }}"
+    group: "{{ item.value.volume_config.group | default('root') }}"
+    mode: "{{ item.value.volume_config.mode | default('0770') }}"
+    state: directory
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Docker Host | Deploy Projects | Generate Compose Files
+  when: item.value.enabled | default(true)
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ docker_host_base_path }}/compose/{{ item.key }}.yml"
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Docker Host | Deploy Projects | Start Compose Projects
+  when: item.value.enabled | default(true)
+  community.docker.docker_compose_v2:
+    project_name: "{{ item.key }}"
+    project_src: "{{ docker_host_base_path }}/compose"
+    files: "{{ item.key }}.yml"
+    remove_orphans: true
+    build: "{{ docker_host_build }}"
+    pull: "{{ docker_host_pull }}"
+    state: present
+  loop: "{{ docker_host_compose_projects | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"

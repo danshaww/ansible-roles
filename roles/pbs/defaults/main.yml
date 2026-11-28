@@ -1,0 +1,40 @@
+pbs_configure_repository: true
+pbs_configure_firewall: true
+pbs_configure_subscription_nag: true
+pbs_configure_datastores: true
+
+# Repository component: pbs-no-subscription, pbs-enterprise (needs a subscription) or pbstest
+pbs_repository_component: pbs-no-subscription
+
+# Remove/comment out any enterprise.proxmox.com APT repositories (they 401 without a subscription)
+pbs_remove_enterprise_repository: true
+
+# proxmox-backup-server runs on the stock Debian kernel; 'proxmox-backup' also pulls in the Proxmox kernel
+pbs_packages:
+  - proxmox-backup-server
+
+# Datastores to create if they don't already exist (existing datastores are left untouched).
+# 'path' must be empty or non-existent; it is initialised as a chunk store.
+# Optional 'options' are passed as '--key value' to 'proxmox-backup-manager datastore create'.
+# pbs_datastores:
+#   - name: backups
+#     path: /mnt/datastore/backups
+#     options:
+#       comment: Primary datastore
+#       gc-schedule: daily
+#       prune-schedule: daily
+#       keep-daily: 7
+#       keep-weekly: 4
+pbs_datastores: []
+
+# Certificate and private key for the web UI/API. When null the self-signed certificate is kept.
+# /etc/proxmox-backup/proxy.{pem,key} are symlinked to these paths and the backup user
+# (which proxmox-backup-proxy runs as) is granted read access in place - see tasks/certificate.yml.
+# pbs_certificate_path: /etc/letsencrypt/live/{{ inventory_hostname }}.epichouse.co.uk/fullchain.pem
+# pbs_certificate_private_path: /etc/letsencrypt/live/{{ inventory_hostname }}.epichouse.co.uk/privkey.pem
+pbs_certificate_path: null
+pbs_certificate_private_path: null
+
+# 'From' address for notification mails (node.cfg email-from). When null PBS uses root@$hostname.
+# pbs_email_from: proxmox@epichouse.co.uk
+pbs_email_from: null

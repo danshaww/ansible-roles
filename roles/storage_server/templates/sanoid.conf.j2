@@ -1,0 +1,15 @@
+{% set _sanoid = storage_server_zfs.sanoid | default({}, true) %}
+{% for template_name, options in (_sanoid.templates | default({}, true)).items() %}
+[template_{{ template_name }}]
+{% for option, value in options.items() %}
+{{ option }} = {{ value }}{{ '\n' }}
+{%- endfor %}
+
+{% endfor %}
+{% for dataset, options in (_sanoid.datasets | default({}, true)).items() %}
+[{{ dataset }}]
+{% for option, value in options.items() %}
+{{ option }} = {{ value }}{{ '\n' }}
+{%- endfor %}
+
+{% endfor %}

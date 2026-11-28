@@ -1,0 +1,44 @@
+- name: Add Cloudflare APT key
+  ansible.builtin.apt_key:
+    url: "https://pkg.cloudflareclient.com/pubkey.gpg"
+    keyring: /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+  become: true
+- name: Add Cloudflare APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ noble main"
+    state: present
+  become: true
+
+- name: Install Cloudflare Warp package
+  ansible.builtin.apt:
+    name: cloudflare-warp
+    state: present
+    update_cache: true
+  become: true
+
+- name: Populate sysctl Config
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    line: "{{ item }}"
+  become: true
+  register: sysctl_conf
+  with_items:
+    - net.ipv4.conf.all.accept_redirects = 1
+    - net.ipv4.ip_forward = 1
+
+- name: Reload sysctl
+  ansible.builtin.shell: sysctl --system
+  become: true
+  when: sysctl_conf.changed
+
+- name: Register WARP agent
+  ansible.builtin.shell: |
+    warp-cli --accept-tos connector new {{ cloudflare_warp_tunnel_token }}
+    warp-cli connect
+  args:
+    creates: /var/lib/cloudflare-warp/reg.json
+
+- name: Global_System | UFW | Enable and set default deny rule
+  community.general.ufw:
+    state: disabled
+  become: true

@@ -1,0 +1,24 @@
+storage_server_smb: null
+storage_server_nfs: null
+storage_server_zfs: null
+storage_server_permissions: null
+storage_server_filesystem: null
+storage_server_rclone: null
+storage_server_iscsi_config_path: null
+storage_server_smartctl_exporter: null
+storage_server_cron:
+  mail_to: null
+  mail_from: null
+
+enable_permissions: true
+enable_installation: true
+enable_firewall_config: true
+enable_smb: true
+enable_nfs: true
+enable_zfs_config: true
+enable_filesystem_tasks: true
+enable_rclone: true
+enable_builtin_cron_jobs: true
+enable_iscsi: true
+enable_cron: true
+enable_smartctl_exporter: true

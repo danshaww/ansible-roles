@@ -1,0 +1,76 @@
+# smartctl_exporter is not packaged for Debian/Ubuntu, so install the upstream
+# release binary (checksum verified) and run it as a systemd service.
+- name: Storage Server | smartctl_exporter | Install smartmontools
+  become: true
+  ansible.builtin.apt:
+    name: smartmontools
+
+- name: Storage Server | smartctl_exporter | Create Install Directory
+  ansible.builtin.file:
+    path: "{{ _smartctl_exporter_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+
+- name: Storage Server | smartctl_exporter | Download Release
+  ansible.builtin.get_url:
+    url: "{{ _smartctl_exporter_release_url }}/{{ _smartctl_exporter_archive }}"
+    dest: "{{ _smartctl_exporter_dir }}/{{ _smartctl_exporter_archive }}"
+    checksum: "sha256:{{ _smartctl_exporter_release_url }}/sha256sums.txt"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Storage Server | smartctl_exporter | Extract Release
+  ansible.builtin.unarchive:
+    src: "{{ _smartctl_exporter_dir }}/{{ _smartctl_exporter_archive }}"
+    dest: "{{ _smartctl_exporter_dir }}"
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+    creates: "{{ _smartctl_exporter_dir }}/smartctl_exporter"
+  become: true
+
+- name: Storage Server | smartctl_exporter | Link Binary
+  ansible.builtin.file:
+    src: "{{ _smartctl_exporter_dir }}/smartctl_exporter"
+    dest: /usr/local/bin/smartctl_exporter
+    state: link
+    force: true
+  notify: Restart smartctl_exporter
+  become: true
+
+- name: Storage Server | smartctl_exporter | Render systemd Unit
+  ansible.builtin.template:
+    src: smartctl_exporter.service.j2
+    dest: /etc/systemd/system/smartctl_exporter.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart smartctl_exporter
+  become: true
+
+- name: Storage Server | smartctl_exporter | Enable Service
+  ansible.builtin.systemd:
+    name: smartctl_exporter
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true
+
+- name: Storage Server | smartctl_exporter | Configure UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ _smartctl_exporter.listen_address | regex_replace('^.*:', '') }}"
+    proto: tcp
+    from_ip: "{{ item }}"
+    comment: smartctl_exporter
+  loop: "{{ _smartctl_exporter.allow_from | default(['any'], true) }}"
+  become: true
+  when: "'ufw' in ansible_facts.packages"
+
+- name: Storage Server | smartctl_exporter | Flush handlers so the exporter is restarted
+  ansible.builtin.meta: flush_handlers

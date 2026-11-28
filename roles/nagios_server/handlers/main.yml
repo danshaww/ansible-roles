@@ -1,0 +1,11 @@
+- name: Nagios Server | Handlers | Restart Nagios
+  ansible.builtin.service:
+    name: nagios
+    state: restarted
+
+- name: Nagios Server | Handlers | Restart Nagflux
+  ansible.builtin.systemd:
+    name: nagflux
+    state: restarted
+    daemon_reload: true
+  when: nagios_server_nagflux_enabled

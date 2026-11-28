@@ -1,0 +1,19 @@
+- name: PBS | Datastores | Get Existing Datastores
+  ansible.builtin.command: proxmox-backup-manager datastore list --output-format json
+  register: pbs_datastore_list
+  changed_when: false
+  become: true
+
+- name: PBS | Datastores | Create Datastores
+  ansible.builtin.command:
+    argv: >-
+      {{ ['proxmox-backup-manager', 'datastore', 'create', item.name, item.path]
+         + (item.options | default({}) | dict2items
+            | map(attribute='key') | map('regex_replace', '^', '--')
+            | zip(item.options | default({}) | dict2items | map(attribute='value') | map('string'))
+            | flatten) }}
+  loop: "{{ pbs_datastores }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.name not in (pbs_datastore_list.stdout | from_json | map(attribute='name'))
+  become: true

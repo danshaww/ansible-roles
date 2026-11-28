@@ -1,0 +1,11 @@
+- name: Reload SMBD
+  ansible.builtin.service:
+    name: smbd
+    state: reloaded
+  become: true
+
+- name: Restart NFS
+  ansible.builtin.service:
+    name: nfs-server
+    state: restarted
+  become: true

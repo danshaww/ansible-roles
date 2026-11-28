@@ -1,0 +1,89 @@
+argument_specs:
+  main:
+    short_description: Install and configure Proxmox Backup Server on Debian.
+    description:
+      - Installs Proxmox Backup Server from the Proxmox APT repository on Debian bookworm (PBS 3) or trixie (PBS 4).
+      - Optionally opens the PBS port in UFW, removes the no-subscription nag and creates datastores.
+    options:
+      pbs_configure_repository:
+        type: bool
+        default: true
+        description: Install the Proxmox archive keyring and configure the PBS APT repository.
+      pbs_configure_firewall:
+        type: bool
+        default: true
+        description: Allow the PBS ports through UFW. Only applied when ufw is installed.
+      pbs_configure_subscription_nag:
+        type: bool
+        default: true
+        description:
+          - Patch proxmox-widget-toolkit to remove the no-subscription popup.
+          - The patch is reverted when the package updates, so re-run the role after upgrades.
+      pbs_configure_datastores:
+        type: bool
+        default: true
+        description: Create the datastores defined in O(pbs_datastores).
+      pbs_repository_component:
+        type: str
+        default: pbs-no-subscription
+        choices: [pbs-no-subscription, pbs-enterprise, pbstest]
+        description:
+          - APT repository component to use.
+          - C(pbs-enterprise) uses enterprise.proxmox.com and requires a subscription.
+      pbs_remove_enterprise_repository:
+        type: bool
+        default: true
+        description:
+          - Remove (deb822) or comment out (one-line) any APT repository pointing at enterprise.proxmox.com,
+            such as the pbs-enterprise, pve-enterprise and ceph enterprise repositories an ISO install creates.
+          - Ignored when O(pbs_repository_component=pbs-enterprise).
+      pbs_packages:
+        type: list
+        elements: str
+        default: [proxmox-backup-server]
+        description:
+          - Packages to install.
+          - C(proxmox-backup-server) runs on the stock Debian kernel; C(proxmox-backup) also installs the Proxmox kernel.
+      pbs_datastores:
+        type: list
+        elements: dict
+        default: []
+        description:
+          - Datastores to create if they do not already exist.
+          - Existing datastores are left untouched; option changes are not applied to them.
+        options:
+          name:
+            type: str
+            required: true
+            description: Datastore name.
+          path:
+            type: path
+            required: true
+            description: Path to initialise as the chunk store. Must be empty or non-existent.
+          options:
+            type: dict
+            default: {}
+            description:
+              - Extra options passed as C(--key value) to C(proxmox-backup-manager datastore create).
+              - For example C(comment), C(gc-schedule), C(prune-schedule), C(keep-daily), C(keep-weekly).
+      pbs_certificate_path:
+        type: path
+        description:
+          - Certificate (full chain) for the web UI/API. C(/etc/proxmox-backup/proxy.pem) is symlinked to it.
+          - When null (along with O(pbs_certificate_private_path)) the self-signed certificate is kept.
+          - The C(backup) group gets an ACL to traverse any parent directory that isn't world-traversable,
+            and to read the certificate if it isn't world-readable.
+          - Under C(/etc/letsencrypt/live), a certbot deploy hook is installed to reload PBS on renewal.
+            For other certificates, reload C(proxmox-backup-proxy) after replacing the files.
+      pbs_certificate_private_path:
+        type: path
+        description:
+          - Private key matching O(pbs_certificate_path). C(/etc/proxmox-backup/proxy.key) is symlinked to it.
+          - The key file (symlinks resolved) is set to group C(backup), mode C(0640). Certbot preserves the
+            group and mode of the previous key when renewing.
+      pbs_email_from:
+        type: str
+        description:
+          - C(From) address for notification mails, set as C(email-from) in C(/etc/proxmox-backup/node.cfg).
+          - Used by every sendmail target that doesn't set its own C(from-address).
+          - When null PBS defaults to C(root@$hostname), which many smarthosts reject as an unverified sender.

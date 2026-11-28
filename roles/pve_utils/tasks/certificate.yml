@@ -1,0 +1,55 @@
+# pveproxy reads /etc/pve/local/pveproxy-ssl.{pem,key}. /etc/pve is pmxcfs, which doesn't
+# support symlinks, so the files are copied in with 'pvenode cert set' whenever they differ.
+
+- name: PVE Utils | Certificate | Check Certificate Files
+  ansible.builtin.stat:
+    path: "{{ item }}"
+    # /etc/letsencrypt/live/* are symlinks; without follow there is no checksum
+    follow: true
+    get_checksum: true
+  loop:
+    - "{{ pve_utils_certificate_path }}"
+    - "{{ pve_utils_certificate_private_path }}"
+    - "{{ pve_utils_proxy_certificate }}"
+    - "{{ pve_utils_proxy_private_key }}"
+  register: pve_utils_certificate_files
+  become: true
+
+- name: PVE Utils | Certificate | Assert Certificate Files Exist
+  ansible.builtin.assert:
+    that: item.stat.exists
+    fail_msg: "{{ item.item }} does not exist."
+    quiet: true
+  loop: "{{ pve_utils_certificate_files.results[:2] }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+# pvenode writes the PEM content unchanged (minus any text before the first BEGIN line),
+# so matching checksums mean the certificate is already installed.
+- name: PVE Utils | Certificate | Install Certificate
+  ansible.builtin.command:
+    argv:
+      - pvenode
+      - cert
+      - set
+      - "{{ pve_utils_certificate_path }}"
+      - "{{ pve_utils_certificate_private_path }}"
+      - --force
+      - "1"
+      - --restart
+      - "1"
+  when: >-
+    pve_utils_certificate_files.results[0].stat.checksum != pve_utils_certificate_files.results[2].stat.checksum | default('')
+    or pve_utils_certificate_files.results[1].stat.checksum != pve_utils_certificate_files.results[3].stat.checksum | default('')
+  changed_when: true
+  become: true
+
+- name: PVE Utils | Certificate | Install Certbot Deploy Hook
+  ansible.builtin.template:
+    src: certbot-deploy-hook.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/pve.sh
+    owner: root
+    group: root
+    mode: '0755'
+  when: pve_utils_certificate_path is match('/etc/letsencrypt/live/')
+  become: true

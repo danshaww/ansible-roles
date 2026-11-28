@@ -1,0 +1,10 @@
+# Same proxmox-widget-toolkit patch as pve_utils; reverted whenever the package updates,
+# so re-run the role after upgrades.
+- name: PBS | Disable No-Subscription Nag
+  ansible.builtin.replace:
+    path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+    regexp: "Ext\\.Msg\\.show\\(\\{(?=[\\s\\S]{0,2000}?gettext\\('No valid subscription'\\))"
+    replace: "void({"
+    backup: true
+  notify: PBS | Restart Proxmox Backup Proxy
+  become: true

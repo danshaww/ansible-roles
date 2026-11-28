@@ -1,0 +1,79 @@
+argument_specs:
+  main:
+    short_description: Install Docker and deploy Docker Compose projects.
+    options:
+      docker_host_install:
+        type: bool
+        default: true
+        description: Install Docker.
+      docker_host_configure:
+        type: bool
+        default: true
+        description: Configure Docker (deploy compose projects and daemon config).
+      docker_host_build:
+        type: str
+        default: never
+        choices: [always, never, policy]
+        description: Default value for the docker build argument when running compose up -d.
+      docker_host_pull:
+        type: str
+        default: missing
+        choices: [always, missing, never, policy, build]
+        description: Default value for the docker pull argument when running compose up -d.
+      docker_host_base_path:
+        type: path
+        default: /var/lib/docker
+        description: Override the Docker base path.
+      docker_host_bind_mount_volume_path:
+        type: path
+        default: /srv/volumes
+        description: Override the bind mount volume path.
+      docker_host_logging:
+        type: dict
+        default:
+          type: syslog
+        description: Docker daemon logging configuration.
+        options:
+          type:
+            type: str
+            default: syslog
+            choices: [syslog, loki, none]
+            description: Logging driver to configure.
+          loki_url:
+            type: str
+            description: Loki connection URL (required when type is loki).
+        required_if:
+          - [type, loki, [loki_url]]
+      docker_host_auth_sources:
+        type: list
+        elements: dict
+        default: []
+        description: Registry credentials written to /root/.docker/config.json.
+        options:
+          registry:
+            type: str
+            required: true
+            description: Registry hostname.
+          auth:
+            type: str
+            required: true
+            no_log: true
+            description: Secret containing base64 encoded user:token.
+      docker_host_compose_projects:
+        type: dict
+        default: null
+        description:
+          - Compose project definitions provided by the playbook, keyed by project name.
+          - Each project may set C(enabled) (default true; false removes the project without deleting config),
+            C(volume_config) (C(owner)/C(group) default root, C(mode) default 0770),
+            C(create_bind_mount_volume) (default false), C(networks) (unset for backend + traefik defaults),
+            C(services), C(volumes) and C(configs).
+          - Additional definitions in the same shape can be supplied as any number of variables named
+            C(docker_host_compose_projects_*) (e.g. one per group_vars file); these are merged in and override
+            role templates and this dict. Values may reference item.key for the project name.
+      docker_host_compose_project_templates:
+        type: list
+        elements: str
+        default: []
+        choices: [traefik, dozzle]
+        description: Role-defined projects to add (names match files in vars/compose).

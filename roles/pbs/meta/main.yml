@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Dan Shaw
+  description: Ansible role to install and configure Proxmox Backup Server on Debian.
+  license: GPL
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - trixie
+  galaxy_tags: []
+dependencies: []

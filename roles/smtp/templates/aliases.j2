@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+# Local recipient aliases used by msmtp ('default' catches any unlisted local user).
+{% for name, address in smtp_aliases.items() %}
+{{ name }}: {{ [address] | flatten | join(', ') }}
+{% endfor %}

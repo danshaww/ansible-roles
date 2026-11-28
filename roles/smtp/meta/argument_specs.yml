@@ -1,0 +1,80 @@
+argument_specs:
+  main:
+    short_description: Configure msmtp as the system sendmail, relaying through an authenticated SMTP server.
+    description:
+      - Installs msmtp and msmtp-mta (providing C(/usr/sbin/sendmail)) plus mailutils, and writes C(/etc/msmtprc).
+      - Purges ssmtp and removes C(/etc/ssmtp) if present.
+      - The relay's certificate is verified and delivery results are logged to syslog (C(LOG_MAIL)).
+    options:
+      smtp_host:
+        type: str
+        required: true
+        description: SMTP relay hostname, e.g. C(mail.smtp2go.com).
+      smtp_port:
+        type: int
+        default: 587
+        description: SMTP relay port.
+      smtp_tls:
+        type: str
+        choices: [starttls, tls, 'off']
+        description:
+          - C(starttls) upgrades a plain connection (port 587), C(tls) is implicit TLS (port 465), C(off) disables TLS.
+          - When unset, C(tls) is used for port 465 and C(starttls) otherwise.
+      smtp_tls_trust_file:
+        type: path
+        default: /etc/ssl/certs/ca-certificates.crt
+        description: CA bundle used to verify the relay's certificate.
+      smtp_auth:
+        type: str
+        choices: ['on', plain, login, cram-md5, scram-sha-1, scram-sha-256]
+        default: plain
+        description:
+          - SMTP authentication method. C(on) lets msmtp choose the strongest method the server offers.
+          - Defaults to C(plain) because newer GNU SASL picks SCRAM-SHA-256, which some relays (smtp2go) reject.
+            The password is still protected by TLS, which is negotiated before authenticating.
+      smtp_user:
+        type: str
+        required: true
+        description: SMTP username.
+      smtp_password:
+        type: str
+        required: true
+        no_log: true
+        description: SMTP password. Any characters are allowed; it is quoted and escaped in the config.
+      smtp_from_address:
+        type: str
+        required: true
+        description:
+          - Envelope sender for all mail, and the C(From) header when one is added.
+          - Must be a sender the relay accepts (for smtp2go, a verified address or domain).
+      smtp_allow_from_override:
+        type: bool
+        default: false
+        description:
+          - Let callers override the envelope sender with C(sendmail -f) (e.g. PBS/PVE notifications).
+          - Off by default so every message leaves with O(smtp_from_address), which the relay accepts.
+      smtp_set_from_header:
+        type: str
+        choices: [auto, 'on', 'off']
+        default: auto
+        description:
+          - C(auto) adds a C(From) header with O(smtp_from_address) only when the message has none.
+          - C(on) always replaces it (use if the relay rejects mail whose C(From) header is unverified,
+            e.g. C(root@hostname)); C(off) never touches it.
+      smtp_aliases:
+        type: dict
+        default: {}
+        description:
+          - Local recipients mapped to email addresses (a string or list of strings), written to C(/etc/aliases).
+          - The key C(default) catches any local recipient not listed.
+          - Without an entry, mail to a bare local user such as C(root) (cron, ZED) is rejected by the relay.
+          - When empty, C(/etc/aliases) is left untouched.
+      smtp_restrict_config:
+        type: bool
+        default: true
+        description:
+          - Keep C(/etc/msmtprc) at C(0640 root:msmtp) and make C(/usr/bin/msmtp) setgid C(msmtp)
+            (via C(dpkg-statoverride), so it survives upgrades) so non-root users can still send.
+          - Any local user can still cause the password to be used, and C(msmtp --debug) shows the AUTH
+            exchange, so this protects the file rather than the credential.
+          - When false the config is C(0644) and readable by every local user.

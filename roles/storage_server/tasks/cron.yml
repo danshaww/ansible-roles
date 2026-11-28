@@ -1,0 +1,9 @@
+
+- name: Storage Server | Cron | Create Crontab
+  ansible.builtin.template:
+    src: cron.j2
+    dest: "/etc/cron.d/ansible-storage-server"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true

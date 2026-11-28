@@ -1,0 +1,5 @@
+#!/bin/sh
+# {{ ansible_managed }}
+# Reloads Proxmox Backup Server when its certificate is renewed.
+[ "$RENEWED_LINEAGE" = "{{ pbs_certificate_path | dirname }}" ] || exit 0
+systemctl reload proxmox-backup-proxy

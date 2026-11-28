@@ -1,0 +1,29 @@
+{#- msmtp quoted values: backslash and double quote must be escaped -#}
+{%- macro quote(v) -%}
+"{{ v | string | replace('\\', '\\\\') | replace('"', '\\"') }}"
+{%- endmacro -%}
+# {{ ansible_managed }}
+# System-wide msmtp configuration (msmtp-mta provides /usr/sbin/sendmail).
+
+defaults
+auth                {{ smtp_auth }}
+tls                 {{ 'off' if smtp_tls_mode == 'off' else 'on' }}
+{% if smtp_tls_mode != 'off' %}
+tls_starttls        {{ 'on' if smtp_tls_mode == 'starttls' else 'off' }}
+tls_trust_file      {{ smtp_tls_trust_file }}
+{% endif %}
+# Delivery results are logged to syslog (journalctl -t msmtp / grep msmtp /var/log/syslog)
+syslog              LOG_MAIL
+{% if smtp_aliases | length > 0 %}
+aliases             {{ smtp_aliases_path }}
+{% endif %}
+
+account             default
+host                {{ smtp_host }}
+port                {{ smtp_port }}
+domain              {{ ansible_facts['fqdn'] | default(inventory_hostname, true) }}
+from                {{ smtp_from_address }}
+allow_from_override {{ 'on' if smtp_allow_from_override else 'off' }}
+set_from_header     {{ smtp_set_from_header }}
+user                {{ quote(smtp_user) }}
+password            {{ quote(smtp_password) }}

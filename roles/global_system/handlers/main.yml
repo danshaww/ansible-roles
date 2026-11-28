@@ -1,0 +1,19 @@
+- name: Restart SSH
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  become: true
+  ignore_errors: true
+  with_items:
+    - ssh
+    - sshd
+- name: Restart Syslog
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+  become: true
+- name: Restart Journald
+  ansible.builtin.service:
+    name: systemd-journald
+    state: restarted
+  become: true

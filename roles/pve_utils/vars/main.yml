@@ -1,0 +1,14 @@
+pve_utils_keyring: /usr/share/keyrings/proxmox-archive-keyring.gpg
+
+# Supported Debian releases -> archive keyring (PVE 8 on bookworm, PVE 9 on trixie)
+pve_utils_releases:
+  bookworm:
+    key_url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
+    key_checksum: sha256:13a87cec79f2d05f40f125629e4b509080a5c0286608bea273e36be9809ecaba
+  trixie:
+    key_url: https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg
+    key_checksum: sha256:136673be77aba35dcce385b28737689ad64fd785a797e57897589aed08db6e45
+
+# Custom certificate files pveproxy reads (/etc/pve/local links to this node's directory)
+pve_utils_proxy_certificate: /etc/pve/local/pveproxy-ssl.pem
+pve_utils_proxy_private_key: /etc/pve/local/pveproxy-ssl.key

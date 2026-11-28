@@ -1,0 +1,16 @@
+smtp_packages:
+  - ca-certificates
+  - msmtp
+  - msmtp-mta
+  - mailutils
+
+# Removed (purged) in favour of msmtp
+smtp_legacy_packages:
+  - ssmtp
+
+smtp_config_path: /etc/msmtprc
+smtp_aliases_path: /etc/aliases
+smtp_binary: /usr/bin/msmtp
+smtp_group: msmtp
+
+smtp_tls_mode: "{{ smtp_tls | default('tls' if smtp_port | int == 465 else 'starttls', true) }}"
